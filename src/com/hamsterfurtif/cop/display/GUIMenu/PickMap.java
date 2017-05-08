@@ -7,19 +7,19 @@ import com.hamsterfurtif.cop.Game;
 
 public class PickMap extends GUIMenu{
 	
-	public void get(){
-		this.name = "Equipement des joueurs";
+	public boolean get(){
+		this.name = "Choisir une map";
 		this.choices = new ArrayList<String>(Arrays.asList("Map par défaut :(", "Quitter"));
 		int c = this.showMenu();
 
 		switch(c){
 		case 1:
-			
-			break;
+			return true;
 		case 2:
 			Game.running = false;
 			break;
 		}
+		return false;
 		
 	}
 }

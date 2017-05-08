@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class GUIMenu {
 		
 	protected String name;
-	protected ArrayList<String> choices;
+	protected ArrayList<String> choices =  new ArrayList<String>();
 	
 	public int showMenu(){
 		
@@ -27,12 +27,8 @@ public class GUIMenu {
 		return n;
 	}
 
-	private void print(String string){
+	protected void print(String string){
 		System.out.println(string);
-	}
-	
-	public void get(){
-		
 	}
 	
 }

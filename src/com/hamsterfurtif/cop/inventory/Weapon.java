@@ -1,15 +1,12 @@
 package com.hamsterfurtif.cop.inventory;
 
-import java.util.ArrayList;
+import com.hamsterfurtif.cop.statics.Weapons;
 
 
 public class Weapon {
 	
 	public String name;
 	public int range, damage, ammo;
-	
-	public static ArrayList<Weapon> primary;
-	public static ArrayList<Weapon> secondary;
 	
 	public Weapon(String name, int range, int damage, int maxAmmo, int slot){
 		this.name = name;
@@ -18,9 +15,9 @@ public class Weapon {
 		this.ammo = maxAmmo;
 		
 		if(slot==1)
-			primary.add(this);
+			Weapons.primary.add(this);
 		else
-			secondary.add(this);
+			Weapons.secondary.add(this);
 	}
 
 }

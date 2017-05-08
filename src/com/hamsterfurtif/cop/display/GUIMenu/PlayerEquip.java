@@ -5,11 +5,12 @@ import java.util.Arrays;
 
 import com.hamsterfurtif.cop.Game;
 import com.hamsterfurtif.cop.Player;
+import com.hamsterfurtif.cop.statics.Menus;
 
 public class PlayerEquip extends GUIMenu{
 
-	public void get(Player player){
-		this.name = "Equipement des joueurs";
+	public boolean get(Player player){
+		this.name = "Equipement des joueurs: " + player.name;
 		
 		String princ = "Aucune actuellement";
 		String sec   = "Aucune actuellement";
@@ -24,17 +25,22 @@ public class PlayerEquip extends GUIMenu{
 		
 		switch(c){
 		case 1:
-			
+			player.inventory.primary = Menus.pickInventory.get(1);
 			break;
 		
 		case 2:
-			
+			player.inventory.secondary = Menus.pickInventory.get(2);
 			break;
 			
 		case 3:
+			return true;
+			
+		case 4:
 			Game.running = false;
 			break;
 		}
+		
+		return false;
 	}
 	
 }

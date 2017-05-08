@@ -7,18 +7,19 @@ import com.hamsterfurtif.cop.Game;
 
 public class Main extends GUIMenu{
 	
-	public void get(){
+	public boolean get(){
 		this.name = "Menu principal";
 		this.choices = new ArrayList<String>(Arrays.asList("Jouer", "Quitter"));
 		int c = this.showMenu();
 		
 		switch(c){
 		case 1:
-			
-			break;
+			return true;
 		case 2:
 			Game.running = false;
 			break;
 		}
+		
+		return false;
 	}
 }
