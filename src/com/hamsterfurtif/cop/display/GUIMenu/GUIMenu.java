@@ -18,9 +18,10 @@ public class GUIMenu {
 		print(header);
 		print(" "+name);
 		print(header);
-		for(int i=0; i<choices.size();i++){
-			print("["+(i+1)+"]"+choices.get(i));
-		}
+		if(!choices.isEmpty())
+			for(int i=0; i<choices.size();i++)
+				print("["+(i+1)+"]"+choices.get(i));
+		
 		
 		int n = reader.nextInt();
 		

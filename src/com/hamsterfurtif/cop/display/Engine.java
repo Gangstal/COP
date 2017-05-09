@@ -3,13 +3,14 @@ package com.hamsterfurtif.cop.display;
 import java.util.Collections;
 
 import com.hamsterfurtif.cop.Game;
+import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.map.MapPos;
 
 public class Engine {
 	
 	
 	public static void displayMap(){
-		
+				
 		String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		String show;
 		System.out.println("   "+alphabet.substring(0, Game.map.dimX));
@@ -19,7 +20,11 @@ public class Engine {
 			show = "|";
 			
 			for(int x=0; x<Game.map.dimX; x++){
-				show += Game.map.getTile(new MapPos(y,x,0)).symbol;
+				MapPos pos = new MapPos(x,y,0);
+				if(checkPlayerOnPos(pos) == null)
+					show += Game.map.getTile(pos).symbol;
+				else
+					show += checkPlayerOnPos(pos).symbol;
 			}
 			String k="";
 			
@@ -32,4 +37,15 @@ public class Engine {
 
 	}
 	
+	private static Player checkPlayerOnPos(MapPos pos){
+
+		for(Player player : Game.players){
+
+			if(player.pos.equals(pos)){
+				return player;
+			}
+			
+		}
+		return null;
+	}
 }

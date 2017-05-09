@@ -14,6 +14,6 @@ public class Map {
 	}
 	
 	public Tile getTile(MapPos pos){
-		return map[pos.X][pos.Y];
+		return map[pos.Y][pos.X];
 	}
 }

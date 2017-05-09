@@ -29,6 +29,12 @@ public class MapPos {
 		this.add(pos.X, pos.Y, this.Z);
 	}
 	
+	public String toString(){
+		return ("PosX:"+X+" PosY:"+Y+" PosZ:"+Z);
+	}
 	
+	public boolean equals(MapPos pos){
+		return(this.X == pos.X && this.Y == pos.Y && this.Z == pos.Z);
+	}
 
 }
