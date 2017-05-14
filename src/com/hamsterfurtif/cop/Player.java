@@ -13,6 +13,7 @@ public class Player {
 	public Inventory inventory = new Inventory();
 	public int repsawnsLeft = 5;
 	public char symbol;
+	public int movesLeft = 5;
 	
 	public Player(String name){
 		this.name = name;

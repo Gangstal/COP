@@ -8,12 +8,13 @@ import com.hamsterfurtif.cop.map.MapPos;
 
 public class Engine {
 	
+	public static String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	
 	public static void displayMap(){
 				
-		String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		
 		String show;
-		System.out.println("   "+alphabet.substring(0, Game.map.dimX));
+		System.out.println("   "+ alphabet.substring(0, Game.map.dimX));
 		System.out.println("  "+String.join("", Collections.nCopies(Game.map.dimX+2, "-")));
 		for(int y=0; y<Game.map.dimY ;y++){
 			

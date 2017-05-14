@@ -33,7 +33,7 @@ public class Game {
 				initMatch();
 				while(match){
 					Engine.displayMap();
-					match = false;
+					Menus.play.get(players.get(currentPlayer));
 				}
 			}
 		}
