@@ -21,7 +21,8 @@ public class Play extends GUIMenu {
 		int c = this.showMenu();
 		c += player.movesLeft>0 ? 0 : 1;
 		switch(c){
-		case 1:Menus.move.get();
+		case 1:
+			while(!Game.movePlayer(player, Menus.move.get()))
 			return false;
 		case 2:
 			return false;

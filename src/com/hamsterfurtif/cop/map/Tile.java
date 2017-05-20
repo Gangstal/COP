@@ -1,12 +1,22 @@
 package com.hamsterfurtif.cop.map;
 
+import com.hamsterfurtif.cop.statics.Tiles;
+
 public abstract class Tile {
 
 	public boolean isDestructible = false;
 	public boolean canShootTrough = false;
 	public boolean canWalkThrough = false;
+	public Tile ground = Tiles.floor; //Tile par défaut quand une case est pétée
 	
 	public char symbol;
+	
+	public Tile destroy(){
+		if(this.isDestructible)
+			return ground;
+		else
+			return this;
+	}
 	
 	public static class TileWindow extends Tile {
 		public TileWindow(){

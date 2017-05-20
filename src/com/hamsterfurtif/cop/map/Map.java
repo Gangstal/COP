@@ -16,4 +16,13 @@ public class Map {
 	public Tile getTile(MapPos pos){
 		return map[pos.Y][pos.X];
 	}
+	
+	public void setTile(MapPos pos, Tile tile){
+		map[pos.Y][pos.X] = tile;
+	}
+	
+	public void destroyTile(MapPos pos){
+		this.setTile(pos, this.getTile(pos).destroy());
+	}
+	
 }

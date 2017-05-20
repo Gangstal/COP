@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.hamsterfurtif.cop.display.Engine;
+import com.hamsterfurtif.cop.inventory.WeaponType;
 import com.hamsterfurtif.cop.map.Map;
 import com.hamsterfurtif.cop.map.MapPos;
 import com.hamsterfurtif.cop.statics.Menus;
@@ -68,5 +69,42 @@ public class Game {
 		for(Player player : players){
 			player.symbol = Player.defSym.charAt(players.indexOf(player));
 		}
+	}
+	
+	//TODO Utiliser un chemin plutot qu'une position
+	public static boolean movePlayer(Player player, MapPos pos){
+		
+		if(map.getTile(pos).canWalkThrough && checkForPlayer(pos) == null){
+			player.pos=pos;
+			player.movesLeft=0;
+			return true;
+		}
+		
+		return false;	
+	}
+	
+	public boolean shoot(Player player, MapPos pos, WeaponType type){
+		
+		//TODO Vérifier que le tir est autorisé
+		if(checkForPlayer(pos) != null){
+			Player target = checkForPlayer(pos);
+			target.health -= player.getWeapon(type).damage;
+			return true;
+		}
+		else if(map.getTile(pos).isDestructible){
+			map.destroyTile(pos);
+		}
+		
+		return false;
+		
+	}
+	
+	private  static Player checkForPlayer(MapPos pos){
+		
+		for(Player player : players)
+			if(player.pos == pos)
+				return player;
+		
+		return null;
 	}
 }

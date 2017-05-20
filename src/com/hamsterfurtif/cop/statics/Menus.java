@@ -7,6 +7,7 @@ import com.hamsterfurtif.cop.display.GUIMenu.PickInventory;
 import com.hamsterfurtif.cop.display.GUIMenu.PickMap;
 import com.hamsterfurtif.cop.display.GUIMenu.Play;
 import com.hamsterfurtif.cop.display.GUIMenu.PlayerEquip;
+import com.hamsterfurtif.cop.display.GUIMenu.Shoot;
 
 public class Menus {
 	
@@ -17,6 +18,7 @@ public class Menus {
 	public static ConfirmGameSettings confirmGameSettings = new ConfirmGameSettings();
 	public static Play play = new Play();
 	public static Move move = new Move();
+	public static Shoot shoot = new Shoot();
 	
 
 }

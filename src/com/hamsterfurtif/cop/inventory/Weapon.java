@@ -5,6 +5,8 @@ import com.hamsterfurtif.cop.statics.Weapons;
 
 public class Weapon {
 	
+	
+	
 	public String name;
 	public int range, damage, ammo;
 	

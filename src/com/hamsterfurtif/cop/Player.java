@@ -1,6 +1,8 @@
 package com.hamsterfurtif.cop;
 
 import com.hamsterfurtif.cop.inventory.Inventory;
+import com.hamsterfurtif.cop.inventory.Weapon;
+import com.hamsterfurtif.cop.inventory.WeaponType;
 import com.hamsterfurtif.cop.map.MapPos;
 
 public class Player {
@@ -17,5 +19,16 @@ public class Player {
 	
 	public Player(String name){
 		this.name = name;
+	}
+	
+	public Weapon getWeapon(WeaponType type){
+		switch(type){
+		case PRIMARY:
+			return inventory.primary;
+		case SECONDARY:
+			return inventory.secondary;
+		default:
+			return inventory.primary;
+		}
 	}
 }
