@@ -16,6 +16,7 @@ public class Player {
 	public int repsawnsLeft = 5;
 	public char symbol;
 	public int movesLeft = 5;
+	public boolean turnIsOver = false;
 	
 	public Player(String name){
 		this.name = name;

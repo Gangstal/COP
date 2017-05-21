@@ -10,16 +10,20 @@ public class Weapon {
 	public String name;
 	public int range, damage, ammo;
 	
-	public Weapon(String name, int range, int damage, int maxAmmo, int slot){
+	public Weapon(String name, int range, int damage, int maxAmmo, WeaponType type){
 		this.name = name;
 		this.range = range;
 		this.damage = damage;
 		this.ammo = maxAmmo;
 		
-		if(slot==1)
+		switch(type){
+		case PRIMARY:
 			Weapons.primary.add(this);
-		else
+			break;
+		case SECONDARY:
 			Weapons.secondary.add(this);
+			break;
+		}
 	}
 
 }

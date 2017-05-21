@@ -14,7 +14,13 @@ public class Map {
 	}
 	
 	public Tile getTile(MapPos pos){
-		return map[pos.Y][pos.X];
+		try{
+			return map[pos.Y][pos.X];
+		}
+		catch(Exception e){
+			System.out.println("::: ERROR Tile requested on pos: "+pos.toString()+"  |  Map dimensions: X="+dimX+", Y="+dimY+", Z="+dimZ+" :::");
+			return null;
+		}
 	}
 	
 	public void setTile(MapPos pos, Tile tile){

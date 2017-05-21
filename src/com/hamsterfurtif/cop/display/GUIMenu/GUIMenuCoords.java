@@ -26,7 +26,7 @@ protected MapPos show(){
 		String n = reader.nextLine();
 		String[] l = n.split(",");
 		try{
-			return new MapPos(Integer.parseInt(l[0]),Engine.alphabet.indexOf((l[1])), 0);
+			return new MapPos(Engine.alphabet.indexOf((l[1])), Integer.parseInt(l[0])-1, 0);
 		} catch(Exception e) {
 			System.out.println("::: Error while parsin MapPos in menu\""+this.name+"\" :::");
 			return null;

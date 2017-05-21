@@ -33,8 +33,8 @@ public class Game {
 				setUpGame();
 				initMatch();
 				while(match){
-					Engine.displayMap();
-					Menus.play.get(players.get(currentPlayer));
+					while(!Menus.play.get(players.get(currentPlayer)))
+						Engine.displayMap();
 				}
 			}
 		}
@@ -83,16 +83,19 @@ public class Game {
 		return false;	
 	}
 	
-	public boolean shoot(Player player, MapPos pos, WeaponType type){
+	public static boolean shoot(Player player, MapPos pos, WeaponType type){
 		
 		//TODO Vérifier que le tir est autorisé
 		if(checkForPlayer(pos) != null){
 			Player target = checkForPlayer(pos);
 			target.health -= player.getWeapon(type).damage;
+			player.inventory.addAmmo(type, -1);
+			player.turnIsOver = true;
 			return true;
 		}
 		else if(map.getTile(pos).isDestructible){
 			map.destroyTile(pos);
+			return true;
 		}
 		
 		return false;

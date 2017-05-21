@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import com.hamsterfurtif.cop.Game;
 import com.hamsterfurtif.cop.Player;
+import com.hamsterfurtif.cop.inventory.WeaponType;
 import com.hamsterfurtif.cop.statics.Menus;
 
 public class Play extends GUIMenu {
@@ -22,9 +23,10 @@ public class Play extends GUIMenu {
 		c += player.movesLeft>0 ? 0 : 1;
 		switch(c){
 		case 1:
-			while(!Game.movePlayer(player, Menus.move.get()))
+			while(!Game.movePlayer(player, Menus.move.get()));
 			return false;
 		case 2:
+			while(!Game.shoot(player, Menus.shoot.get(), WeaponType.PRIMARY));
 			return false;
 		case 3:
 			return true;
