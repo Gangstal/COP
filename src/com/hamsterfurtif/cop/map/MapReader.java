@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import com.hamsterfurtif.cop.statics.Tiles;
 
-public class ReadMap {
+public class MapReader {
 	
 	public static Tile[][] read(String location){
 		

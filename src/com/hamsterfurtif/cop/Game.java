@@ -33,8 +33,10 @@ public class Game {
 				setUpGame();
 				initMatch();
 				while(match){
+					//Boucle de jeu d'un joueur
 					while(!Menus.play.get(players.get(currentPlayer)))
 						Engine.displayMap();
+					nextPlayer();
 				}
 			}
 		}
@@ -84,7 +86,7 @@ public class Game {
 	}
 	
 	public static boolean shoot(Player player, MapPos pos, WeaponType type){
-		
+				
 		//TODO Vérifier que le tir est autorisé
 		if(checkForPlayer(pos) != null){
 			Player target = checkForPlayer(pos);
@@ -105,9 +107,15 @@ public class Game {
 	private  static Player checkForPlayer(MapPos pos){
 		
 		for(Player player : players)
-			if(player.pos == pos)
+			if(player.pos.equals(pos))
 				return player;
 		
 		return null;
+	}
+	
+	private void nextPlayer(){
+		currentPlayer++;
+		if(currentPlayer>=players.size())
+			currentPlayer=0;
 	}
 }

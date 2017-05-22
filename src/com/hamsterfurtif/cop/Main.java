@@ -2,7 +2,7 @@ package com.hamsterfurtif.cop;
 
 import com.hamsterfurtif.cop.display.Engine;
 import com.hamsterfurtif.cop.map.Map;
-import com.hamsterfurtif.cop.map.ReadMap;
+import com.hamsterfurtif.cop.map.MapReader;
 
 public class Main {
 	
@@ -12,7 +12,7 @@ public class Main {
 
 		
 		game = new Game();
-		Game.map = new Map(ReadMap.read("C:\\Users\\Jean-Baptiste\\workspace\\COP\\assets\\map_test.txt"));
+		Game.map = new Map(MapReader.read("C:\\Users\\Jean-Baptiste\\workspace\\COP\\assets\\map_test.txt"));
 		Engine.displayMap();
 		game.init();
 		game.start();
