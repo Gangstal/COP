@@ -7,6 +7,7 @@ import com.hamsterfurtif.cop.display.Engine;
 import com.hamsterfurtif.cop.inventory.WeaponType;
 import com.hamsterfurtif.cop.map.Map;
 import com.hamsterfurtif.cop.map.MapPos;
+import com.hamsterfurtif.cop.map.Path;
 import com.hamsterfurtif.cop.statics.Menus;
 
 public class Game {
@@ -34,6 +35,7 @@ public class Game {
 				initMatch();
 				while(match){
 					//Boucle de jeu d'un joueur
+					players.get(currentPlayer).movesLeft = players.get(currentPlayer).maxMoves;
 					while(!Menus.play.get(players.get(currentPlayer)))
 						Engine.displayMap();
 					nextPlayer();
@@ -87,7 +89,9 @@ public class Game {
 	
 	public static boolean shoot(Player player, MapPos pos, WeaponType type){
 				
-		//TODO Vérifier que le tir est autorisé
+		if(!Path.directLOS(player.pos, pos))
+			return false;
+		
 		if(checkForPlayer(pos) != null){
 			Player target = checkForPlayer(pos);
 			target.health -= player.getWeapon(type).damage;

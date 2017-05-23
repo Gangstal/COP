@@ -23,6 +23,7 @@ public class GUIMenu {
 				print("["+(i+1)+"]"+choices.get(i));
 		
 		
+		
 		int n = reader.nextInt();
 		
 		return n;

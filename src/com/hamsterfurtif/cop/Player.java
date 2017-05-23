@@ -17,6 +17,7 @@ public class Player {
 	public char symbol;
 	public int movesLeft = 5;
 	public boolean turnIsOver = false;
+	public int maxMoves = 5;
 	
 	public Player(String name){
 		this.name = name;

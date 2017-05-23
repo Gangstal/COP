@@ -1,9 +1,11 @@
 package com.hamsterfurtif.cop.map;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.hamsterfurtif.cop.statics.Tiles;
 
@@ -22,46 +24,31 @@ public class MapReader {
 
             // Always wrap FileReader in BufferedReader.
             BufferedReader bufferedReader = new BufferedReader(fileReader);
+            int resX = Integer.parseInt(bufferedReader.readLine());
+            int resY = Integer.parseInt(bufferedReader.readLine());
+            map = new Tile[resY][resX];
 
             while((line = bufferedReader.readLine()) != null) {
             	
-            	if(line.startsWith("<RES=") && line.endsWith(">")){
-            		line = (String) line.subSequence(5, line.length()-1);
-            		int i=0;
-            		String resX = "", resY = "";
-            		while(i<line.length()){
-            			if(line.charAt(i) != ',')
-            				resY+=line.charAt(i);
-            			else{
-            				resX=resY;
-            				resY="";
-            			}
-            			i++;
-            		}
-            		map = new Tile[Integer.parseInt(resY)][Integer.parseInt(resX)];
-            		y--;
+            	
+            	for(int x=0; x<line.length(); x++){
+   
+            		char c=line.charAt(x);
+            		
+            		switch(c){	
+            			case 'F': map[y][x]=Tiles.floor;
+            				break;
+	           			case 'D': map[y][x]=Tiles.door;
+           					break;
+           				case 'W': map[y][x]=Tiles.wall;
+           					break;
+           				case 'I': map[y][x]=Tiles.window;
+           					break;
+           				default:  map[y][x]=Tiles.floor;
+           			}
+            			
             	}
             	
-            	else{
-            		for(int x=0; x<line.length(); x++){
-            			
-            			char c=line.charAt(x);
-            			
-            			switch(c){
-            				
-	            			case 'F': map[y][x]=Tiles.floor;
-	            				break;
-	            			case 'D': map[y][x]=Tiles.door;
-            					break;
-            				case 'W': map[y][x]=Tiles.wall;
-            					break;
-            				case 'I': map[y][x]=Tiles.window;
-            					break;
-            				default:  map[y][x]=Tiles.floor;
-            			}
-            				
-            		}
-            	}
             	
             	y++;
             }   
@@ -79,5 +66,16 @@ public class MapReader {
         }
 		System.out.println("Done");
         return map;
+	}
+	
+	public static ArrayList<String> scanMapFolder(String directory){
+		File folder = new File(directory);
+		ArrayList<String>  mapList = new ArrayList<String>();
+		
+		for (File fileEntry : folder.listFiles()) 
+		      if (!fileEntry.isDirectory())
+		    	  mapList.add(fileEntry.getName());
+		        
+		return mapList;
 	}
 }
