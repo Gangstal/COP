@@ -46,4 +46,10 @@ public abstract class Tile {
 		}
 	}
 	
+	public static class TileDebug extends Tile{
+		public TileDebug(char symbol){
+			this.symbol=symbol;
+		}
+	}
+	
 }

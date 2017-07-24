@@ -9,7 +9,7 @@ public class PickInventory extends GUIMenu{
 
 	public Weapon get(int classe){
 		ArrayList<Weapon> weapons = new ArrayList<Weapon>();
-		this.choices = new ArrayList<String>();
+		this.choices = new ArrayList<Button>();
 		
 		switch(classe){
 		case 2:weapons = Weapons.secondary;
@@ -24,11 +24,17 @@ public class PickInventory extends GUIMenu{
 		}
 				
 		for(Weapon weapon : weapons)
-			this.choices.add(weapon.name +" (R:"+weapon.range+" /D:"+weapon.damage+" /A:"+weapon.ammo+")");
+			choices.add(new Button(weapon.name +" (R:"+weapon.range+" /D:"+weapon.damage+" /A:"+weapon.ammo+")", weapon){
+				public Object trigger(Object args){
+					return params;
+				}
+		});
 		
-		int c = this.showMenu()-1;
-
-		return weapons.get(c);
+		int c = this.showMenu();
+		if(c-1>=choices.size())
+			return null;
+		else
+			return (Weapon)choices.get(c-1).trigger(null);
 			
 		
 		

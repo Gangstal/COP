@@ -11,26 +11,42 @@ public class ConfirmGameSettings extends GUIMenu{
 	private static ChangeHP menuChangeHP = new ChangeHP();
 	private static ChangeSpawns menuChangeSpawns = new ChangeSpawns();
 	
-	public boolean get(){
-		this.name = "Confirmer les paramètres de jeu ?";
-		this.choices = new ArrayList<String>(Arrays.asList("Points de vie: "+ Game.maxHP, "Respawns disponibles: "+ Game.maxSpawn, "Confirmer"));
-		int c = this.showMenu();
+	private Button hp = new Button("Points de vie: "+ Game.maxHP){
 		
-		switch(c){
-		case 1:
+		public Object trigger(Object args){
 			menuChangeHP.get();
-			break;
-		case 2:
+			return null;
+		}
+	};
+	
+	private Button respawn = new Button("Respawns disponibles: "+ Game.maxSpawn){
+		
+		public Object trigger(Object args){
 			menuChangeSpawns.get();
-			break;
-		case 3:
+			return null;
+		}
+	};
+	
+	private Button confirm = new Button("Confirmer"){
+		public Object trigger(Object args){
 			for(Player player : Game.players){
 				player.health = Game.maxHP;
 				player.repsawnsLeft = Game.maxSpawn;
-				return true;
 			}
+			return true;
 		}
-		return false;
+	};
+	
+	public boolean get(){
+		this.name = "Confirmer les paramètres de jeu ?";
+		this.choices = new ArrayList<Button>(Arrays.asList(hp, respawn, confirm));
+
+		int c = this.showMenu();
+				
+		if(c-1>=choices.size())
+			return false;
+		else
+			return (boolean)choices.get(c-1).trigger(null);
 	}
 	
 	private static class ChangeHP extends GUIMenu{

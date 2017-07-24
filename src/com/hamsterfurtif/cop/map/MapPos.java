@@ -30,7 +30,7 @@ public class MapPos {
 	}
 	
 	public String toString(){
-		return ("PosX:"+X+" PosY:"+Y+" PosZ:"+Z);
+		return ("PosX:"+X+" PosY:"+Y);
 	}
 	
 	public boolean equals(MapPos pos){

@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class GUIMenu {
 		
 	protected String name;
-	protected ArrayList<String> choices =  new ArrayList<String>();
+	protected ArrayList<Button> choices =  new ArrayList<Button>();
 	
 	public int showMenu(){
 		
@@ -20,7 +20,7 @@ public class GUIMenu {
 		print(header);
 		if(!choices.isEmpty())
 			for(int i=0; i<choices.size();i++)
-				print("["+(i+1)+"]"+choices.get(i));
+				print("["+(i+1)+"]"+choices.get(i).name);
 		
 		
 		

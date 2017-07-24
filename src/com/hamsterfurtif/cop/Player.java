@@ -18,6 +18,7 @@ public class Player {
 	public int movesLeft = 5;
 	public boolean turnIsOver = false;
 	public int maxMoves = 5;
+	public boolean hasShot, hasMoved;
 	
 	public Player(String name){
 		this.name = name;
@@ -32,5 +33,12 @@ public class Player {
 		default:
 			return inventory.primary;
 		}
+	}
+	
+	public void resetTurnStats(){
+		this.movesLeft = maxMoves;
+		this.turnIsOver=false;
+		this.hasShot=false;
+		this.hasMoved=false;
 	}
 }

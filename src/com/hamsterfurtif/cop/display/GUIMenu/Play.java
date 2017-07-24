@@ -1,8 +1,5 @@
 package com.hamsterfurtif.cop.display.GUIMenu;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import com.hamsterfurtif.cop.Game;
 import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.inventory.WeaponType;
@@ -10,29 +7,57 @@ import com.hamsterfurtif.cop.statics.Menus;
 
 public class Play extends GUIMenu {
 	
+	private Button move = new Button("Bouger"){
+		public Object trigger(Object args){
+			Player player=(Player)args;
+			while(!Game.movePlayer(player, Menus.move.get()));
+			player.hasMoved = true;
+			return false;
+		}
+	};
+	
+	private Button shoot = new Button("Tirer"){
+		public Object trigger(Object args){
+			Player player=(Player)args;
+			while(!Game.shoot(player, Menus.shoot.get(), WeaponType.PRIMARY));
+			player.hasShot=true;
+			return false;
+		}
+	};
+	
+	private Button endTurn = new Button("Fin du tour"){
+		public Object trigger(Object args){
+			return true;
+		}
+	};	
+	
 	public boolean get(Player player){
 		
 		this.name="Tour de "+player.name+"\r"+getPlayerInfo(player);
 		
-		if(player.movesLeft>0)
-			this.choices = new ArrayList<String>(Arrays.asList("Bouger","Tirer","Fin du tour"));
-		else
-			this.choices = new ArrayList<String>(Arrays.asList("Tirer","Fin du tour"));
+		choices.clear();;
+		
+		
+		
+		if(player.movesLeft>0 && !player.hasMoved)
+			this.choices.add(move);
+		if(!player.hasShot)
+			this.choices.add(shoot);
+		
+		this.choices.add(endTurn);
+			
 
 		int c = this.showMenu();
-		c += player.movesLeft>0 ? 0 : 1;
-		switch(c){
-		case 1:
-			while(!Game.movePlayer(player, Menus.move.get()));
+		
+		
+		
+		if(c-1>=choices.size())
 			return false;
-		case 2:
-			while(!Game.shoot(player, Menus.shoot.get(), WeaponType.PRIMARY));
-			return false;
-		case 3:
-			return true;
-		default:
-			return false;
-		}
+		else
+			return (boolean)choices.get(c-1).trigger(player);
+		
+
+		
 	}
 	
 	private static String getPlayerInfo(Player player){

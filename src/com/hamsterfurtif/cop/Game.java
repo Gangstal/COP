@@ -18,6 +18,7 @@ public class Game {
 	public static Map map;
 	public static int maxHP=10;
 	public static int maxSpawn=5;
+	public static boolean test = true;
 	
 	
 	public void init(){
@@ -35,7 +36,8 @@ public class Game {
 				initMatch();
 				while(match){
 					//Boucle de jeu d'un joueur
-					players.get(currentPlayer).movesLeft = players.get(currentPlayer).maxMoves;
+					Engine.displayMap();
+					players.get(currentPlayer).resetTurnStats();
 					while(!Menus.play.get(players.get(currentPlayer)))
 						Engine.displayMap();
 					nextPlayer();
