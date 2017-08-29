@@ -1,23 +1,21 @@
 package com.hamsterfurtif.cop.statics;
 
-import com.hamsterfurtif.cop.map.Tile;
-import com.hamsterfurtif.cop.map.Tile.TileDebug;
-import com.hamsterfurtif.cop.map.Tile.TileDoor;
-import com.hamsterfurtif.cop.map.Tile.TileFloor;
-import com.hamsterfurtif.cop.map.Tile.TileWall;
-import com.hamsterfurtif.cop.map.Tile.TileWindow;
+import java.util.ArrayList;
+
+import com.hamsterfurtif.cop.map.tiles.Tile;
+import com.hamsterfurtif.cop.map.tiles.Tile.TileDoor;
+import com.hamsterfurtif.cop.map.tiles.Tile.TileFloor;
+import com.hamsterfurtif.cop.map.tiles.Tile.TileWall;
+import com.hamsterfurtif.cop.map.tiles.Tile.TileWindow;
 
 public class Tiles {
 
+	public static ArrayList<Tile> tiles = new ArrayList<Tile>();
+
+	
 	public static Tile wall = new TileWall();
 	public static Tile floor = new TileFloor();
 	public static Tile window = new TileWindow();
 	public static Tile door = new TileDoor();
-	
-	public static Tile horizontal = new TileDebug('H');
-	public static Tile vertical = new TileDebug('V');
-	public static Tile crossed = new TileDebug('+');
-	public static Tile both = new TileDebug('B');
-
 	
 }

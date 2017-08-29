@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.hamsterfurtif.cop.map.tiles.Tile;
 import com.hamsterfurtif.cop.statics.Tiles;
 
 public class MapReader {
@@ -64,7 +65,6 @@ public class MapReader {
             System.out.println("Error reading file '"+ location + "'");                  
 
         }
-		System.out.println("Done");
         return map;
 	}
 	

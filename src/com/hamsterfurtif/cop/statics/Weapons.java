@@ -21,4 +21,14 @@ public class Weapons {
 	public static Weapon handgun = new Weapon("Handgun", 7, 3, 4, SECONDARY);
 	public static Weapon revolver = new Weapon("Revolver", 5, 4, 4, SECONDARY); 
 	
+	public static ArrayList<Weapon> getWeaponsByType(WeaponType type){
+		switch (type) {
+		case PRIMARY:
+		default:
+			return primary;
+		case SECONDARY:
+			return secondary;
+		}
+	}
+	
 }

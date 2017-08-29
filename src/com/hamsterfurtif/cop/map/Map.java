@@ -1,5 +1,7 @@
 package com.hamsterfurtif.cop.map;
 
+import com.hamsterfurtif.cop.map.tiles.Tile;
+
 public class Map {
 	
 	public Tile[][] map = new Tile[21][12];
