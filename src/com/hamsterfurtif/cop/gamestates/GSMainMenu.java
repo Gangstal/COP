@@ -7,7 +7,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.COP;
-import com.hamsterfurtif.cop.Game;
 import com.hamsterfurtif.cop.display.Engine;
 import com.hamsterfurtif.cop.display.menu.Main;
 import com.hamsterfurtif.cop.display.menu.PickMap;

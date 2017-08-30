@@ -9,10 +9,10 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.AbstractComponent;
 
 import com.hamsterfurtif.cop.COP;
-import com.hamsterfurtif.cop.Game;
 import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
+import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.gamestates.GameStateMenu;
 
 public class ConfirmGameSettings extends Menu {
@@ -46,7 +46,7 @@ public class ConfirmGameSettings extends Menu {
 					player.repsawnsLeft = livesCount;
 					player.health = hpCount;
 				}
-				COP.game.setPlayerInitialSpawn();
+				Game.setPlayerInitialSpawn();
 				COP.instance.enterState(2);
 			}
 			else{

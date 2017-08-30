@@ -1,6 +1,6 @@
 package com.hamsterfurtif.cop.map;
 
-import com.hamsterfurtif.cop.Game;
+import com.hamsterfurtif.cop.gamestates.Game;
 
 public class Path {
 	

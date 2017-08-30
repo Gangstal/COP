@@ -7,10 +7,10 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
-import com.hamsterfurtif.cop.Game;
 import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.display.poseffects.PosEffect;
+import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.map.MapPos;
 
 public class Engine {
@@ -80,17 +80,17 @@ public class Engine {
 				g.setColor(Color.black);
 				if(squares)
 					g.drawRect(posX+pos.X*r*scale,  posY+pos.Y*r*scale, r*scale, r*scale);
-				for(Player player : Game.players)
-					if(player.pos.equals(pos)){
-						Image playerSkin = player.skin.getScaledCopy(scale);
-						playerSkin.setFilter(Image.FILTER_NEAREST);
-						g.drawImage(playerSkin, posX+pos.X*r*scale, posY+pos.Y*r*scale);
-					}
 				
 				for(PosEffect effect : posEffects){
 					if(effect.pos.equals(pos))
 						effect.render(g, (int)(posX+pos.X*r*scale), (int)(posY+pos.Y*r*scale));
 				}
+				
+				for(Player player : Game.players){
+						Image playerSkin = player.skin.getScaledCopy(scale);
+						playerSkin.setFilter(Image.FILTER_NEAREST);
+						g.drawImage(playerSkin, posX+player.pos.X*r*scale+player.xgoffset, posY+player.pos.Y*r*scale+player.ygoffset);
+					}
 						
 			}
 		}

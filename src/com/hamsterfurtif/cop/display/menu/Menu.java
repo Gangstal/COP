@@ -9,6 +9,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.ComponentListener;
 
 import com.hamsterfurtif.cop.COP;
+import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.gamestates.GameStateMenu;
 
 public abstract class Menu implements ComponentListener{
@@ -23,10 +24,10 @@ public abstract class Menu implements ComponentListener{
 	public GameContainer container;
 	GameStateMenu state;
 	
-	public Menu(GameContainer container, String name, GameStateMenu state)throws SlickException { 
+	public Menu(GameContainer container, String name, GameStateMenu state2)throws SlickException { 
 		this.container=container;
 		this.name = name;
-		this.state = state;
+		this.state = state2;
 	}
 	  
 	public void render(Graphics g) {

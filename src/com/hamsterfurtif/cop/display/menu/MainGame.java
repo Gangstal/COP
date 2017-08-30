@@ -11,12 +11,14 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.AbstractComponent;
 
 import com.hamsterfurtif.cop.COP;
-import com.hamsterfurtif.cop.Game;
 import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
+import com.hamsterfurtif.cop.display.Engine;
 import com.hamsterfurtif.cop.display.TextureLoader;
-import com.hamsterfurtif.cop.gamestates.GSGame;
+import com.hamsterfurtif.cop.display.poseffects.MoveSelect;
+import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.inventory.Weapon;
+import com.hamsterfurtif.cop.inventory.WeaponType;
 
 public class MainGame extends Menu {
 	
@@ -26,13 +28,13 @@ public class MainGame extends Menu {
 	private Button reload;
 	private Button primary;
 	private Button secondary;
-	private GSGame state;
+	private Game state;
 	
-	public MainGame(GameContainer container, GSGame state) throws SlickException {
-		super(container, "", state);
-		width = (int)(COP.width-TextureLoader.textureRes*21*state.scale);
+	public MainGame(GameContainer container, Game game) throws SlickException {
+		super(container, "", game);
+		width = (int)(COP.width-TextureLoader.textureRes*21*Game.scale);
 		height = COP.height;
-		this.state = state;
+		this.state = game;
 		
 		move = new Button("Bouger", this, 0, 0, this.width, 50){
 			@Override
@@ -43,13 +45,13 @@ public class MainGame extends Menu {
 				g.setColor(Color.darkGray);
 				g.drawRect(0, this.getY()+this.getHeight(), this.getWidth()-1, 49);
 				
-				String stats = Game.players.get(Game.currentPlayer).movesLeft+"/"+Game.players.get(Game.currentPlayer).maxMoves;
+				String stats = game.currentPlayer.movesLeft+"/"+game.currentPlayer.maxMoves;
 				Font font = g.getFont();
 				int w = font.getWidth(stats);
 				int h = font.getLineHeight();
 				int xpos = this.getX()-(w-this.getWidth())/2;
 				int ypos = this.getY()-(h-this.getHeight())/2+50;
-				if(Game.players.get(Game.currentPlayer).movesLeft>0)
+				if(game.currentPlayer.movesLeft>0)
 					g.setColor(Color.black);
 				else
 					g.setColor(Color.red);
@@ -59,21 +61,21 @@ public class MainGame extends Menu {
 			}
 		}.setTextPlacement(TextPlacement.LEFT);
 
-		endTurn = new Button("Fin du tour", this, 0, (int)(12*16*state.scale), this.width, (int)(this.height-12*16*state.scale)){
+		endTurn = new Button("Fin du tour", this, 0, (int)(12*16*Game.scale), this.width, (int)(this.height-12*16*Game.scale)){
 			@Override
 			public void additionalRender(Graphics g){
 				g.drawImage(TextureLoader.loadTexture("GUI\\endturn.gif").getScaledCopy(50, 50) , this.getWidth()/2-25,this.getY()+this.getHeight()/2);;
 			}
 		}.setTextPlacement(TextPlacement.CENTERED).setTextMargins(0, 15);
 		
-		showGrid = new Button("Grille", this, 0, (int)(12*16*state.scale-50), this.width, 50){
+		showGrid = new Button("Grille", this, 0, (int)(12*16*Game.scale-50), this.width, 50){
 			@Override
 			public void additionalRender(Graphics g){
 				g.drawImage(TextureLoader.loadTexture("GUI\\show_grid.gif").getScaledCopy(50, 50), this.getWidth()-50,this.getY());
 			}
 		}.setTextPlacement(TextPlacement.LEFT);
 		
-		reload = new Button("Recharger", this, 0, (int)(12*16*state.scale-100), this.width, 50){
+		reload = new Button("Recharger", this, 0, (int)(12*16*Game.scale-100), this.width, 50){
 			@Override
 			public void additionalRender(Graphics g){
 				g.drawImage(TextureLoader.loadTexture("GUI\\reload.gif").getScaledCopy(50, 50), this.getWidth()-50,this.getY());
@@ -87,7 +89,7 @@ public class MainGame extends Menu {
 				g.fillRect(0, this.getY()+49, this.getWidth(), 91);
 				g.setColor(Color.black);
 				g.drawRect(0, this.getY()-1, this.getWidth()-1, 140);
-				Player player = Game.players.get(state.currentPlayer);
+				Player player = game.currentPlayer;
 				Weapon w = player.inventory.primary;
 				int ypos =  this.getY()+this.getHeight()+5;
 				g.drawImage(w.skin.getScaledCopy(64, 32),this.getWidth()-66, ypos);
@@ -106,12 +108,12 @@ public class MainGame extends Menu {
 				g.fillRect(0, this.getY()+49, this.getWidth(), 91);
 				g.setColor(Color.black);
 				g.drawRect(0, this.getY()-1, this.getWidth()-1, 140);
-				Player player = Game.players.get(state.currentPlayer);
+				Player player = game.currentPlayer;
 				Weapon w = player.inventory.secondary;
 				int ypos =  this.getY()+this.getHeight()+5;
 				g.drawImage(w.skin.getScaledCopy(64, 32),this.getWidth()-66, ypos);
 				g.drawString(w.name, 5, ypos+5);
-				g.drawString("A: "+player.inventory.ammoP+"/"+w.ammo, 5, ypos+30);
+				g.drawString("A: "+player.inventory.ammoS+"/"+w.ammo, 5, ypos+30);
 				g.drawString("D: "+w.damage, 5, ypos+45);
 				g.drawString("R: "+w.range, 5, ypos+60);
 			}
@@ -126,6 +128,27 @@ public class MainGame extends Menu {
 		if(choices.contains(source)){
 			if(source==showGrid)
 				state.showGrid = !state.showGrid;
+			else if(source==endTurn)
+				state.nextPlayer();
+			else if(source==primary){
+				Engine.removePosEffect(MoveSelect.class);
+				if(state.shootingMode == WeaponType.PRIMARY)
+					state.shootingMode=null;
+				else
+					state.shootingMode=WeaponType.PRIMARY;
+			}
+			else if(source==secondary){
+				Engine.removePosEffect(MoveSelect.class);
+				if(state.shootingMode == WeaponType.SECONDARY)
+					state.shootingMode=null;
+				else
+					state.shootingMode=WeaponType.SECONDARY;
+			}
+			
+			else if(source==reload){
+				Game.reload(state.currentPlayer);
+				state.currentPlayer.turnIsOver=true;
+			}
 		}
 	}
 

@@ -20,9 +20,13 @@ public class Player {
 	public Inventory inventory = new Inventory();
 	public int repsawnsLeft = 5;
 	public char symbol;
-	public int movesLeft = 5;
 	public boolean turnIsOver = false;
-	public int maxMoves = 5;
+	public int maxMoves = 8;
+	public int movesLeft = maxMoves;
+	
+	//animation
+	public int xgoffset=0, ygoffset=0;
+
 	public boolean hasShot, hasMoved;
 	public Image skin;
 	

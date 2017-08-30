@@ -11,7 +11,7 @@ import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.display.menu.Button;
-import com.hamsterfurtif.cop.gamestates.GSGame;
+import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.map.tiles.Tile;
 import com.hamsterfurtif.cop.statics.Tiles;
 
@@ -39,11 +39,11 @@ public abstract class TextureLoader {
 		try {
 			Button.default_image = new Image("assets\\textures\\GUI\\menu_square.bmp");
 			COP.background = TextureLoader.loadTexture("GUI\\main_wallpaper.bmp");
-			GSGame.health_end_empty = TextureLoader.loadTexture("GUI\\health_end_empty.gif");
-			GSGame.health_end_full = TextureLoader.loadTexture("GUI\\health_end_full.gif");
-			GSGame.health_middle_empty = TextureLoader.loadTexture("GUI\\health_middle_empty.gif");
-			GSGame.health_middle_full = TextureLoader.loadTexture("GUI\\health_middle_full.gif");
-			GSGame.heart= TextureLoader.loadTexture("GUI\\heart.gif");
+			Game.health_end_empty = TextureLoader.loadTexture("GUI\\health_end_empty.gif");
+			Game.health_end_full = TextureLoader.loadTexture("GUI\\health_end_full.gif");
+			Game.health_middle_empty = TextureLoader.loadTexture("GUI\\health_middle_empty.gif");
+			Game.health_middle_full = TextureLoader.loadTexture("GUI\\health_middle_full.gif");
+			Game.heart= TextureLoader.loadTexture("GUI\\heart.gif");
 
 
 			

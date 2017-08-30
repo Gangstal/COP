@@ -6,7 +6,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.COP;
-import com.hamsterfurtif.cop.Game;
 import com.hamsterfurtif.cop.display.menu.ConfirmGameSettings;
 import com.hamsterfurtif.cop.display.menu.Menu;
 import com.hamsterfurtif.cop.display.menu.PlayerEquip;

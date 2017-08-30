@@ -36,5 +36,9 @@ public class MapPos {
 	public boolean equals(MapPos pos){
 		return(this.X == pos.X && this.Y == pos.Y && this.Z == pos.Z);
 	}
+	
+	public boolean isAdjacent(MapPos pos){
+		return Math.abs(X-pos.X)+Math.abs(Y-pos.Y)==1;
+	}
 
 }

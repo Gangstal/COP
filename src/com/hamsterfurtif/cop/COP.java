@@ -11,13 +11,12 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.display.TextureLoader;
-import com.hamsterfurtif.cop.gamestates.GSGame;
+import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.gamestates.GSMainMenu;
 import com.hamsterfurtif.cop.gamestates.GSPlayerEquip;
 
 public class COP extends StateBasedGame{
 	
-	public static Game game;
 	public static int width = 1008, height = 600;
 	public static COP instance = new COP();
 	private final static String version = "Pre-Alpha -1.0";
@@ -26,8 +25,6 @@ public class COP extends StateBasedGame{
 	
 	public static void main(String[] args) throws SlickException, FontFormatException, IOException{
 		
-		game = new Game();
-		game.init();
         AppGameContainer app = new AppGameContainer(instance, width, height, false);
         app.setShowFPS(false);
         app.start();
@@ -46,10 +43,10 @@ public class COP extends StateBasedGame{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
-		
+		Game.init();
 		addState(new GSMainMenu());
 		addState(new GSPlayerEquip());
-		addState(new GSGame());
+		addState(new Game());
 		
 	}
 }
