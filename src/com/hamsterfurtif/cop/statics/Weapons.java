@@ -15,11 +15,11 @@ public class Weapons {
 
 	//				Weapon("name", range, damage, ammo)
 	
-	public static Weapon shotgun = new Weapon("Shotgun", 5, 10, 4, PRIMARY);
-	public static Weapon AR = new Weapon("AR", 10, 7, 6, PRIMARY);
+	public static Weapon shotgun = new Weapon("Shotgun", 5, 10, 2, PRIMARY);
+	public static Weapon AR = new Weapon("AR", 10, 7, 4, PRIMARY);
 	
-	public static Weapon handgun = new Weapon("Handgun", 7, 3, 4, SECONDARY);
-	public static Weapon revolver = new Weapon("Revolver", 5, 4, 4, SECONDARY); 
+	public static Weapon handgun = new Weapon("Handgun", 7, 3, 3, SECONDARY);
+	public static Weapon revolver = new Weapon("Revolver", 5, 4, 2, SECONDARY); 
 	
 	public static ArrayList<Weapon> getWeaponsByType(WeaponType type){
 		switch (type) {

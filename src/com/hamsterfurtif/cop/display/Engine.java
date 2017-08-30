@@ -87,11 +87,12 @@ public class Engine {
 				}
 				
 				for(Player player : Game.players){
+					if(player.pos != null){
 						Image playerSkin = player.skin.getScaledCopy(scale);
 						playerSkin.setFilter(Image.FILTER_NEAREST);
 						g.drawImage(playerSkin, posX+player.pos.X*r*scale+player.xgoffset, posY+player.pos.Y*r*scale+player.ygoffset);
 					}
-						
+				}		
 			}
 		}
 		g.scale(1, 1);

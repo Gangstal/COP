@@ -19,8 +19,8 @@ public class ConfirmGameSettings extends Menu {
 
 	private Button confirmer = new Button("Confirmer", this, 50, 400, 100, 40).setTextPlacement(TextPlacement.LEFT);
 	
-	private int hpCount = 10;
-	private int livesCount = 5;
+	private int hpCount = Game.maxHP;
+	private int livesCount = Game.maxSpawn;
 	
 	private TextInput hp = new TextInput(this, 300, 160, 50, 20, Integer.toString(hpCount));
 	private TextInput lives = new TextInput(this, 300, 210, 50, 20, Integer.toString(livesCount));

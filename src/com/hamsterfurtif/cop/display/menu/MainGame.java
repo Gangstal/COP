@@ -149,6 +149,10 @@ public class MainGame extends Menu {
 				Game.reload(state.currentPlayer);
 				state.currentPlayer.turnIsOver=true;
 			}
+			
+			else if(source==move){
+				state.shootingMode=null;
+			}
 		}
 	}
 

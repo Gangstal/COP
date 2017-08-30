@@ -64,4 +64,13 @@ public abstract class Tile {
 		}
 	}
 	
+	public static class TileStone extends Tile {
+		public TileStone(){
+			super("stone");
+			this.canShootTrough=true;
+			this.canWalkThrough=true;
+			this.symbol = ' ';
+		}
+	}
+	
 }

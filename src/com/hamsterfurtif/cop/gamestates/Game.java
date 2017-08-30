@@ -41,7 +41,7 @@ public class Game extends GameStateMenu {
 	public static ArrayList<Player> players = new ArrayList<Player>();
 	public Player currentPlayer;
 	public static Map map;
-	public static int maxHP=10;
+	public static int maxHP=20;
 	public static int maxSpawn=5;
 	public static boolean test = false;
 	
@@ -102,12 +102,19 @@ public class Game extends GameStateMenu {
 									}
 								}
 						}
+						else if(path.size()>2 && clickPos.equals(path.get(path.size()-2))){
+							Engine.removePosEffect(MoveSelect.class);
+							path.remove(path.size()-1);
+							for(MapPos pos : path)
+								Engine.addPosEffect(new MoveSelect(pos));
+						}
 						else if(clickPos.equals(currentPlayer.pos) || !path.isEmpty())
 							clickOnMap(clickPos);
 					}
 					
 					else if(!currentPlayer.hasShot){
-						Game.shoot(currentPlayer, clickPos, shootingMode);
+						if(Game.shoot(currentPlayer, clickPos, shootingMode))
+							shootingMode=null;
 					}
 				}
 			}
@@ -223,10 +230,10 @@ public class Game extends GameStateMenu {
 		else
 			currentPlayer=players.get(players.indexOf(currentPlayer)+1);
 		
-		currentPlayer.hasMoved = false;
-		currentPlayer.hasShot = false;
-		currentPlayer.turnIsOver = false;
-		currentPlayer.movesLeft = currentPlayer.maxMoves;
+		currentPlayer.resetTurnStats();
+		
+		shootingMode = null;
+		
 	}
 	
 	public static void setPlayerInitialSpawn(){
@@ -258,7 +265,7 @@ public class Game extends GameStateMenu {
 	
 	public static boolean shoot(Player player, MapPos pos, WeaponType type){
 				
-		if(Path.directLOS(player.pos, pos) && player.inventory.getWeapon(type).inRange(player.pos,  pos)){
+		if(Path.directLOS(player.pos, pos) && player.inventory.getWeapon(type).inRange(player.pos,  pos) && player.inventory.getAmmo(type)>0){
 			
 			if(checkForPlayer(pos) != null){
 				Player target = checkForPlayer(pos);
@@ -266,6 +273,9 @@ public class Game extends GameStateMenu {
 				player.inventory.addAmmo(type, -1);
 				player.turnIsOver = true;
 				player.hasShot=true;
+				if(target.health<=0){
+					kill(target);
+				}
 			}
 			else if(map.getTile(pos).isDestructible){
 				map.destroyTile(pos);
@@ -300,13 +310,29 @@ public class Game extends GameStateMenu {
 		j1.inventory.primary = Weapons.AR;
 		j1.inventory.secondary = Weapons.handgun;
 		j1.skin = TextureLoader.loadTexture("\\sprites\\players\\Blue Player.gif");
+		j1.reset();
 		players.add(j1);
 		
 		Player j2 = new Player("Michel");
 		j2.inventory.primary = Weapons.shotgun;
 		j2.inventory.secondary = Weapons.revolver;
 		j2.skin = TextureLoader.loadTexture("\\sprites\\players\\Red Player.gif");
+		j2.reset();
 		players.add(j2);
 
+	}
+
+	private static void kill(Player player){
+		Random rd = new Random();
+		MapPos p = new MapPos();
+		
+		do{
+			 p.set(rd.nextInt(map.dimX),rd.nextInt(map.dimY),0);
+
+		}while(!map.getTile(p).canWalkThrough);
+		
+		player.pos = p;
+		player.reset();		
+		player.repsawnsLeft--;
 	}
 }

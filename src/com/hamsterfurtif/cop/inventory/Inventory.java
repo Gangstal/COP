@@ -18,6 +18,17 @@ public class Inventory {
 		}
 			 
 	}
+	
+	public int getAmmo(WeaponType type){
+		switch (type){
+		case PRIMARY:
+		default:
+			return ammoP;
+		case SECONDARY:
+			return ammoS;
+		}
+			 
+	}
 
 	public void addAmmo(WeaponType type, int offset){
 		switch (type){

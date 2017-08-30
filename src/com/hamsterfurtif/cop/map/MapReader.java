@@ -45,6 +45,8 @@ public class MapReader {
            					break;
            				case 'I': map[y][x]=Tiles.window;
            					break;
+           				case 'S': map[y][x]=Tiles.stone;
+           						break;
            				default:  map[y][x]=Tiles.floor;
            			}
             			

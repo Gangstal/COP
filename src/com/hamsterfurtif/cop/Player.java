@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.newdawn.slick.Image;
 
+import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.inventory.Inventory;
 import com.hamsterfurtif.cop.inventory.Weapon;
 import com.hamsterfurtif.cop.inventory.WeaponType;
@@ -16,12 +17,12 @@ public class Player {
 	
 	public String name;
 	public MapPos pos = new MapPos();
-	public int health = 10;
+	public int health = Game.maxHP;
 	public Inventory inventory = new Inventory();
 	public int repsawnsLeft = 5;
 	public char symbol;
 	public boolean turnIsOver = false;
-	public int maxMoves = 8;
+	public int maxMoves = 5;
 	public int movesLeft = maxMoves;
 	
 	//animation
@@ -50,5 +51,12 @@ public class Player {
 		this.turnIsOver=false;
 		this.hasShot=false;
 		this.hasMoved=false;
+	}
+	
+	public void reset(){
+		resetTurnStats();
+		inventory.ammoP=inventory.primary.ammo;
+		inventory.ammoS=inventory.secondary.ammo;
+		health=Game.maxHP;
 	}
 }
