@@ -1,6 +1,10 @@
 package com.hamsterfurtif.cop.map.tiles;
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Sound;
+
 import com.hamsterfurtif.cop.statics.Tiles;
 
 public abstract class Tile {
@@ -14,6 +18,7 @@ public abstract class Tile {
 	public char symbol;
 	public String name;
 	public Image image;
+	public static ArrayList<Sound> destroy = new ArrayList<Sound>();
 	
 	public Tile(String name){
 		this.name = name;

@@ -56,6 +56,9 @@ public class PlayerEquip extends Menu{
 		
 	}.setTextPlacement(TextPlacement.LEFT);
 	
+	private TextInput playername = new TextInput(this, 50, 360, 160, 25, "");
+
+	
 	
 	public Button confirmer = new Button("Confirmer", this, width/4, height-60, 140, 40).centered();
 	
@@ -67,7 +70,8 @@ public class PlayerEquip extends Menu{
 		titleX = width/2;
 		titleY = 40;
 		this.player=player;
-
+		playername.setText(player.name);
+		
 		if(player.inventory.primary != null)
 			princName = player.inventory.primary.name;
 		if(player.inventory.secondary != null)
@@ -99,6 +103,8 @@ public class PlayerEquip extends Menu{
 			}
 			else if(source==confirmer){
 				if(state instanceof GSPlayerEquip){
+					player.name=playername.getText();
+					playername.setFocus(true);
 					GSPlayerEquip s = (GSPlayerEquip)state;
 					try {
 						s.nextPlayer();
@@ -110,6 +116,16 @@ public class PlayerEquip extends Menu{
 			}
 		}
 		
+	}
+	
+	@Override
+	public void render(Graphics g) { 
+		g.drawString(name, titleX+x, titleY+y);
+		for(Button button : choices)
+			button.render(g);
+		
+		playername.render(container, g);
+
 	}
 
 	public void update(){

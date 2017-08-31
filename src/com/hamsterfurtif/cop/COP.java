@@ -29,7 +29,7 @@ public class COP extends StateBasedGame{
 
 	public static int width = 1008, height = 600;
 	public static COP instance = new COP();
-	private final static String version = "Pre-Alpha -1.2";
+	private final static String version = "Pre-Alpha -1.5";
 	public static Image background;
 	public static AppGameContainer app;
 	public static Game game;
@@ -79,6 +79,7 @@ public class COP extends StateBasedGame{
 	public void initStatesList(GameContainer game) throws SlickException {
 		try {
 			TextureLoader.load();
+			SoundHandler.loadSounds();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

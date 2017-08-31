@@ -7,6 +7,7 @@ import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.gui.MouseOverArea;
 
 import com.hamsterfurtif.cop.Utils.TextPlacement;
@@ -20,6 +21,7 @@ public class Button extends MouseOverArea{
 	public int elevation = 0;
 	public static Image default_image;
 	public TextPlacement textPlacement = TextPlacement.CENTERED;
+	public static Sound clicked;
 
 
 	public Button(String name, Menu menu, Image image, int x, int y, int width, int height) {
@@ -28,6 +30,7 @@ public class Button extends MouseOverArea{
 		this.setMouseOverColor(Color.gray);
 		this.container = menu.container;
 		this.name = name;
+		this.setMouseDownSound(clicked);
 
 	}
 	
@@ -37,6 +40,7 @@ public class Button extends MouseOverArea{
 		this.setMouseOverColor(Color.gray);
 		this.container = menu.container;
 		this.name = name;
+		this.setMouseDownSound(clicked);
 
 	}
 	
@@ -46,6 +50,8 @@ public class Button extends MouseOverArea{
 		this.setMouseOverColor(Color.gray);
 		this.container = menu.container;
 		this.name = name;
+		this.setMouseDownSound(clicked);
+
 
 	}
 	
@@ -118,7 +124,4 @@ public class Button extends MouseOverArea{
 	
 	public void additionalRender(Graphics g){}
 	public void preRender(Graphics g){}
-	
-	
-
 }

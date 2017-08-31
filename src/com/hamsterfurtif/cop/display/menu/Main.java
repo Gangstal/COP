@@ -27,7 +27,7 @@ public class Main extends Menu{
 	public void componentActivated(AbstractComponent source) {
 		if(source==play){
 			try {
-				this.state.currentMenu = new PickMap(container, state);
+				this.state.currentMenu = new PlayerAmount(container, state);
 			} catch (SlickException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -1,6 +1,7 @@
 package com.hamsterfurtif.cop.gamestates;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -22,7 +23,6 @@ import com.hamsterfurtif.cop.map.Map;
 import com.hamsterfurtif.cop.map.MapPos;
 import com.hamsterfurtif.cop.map.Path;
 import com.hamsterfurtif.cop.map.tiles.Tile;
-import com.hamsterfurtif.cop.statics.Weapons;
 
 public class Game extends GameStateMenu {
 
@@ -52,9 +52,18 @@ public class Game extends GameStateMenu {
 	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		currentMenu = new MainGame(container, this);
-		currentPlayer=players.get(0);
 	}
 
+	@Override
+	   public void enter(GameContainer container, StateBasedGame game){
+	      try {
+			super.enter(container, game);
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
+			currentPlayer=players.get(0);
+	   }
+	
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		g.drawImage(COP.background, 0, 0);
@@ -142,7 +151,7 @@ public class Game extends GameStateMenu {
 				if(mx>(int)(COP.width-TextureLoader.textureRes*21*scale) && my<(int)(TextureLoader.textureRes*12*scale)){
 					MapPos clickPos = getMapPos(mx-(int)(COP.width-TextureLoader.textureRes*21*scale), my);
 
-					if(shootingMode==null){
+					if(shootingMode==null && !currentPlayer.turnIsOver){
 						if(!leftClick){
 							if(!path.isEmpty())
 								if(clickPos.equals(path.get(path.size()-1))){
@@ -340,6 +349,9 @@ public class Game extends GameStateMenu {
 
 		if(Path.directLOS(player.pos, pos) && player.inventory.getWeapon(type).inRange(player.pos,  pos) && player.inventory.getAmmo(type)>0){
 
+			player.inventory.getWeapon(type).playSound();
+			Random r = new Random(1);
+			
 			if(checkForPlayer(pos) != null){
 				Player target = checkForPlayer(pos);
 				target.health -= player.getWeapon(type).damage;
@@ -348,6 +360,7 @@ public class Game extends GameStateMenu {
 				player.hasShot=true;
 				if(target.health<=0){
 					kill(target);
+					Player.deathSounds.get(r.nextInt(1)).play();
 				}
 			}
 			else if(map.getTile(pos).isDestructible){
@@ -355,6 +368,7 @@ public class Game extends GameStateMenu {
 				player.hasShot=true;
 				player.turnIsOver = true;
 				player.inventory.addAmmo(type, -1);
+				Tile.destroy.get(r.nextInt(1)).play(0, 0.5f);;
 			}
 
 			return true;
@@ -379,19 +393,6 @@ public class Game extends GameStateMenu {
 	}
 
 	public static void init(){
-		Player j1 = new Player("Jackie");
-		j1.inventory.primary = Weapons.AR;
-		j1.inventory.secondary = Weapons.handgun;
-		j1.skin = TextureLoader.loadTexture("\\sprites\\players\\Blue Player.gif");
-		j1.reset();
-		players.add(j1);
-
-		Player j2 = new Player("Michel");
-		j2.inventory.primary = Weapons.shotgun;
-		j2.inventory.secondary = Weapons.revolver;
-		j2.skin = TextureLoader.loadTexture("\\sprites\\players\\Red Player.gif");
-		j2.reset();
-		players.add(j2);
 
 	}
 

@@ -16,13 +16,13 @@ public class GSPlayerEquip extends GameStateMenu{
 	
 	int currentPlayer;
 	private GameContainer container;
-	Menu mainMenu;
+	public Menu mainMenu;
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		currentPlayer=0;
 		this.game=game;
-		mainMenu = new PlayerEquip(container, this, Game.players.get(0));
+		//mainMenu = new PlayerEquip(container, this, Game.players.get(0));
 		currentMenu= mainMenu;
 		this.container = container;
 	}

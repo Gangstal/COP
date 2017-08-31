@@ -23,10 +23,10 @@ public abstract class Menu implements ComponentListener{
 	public GameContainer container;
 	GameStateMenu state;
 
-	public Menu(GameContainer container, String name, GameStateMenu state2)throws SlickException {
+	public Menu(GameContainer container, String name, GameStateMenu state)throws SlickException {
 		this.container=container;
 		this.name = name;
-		this.state = state2;
+		this.state = state;
 	}
 
 	public void render(Graphics g) {

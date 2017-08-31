@@ -3,6 +3,7 @@ package com.hamsterfurtif.cop;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Sound;
 
 import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.inventory.Inventory;
@@ -28,6 +29,10 @@ public class Player {
 	//animation
 	public int xgoffset=0, ygoffset=0;
 
+	public static ArrayList<Sound> hurtSounds = new ArrayList<Sound>();
+	public static ArrayList<Sound> deathSounds = new ArrayList<Sound>();
+
+	
 	public boolean hasShot, hasMoved;
 	public Image skin;
 	
