@@ -21,7 +21,7 @@ import com.hamsterfurtif.cop.inventory.Weapon;
 import com.hamsterfurtif.cop.inventory.WeaponType;
 
 public class MainGame extends Menu {
-	
+
 	private Button move;
 	private Button endTurn;
 	private Button showGrid;
@@ -29,13 +29,13 @@ public class MainGame extends Menu {
 	private Button primary;
 	private Button secondary;
 	private Game state;
-	
+
 	public MainGame(GameContainer container, Game game) throws SlickException {
 		super(container, "", game);
 		width = (int)(COP.width-TextureLoader.textureRes*21*Game.scale);
 		height = COP.height;
 		this.state = game;
-		
+
 		move = new Button("Bouger", this, 0, 0, this.width, 50){
 			@Override
 			public void additionalRender(Graphics g){
@@ -44,7 +44,7 @@ public class MainGame extends Menu {
 				g.fillRect(0, this.getY()+this.getHeight(), this.getWidth(), 50);
 				g.setColor(Color.darkGray);
 				g.drawRect(0, this.getY()+this.getHeight(), this.getWidth()-1, 49);
-				
+
 				String stats = game.currentPlayer.movesLeft+"/"+game.currentPlayer.maxMoves;
 				Font font = g.getFont();
 				int w = font.getWidth(stats);
@@ -57,7 +57,7 @@ public class MainGame extends Menu {
 					g.setColor(Color.red);
 				g.drawString(stats, xpos, ypos);
 
-				
+
 			}
 		}.setTextPlacement(TextPlacement.LEFT);
 
@@ -67,21 +67,21 @@ public class MainGame extends Menu {
 				g.drawImage(TextureLoader.loadTexture("GUI\\endturn.gif").getScaledCopy(50, 50) , this.getWidth()/2-25,this.getY()+this.getHeight()/2);;
 			}
 		}.setTextPlacement(TextPlacement.CENTERED).setTextMargins(0, 15);
-		
+
 		showGrid = new Button("Grille", this, 0, (int)(12*16*Game.scale-50), this.width, 50){
 			@Override
 			public void additionalRender(Graphics g){
 				g.drawImage(TextureLoader.loadTexture("GUI\\show_grid.gif").getScaledCopy(50, 50), this.getWidth()-50,this.getY());
 			}
 		}.setTextPlacement(TextPlacement.LEFT);
-		
+
 		reload = new Button("Recharger", this, 0, (int)(12*16*Game.scale-100), this.width, 50){
 			@Override
 			public void additionalRender(Graphics g){
 				g.drawImage(TextureLoader.loadTexture("GUI\\reload.gif").getScaledCopy(50, 50), this.getWidth()-50,this.getY());
 			}
 		}.setTextPlacement(TextPlacement.LEFT);
-		
+
 		primary = new Button("Tirer (primaire)", this, 0, 100, this.width, 50){
 			@Override
 			public void additionalRender(Graphics g){
@@ -100,7 +100,7 @@ public class MainGame extends Menu {
 
 			}
 		};
-		
+
 		secondary = new Button("Tirer (secondaire)", this, 0, 240, this.width, 50){
 			@Override
 			public void additionalRender(Graphics g){
@@ -118,9 +118,9 @@ public class MainGame extends Menu {
 				g.drawString("R: "+w.range, 5, ypos+60);
 			}
 		};
-		
+
 		choices = new ArrayList<Button>(Arrays.asList(move, endTurn, showGrid, reload, primary, secondary));
-		
+
 	}
 
 	@Override
@@ -128,30 +128,42 @@ public class MainGame extends Menu {
 		if(choices.contains(source)){
 			if(source==showGrid)
 				state.showGrid = !state.showGrid;
-			else if(source==endTurn)
+			else if(source==endTurn) {
 				state.nextPlayer();
+				COP.sendPacket("next_player");
+			}
 			else if(source==primary){
 				Engine.removePosEffect(MoveSelect.class);
-				if(state.shootingMode == WeaponType.PRIMARY)
+				if(state.shootingMode == WeaponType.PRIMARY) {
 					state.shootingMode=null;
-				else
+					COP.sendPacket("change_weapon;null");
+				}
+				else {
 					state.shootingMode=WeaponType.PRIMARY;
+					COP.sendPacket("change_weapon;primary");
+				}
 			}
 			else if(source==secondary){
 				Engine.removePosEffect(MoveSelect.class);
-				if(state.shootingMode == WeaponType.SECONDARY)
+				if(state.shootingMode == WeaponType.SECONDARY) {
 					state.shootingMode=null;
-				else
+					COP.sendPacket("change_weapon;null");
+				}
+				else {
 					state.shootingMode=WeaponType.SECONDARY;
+					COP.sendPacket("change_weapon;secondary");
+				}
 			}
-			
+
 			else if(source==reload){
 				Game.reload(state.currentPlayer);
 				state.currentPlayer.turnIsOver=true;
+				COP.sendPacket("reload");
 			}
-			
+
 			else if(source==move){
 				state.shootingMode=null;
+				COP.sendPacket("start_moving");
 			}
 		}
 	}
