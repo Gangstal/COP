@@ -29,7 +29,7 @@ public class COP extends StateBasedGame{
 
 	public static int width = 1008, height = 600;
 	public static COP instance = new COP();
-	private final static String version = "Pre-Alpha -1.5";
+	private final static String version = "Pre-Alpha -1.6";
 	public static Image background;
 	public static AppGameContainer app;
 	public static Game game;
@@ -42,29 +42,7 @@ public class COP extends StateBasedGame{
 
 
 	public static void main(String[] args) throws SlickException, FontFormatException, IOException{
-		rd = new Random(1);
-		conns = new ArrayList<Conn>();
-		packets = new ArrayList<String>();
-		try {
-			if (args.length < 1)
-				throw new Exception("Not enough arguments, expected at least 1 (mode)");
-			if (args[0].equals("client")) {
-				mode = MODE_CLIENT;
-				if (args.length < 3)
-					throw new Exception("Not enough arguments, expected at least 3 (mode ip port)");
-				conns.add(new Conn(new Socket(args[1], Integer.parseUnsignedInt(args[2]))));
-			} else if (args[0].equals("server")) {
-				mode = MODE_SERVER;
-				serverSocket = new ServerSocket(42069);
-				new ServerThread().start();
-			} else if (args[0].equals("singleplayer")) {
-				mode = MODE_SINGLEPLAYER;
-			} else {
-				throw new Exception("Unknown mode \"" + args[0] + "\"");
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		
 
         app = new AppGameContainer(instance, width, height, false);
         app.setShowFPS(false);

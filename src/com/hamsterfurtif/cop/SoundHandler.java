@@ -20,7 +20,6 @@ public class SoundHandler {
 	
 	private static void loadWeaponSounds() throws SlickException{
 		for(Weapon w : Weapons.primary){
-			Utils.print(w.name);
 			w.sounds.add(new Sound("\\assets\\sounds\\weapons\\"+w.name+"1.wav"));
 			w.sounds.add(new Sound("\\assets\\sounds\\weapons\\"+w.name+"2.wav"));
 		}

@@ -1,6 +1,11 @@
 package com.hamsterfurtif.cop;
 
+import java.awt.HeadlessException;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
+import java.io.IOException;
 
 public abstract class Utils {
 	
@@ -36,6 +41,22 @@ public abstract class Utils {
 		      return false;
 		   }
 
+	}
+	
+	public static String getClipBoard(){
+	    try {
+	        return (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+	    } catch (HeadlessException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();            
+	    } catch (UnsupportedFlavorException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();            
+	    } catch (IOException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	    }
+	    return "";
 	}
 	
 }
