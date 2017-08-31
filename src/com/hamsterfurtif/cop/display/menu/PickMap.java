@@ -42,7 +42,7 @@ public class PickMap extends Menu{
 		if(source==confirmer){
 			GSPlayerEquip g = (GSPlayerEquip)COP.instance.getState(1);
 			try {
-				g.mainMenu = new PlayerEquip(container, g, Game.players.get(0));
+				g.mainMenu = new PlayerEquip(g.container, g, Game.players.get(0));
 			} catch (SlickException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

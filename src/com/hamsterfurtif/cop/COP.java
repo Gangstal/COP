@@ -1,11 +1,13 @@
 package com.hamsterfurtif.cop;
 
 import java.awt.FontFormatException;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -16,9 +18,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.display.TextureLoader;
-import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.gamestates.GSMainMenu;
 import com.hamsterfurtif.cop.gamestates.GSPlayerEquip;
+import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.map.MapPos;
 
 public class COP extends StateBasedGame{
@@ -29,7 +31,7 @@ public class COP extends StateBasedGame{
 
 	public static int width = 1008, height = 600;
 	public static COP instance = new COP();
-	private final static String version = "Pre-Alpha -1.6";
+	private final static String version = "Pre-Alpha -1.7";
 	public static Image background;
 	public static AppGameContainer app;
 	public static Game game;
@@ -39,11 +41,13 @@ public class COP extends StateBasedGame{
 	public static ServerSocket serverSocket;
 	public static List<Conn> conns;
 	public static List<String> packets;
+	
+	public static String savedip;
 
 
 	public static void main(String[] args) throws SlickException, FontFormatException, IOException{
 		
-
+		readSavedIP();
         app = new AppGameContainer(instance, width, height, false);
         app.setShowFPS(false);
         app.start();
@@ -51,7 +55,6 @@ public class COP extends StateBasedGame{
 
 	public COP() {
 		super("Call of Paper "+version);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void initStatesList(GameContainer game) throws SlickException {
@@ -94,5 +97,19 @@ public class COP extends StateBasedGame{
 
 	public static void sendPacket(String packet) {
 		sendPacket(packet, null);
+	}
+	
+	private static void readSavedIP() throws IOException{
+		FileReader fileReader = new FileReader("ip.txt");
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        savedip = bufferedReader.readLine();
+        bufferedReader.close();         
+	}
+	
+	public static void writeSavedIP(String string) throws IOException{
+		File file = new File("ip.txt");
+		FileOutputStream fos = new FileOutputStream(file);
+		fos.write(string.getBytes());
+		fos.close();
 	}
 }

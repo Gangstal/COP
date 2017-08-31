@@ -4,6 +4,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.COP;
@@ -22,7 +23,8 @@ public class GSMainMenu extends GameStateMenu {
 		currentMenu = new Main(container, this);
 		Game.map = null;
 		this.game=game;
-		
+		Sound sound = new Sound("\\assets\\sounds\\main_theme.wav");
+		sound.play();
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.hamsterfurtif.cop.display.menu;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -23,11 +24,11 @@ public class Main extends Menu{
 
 
 	private Button solo = new Button("Jouer en Solo", this, COP.width/2, COP.height/2-70, 250, 40).centered();
-	private Button server = new Button("Multijoueur (Héberger)", this, COP.width/2, COP.height/2, 250, 40).centered();
-	private Button client = new Button("Multijoueur (Rejoindre)", this, COP.width/2, COP.height/2+70, 250, 40).centered();
+	private Button server = new Button("Multijoueur (Héberger)", this, COP.width/2, COP.height/2+70, 250, 40).centered();
+	private Button client = new Button("Multijoueur (Rejoindre)", this, COP.width/2, COP.height/2, 250, 40).centered();
 	private Button quit = new Button("Quitter", this, width/2, height-40, 100, 30).centered();
 	
-	private TextInput ip = new TextInput(this, COP.width/2, COP.height/2+150, 250, 23, "Adresse IP (multijoueur)").centered();
+	private TextInput ip = new TextInput(this, COP.width/2, COP.height/2+150, 250, 23, COP.savedip).centered();
 	private Button paste = new Button("Coller", this, (COP.width+260+60)/2,COP.height/2+150, 60, 23).centered();
 	
 	public Main(GameContainer container, GameStateMenu state) throws SlickException {
@@ -45,7 +46,12 @@ public class Main extends Menu{
 				COP.mode = COP.MODE_SERVER;
 			else if(source==client)
 				COP.mode = COP.MODE_CLIENT;
-			
+			try {
+				COP.writeSavedIP(ip.getText());
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			COP.rd = new Random(1);
 			COP.conns = new ArrayList<Conn>();
 			COP.packets = new ArrayList<String>();

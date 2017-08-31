@@ -20,8 +20,8 @@ public class PlayerAmount extends Menu{
 	
 	private TextInput players = new TextInput(this, 300, 160, 50, 20, Integer.toString(playercount));
 
-	private Button plus = new Button("+", this, 275, 160, 20, 20).setTextPlacement(TextPlacement.CENTERED);
-	private Button minus = new Button("-", this, 355, 160, 20, 20).setTextPlacement(TextPlacement.CENTERED);
+	private Button plus = new Button("+", this, 355, 160, 20, 20).setTextPlacement(TextPlacement.CENTERED);
+	private Button minus = new Button("-", this, 275, 160, 20, 20).setTextPlacement(TextPlacement.CENTERED);
 	
 	public Button confirmer = new Button("Confirmer", this, width/2, height-80, 100, 30).centered();
 

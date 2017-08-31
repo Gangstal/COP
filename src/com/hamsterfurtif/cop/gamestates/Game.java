@@ -177,10 +177,10 @@ public class Game extends GameStateMenu {
 						}
 					}
 
-					else if(!currentPlayer.hasShot){
+					else if(!currentPlayer.hasShot && shootingMode!=null){
 						if(Game.shoot(currentPlayer, clickPos, shootingMode)) {
-							shootingMode=null;
 							COP.sendPacket("shoot;" + COP.serializeMapPos(clickPos));
+							shootingMode=null;
 						}
 					}
 				}
@@ -308,6 +308,10 @@ public class Game extends GameStateMenu {
 	}
 
 	public void nextPlayer() {
+		
+		Engine.removePosEffect(MoveSelect.class);
+		path.clear();
+		
 		if(Game.players.indexOf(currentPlayer)==Game.players.size()-1)
 			currentPlayer=players.get(0);
 		else
@@ -335,7 +339,7 @@ public class Game extends GameStateMenu {
 
 	public static boolean movePlayer(Player player, ArrayList<MapPos> path){
 		if(path.get(0).equals(player.pos)){
-			for(int i=1;i<path.size()-1;i++){
+			for(int i=1;i<path.size();i++){
 				if(!map.getTile(path.get(i)).canWalkThrough || !path.get(i).isAdjacent(path.get(i-1)))
 					return false;
 			}

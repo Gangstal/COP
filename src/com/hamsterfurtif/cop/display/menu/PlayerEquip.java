@@ -97,14 +97,13 @@ public class PlayerEquip extends Menu{
 				try {
 					state.currentMenu = new PickAppearance(container, state, player);
 				} catch (SlickException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 			else if(source==confirmer){
 				if(state instanceof GSPlayerEquip){
 					player.name=playername.getText();
-					playername.setFocus(true);
+					player.reset();
 					GSPlayerEquip s = (GSPlayerEquip)state;
 					try {
 						s.nextPlayer();

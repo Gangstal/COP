@@ -25,10 +25,10 @@ public class ConfirmGameSettings extends Menu {
 	private TextInput hp = new TextInput(this, 300, 160, 50, 20, Integer.toString(hpCount));
 	private TextInput lives = new TextInput(this, 300, 210, 50, 20, Integer.toString(livesCount));
 
-	private Button plusHP = new Button("+", this, 275, 160, 20, 20).setTextPlacement(TextPlacement.CENTERED);
-	private Button minusHP = new Button("-", this, 355, 160, 20, 20).setTextPlacement(TextPlacement.CENTERED);
-	private Button plusLives = new Button("+", this, 275, 210, 20, 20).setTextPlacement(TextPlacement.CENTERED);
-	private Button minusLives = new Button("-", this, 355, 210, 20, 20).setTextPlacement(TextPlacement.CENTERED);
+	private Button plusHP = new Button("+", this, 355, 160, 20, 20).setTextPlacement(TextPlacement.CENTERED);
+	private Button minusHP = new Button("-", this, 275, 160, 20, 20).setTextPlacement(TextPlacement.CENTERED);
+	private Button plusLives = new Button("+", this, 355, 210, 20, 20).setTextPlacement(TextPlacement.CENTERED);
+	private Button minusLives = new Button("-", this, 275, 210, 20, 20).setTextPlacement(TextPlacement.CENTERED);
 
 	
 	public ConfirmGameSettings(GameContainer container, GameStateMenu state) throws SlickException {

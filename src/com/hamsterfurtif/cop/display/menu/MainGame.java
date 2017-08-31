@@ -29,6 +29,8 @@ public class MainGame extends Menu {
 	private Button primary;
 	private Button secondary;
 	private Game state;
+	Color color = new Color(1f, 0, 0, 0.25f);
+
 
 	public MainGame(GameContainer container, Game game) throws SlickException {
 		super(container, "", game);
@@ -56,7 +58,11 @@ public class MainGame extends Menu {
 				else
 					g.setColor(Color.red);
 				g.drawString(stats, xpos, ypos);
-
+				
+				if(state.currentPlayer.turnIsOver || state.currentPlayer.movesLeft==0){
+					g.setColor(color);
+					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+				}
 
 			}
 		}.setTextPlacement(TextPlacement.LEFT);
@@ -79,6 +85,10 @@ public class MainGame extends Menu {
 			@Override
 			public void additionalRender(Graphics g){
 				g.drawImage(TextureLoader.loadTexture("GUI\\reload.gif").getScaledCopy(50, 50), this.getWidth()-50,this.getY());
+				if(state.currentPlayer.turnIsOver){
+					g.setColor(color);
+					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+				}
 			}
 		}.setTextPlacement(TextPlacement.LEFT);
 
@@ -97,6 +107,10 @@ public class MainGame extends Menu {
 				g.drawString("A: "+player.inventory.ammoP+"/"+w.ammo, 5, ypos+30);
 				g.drawString("D: "+w.damage, 5, ypos+45);
 				g.drawString("R: "+w.range, 5, ypos+60);
+				if(state.currentPlayer.turnIsOver){
+					g.setColor(color);
+					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+				}
 
 			}
 		};
@@ -116,6 +130,10 @@ public class MainGame extends Menu {
 				g.drawString("A: "+player.inventory.ammoS+"/"+w.ammo, 5, ypos+30);
 				g.drawString("D: "+w.damage, 5, ypos+45);
 				g.drawString("R: "+w.range, 5, ypos+60);
+				if(state.currentPlayer.turnIsOver){
+					g.setColor(color);
+					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+				}
 			}
 		};
 
@@ -155,7 +173,7 @@ public class MainGame extends Menu {
 				}
 			}
 
-			else if(source==reload){
+			else if(source==reload && !state.currentPlayer.turnIsOver){
 				Game.reload(state.currentPlayer);
 				state.currentPlayer.turnIsOver=true;
 				COP.sendPacket("reload");
