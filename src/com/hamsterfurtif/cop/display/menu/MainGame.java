@@ -29,7 +29,8 @@ public class MainGame extends Menu {
 	private Button primary;
 	private Button secondary;
 	private Game state;
-	Color color = new Color(1f, 0, 0, 0.25f);
+	private Color color_red = new Color(1f, 0, 0, 0.25f);
+	private Color color_green = new Color(0, 1f, 0, 0.125f);
 
 
 	public MainGame(GameContainer container, Game game) throws SlickException {
@@ -60,7 +61,11 @@ public class MainGame extends Menu {
 				g.drawString(stats, xpos, ypos);
 				
 				if(state.currentPlayer.turnIsOver || state.currentPlayer.movesLeft==0){
-					g.setColor(color);
+					g.setColor(color_red);
+					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+				}
+				else if(!state.freelook && state.shootingMode==null){
+					g.setColor(color_green);
 					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 				}
 
@@ -86,7 +91,7 @@ public class MainGame extends Menu {
 			public void additionalRender(Graphics g){
 				g.drawImage(TextureLoader.loadTexture("GUI\\reload.gif").getScaledCopy(50, 50), this.getWidth()-50,this.getY());
 				if(state.currentPlayer.turnIsOver){
-					g.setColor(color);
+					g.setColor(color_red);
 					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 				}
 			}
@@ -108,7 +113,11 @@ public class MainGame extends Menu {
 				g.drawString("D: "+w.damage, 5, ypos+45);
 				g.drawString("R: "+w.range, 5, ypos+60);
 				if(state.currentPlayer.turnIsOver){
-					g.setColor(color);
+					g.setColor(color_red);
+					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+				}
+				else if(!state.freelook && state.shootingMode==WeaponType.PRIMARY){
+					g.setColor(color_green);
 					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 				}
 
@@ -131,7 +140,11 @@ public class MainGame extends Menu {
 				g.drawString("D: "+w.damage, 5, ypos+45);
 				g.drawString("R: "+w.range, 5, ypos+60);
 				if(state.currentPlayer.turnIsOver){
-					g.setColor(color);
+					g.setColor(color_red);
+					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+				}
+				else if(!state.freelook && state.shootingMode==WeaponType.SECONDARY){
+					g.setColor(color_green);
 					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 				}
 			}
@@ -144,19 +157,24 @@ public class MainGame extends Menu {
 	@Override
 	public void componentActivated(AbstractComponent source) {
 		if(choices.contains(source)){
+			
+			
 			if(source==showGrid)
 				state.showGrid = !state.showGrid;
 			else if(source==endTurn) {
 				state.nextPlayer();
+				state.freelook=false;
 				COP.sendPacket("next_player");
 			}
 			else if(source==primary){
 				Engine.removePosEffect(MoveSelect.class);
 				if(state.shootingMode == WeaponType.PRIMARY) {
 					state.shootingMode=null;
+					state.freelook=true;
 					COP.sendPacket("change_weapon;null");
 				}
 				else {
+					state.freelook=false;
 					state.shootingMode=WeaponType.PRIMARY;
 					COP.sendPacket("change_weapon;primary");
 				}
@@ -165,9 +183,11 @@ public class MainGame extends Menu {
 				Engine.removePosEffect(MoveSelect.class);
 				if(state.shootingMode == WeaponType.SECONDARY) {
 					state.shootingMode=null;
+					state.freelook=true;
 					COP.sendPacket("change_weapon;null");
 				}
 				else {
+					state.freelook=false;
 					state.shootingMode=WeaponType.SECONDARY;
 					COP.sendPacket("change_weapon;secondary");
 				}
@@ -180,6 +200,7 @@ public class MainGame extends Menu {
 			}
 
 			else if(source==move){
+				state.freelook = !state.freelook;
 				state.shootingMode=null;
 				COP.sendPacket("start_moving");
 			}

@@ -13,7 +13,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.Player;
-import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.display.Engine;
 import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.display.menu.MainGame;
@@ -29,13 +28,18 @@ public class Game extends GameStateMenu {
 
 	public static final int ID = 2;
 	public static Image health_end_full, health_end_empty, health_middle_full, health_middle_empty, heart;
-	public static float scale = 1.5f;
+	public static float optimalScale = 2.5f;
+	public static float scale = optimalScale;
 	public boolean showGrid = false;
 	public boolean movementSelection = false;
 	private int mx, my;
 	private boolean leftClick = false;
 	public ArrayList<MapPos> path = new ArrayList<MapPos>();
 	public WeaponType shootingMode=null;
+	public boolean freelook = false;
+	public static int mapx = 168;
+	public static int mapy=0;
+	private int grabbedx, grabbedy;
 
 	public static boolean running = false, match = false;
 	public static ArrayList<Player> players = new ArrayList<Player>();
@@ -68,7 +72,7 @@ public class Game extends GameStateMenu {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		g.drawImage(COP.background, 0, 0);
-		Engine.drawMapWithPlayers(g, scale,168, 0, showGrid);
+		Engine.drawMapWithPlayers(g, scale,mapx, mapy, showGrid);
 		currentMenu.render(g);
 
 		int x=168, y=480;
@@ -90,7 +94,8 @@ public class Game extends GameStateMenu {
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		int x=168, y=480;
+		int x=168;
+		float c = TextureLoader.textureRes*scale;
 		try {
 			synchronized (COP.packets) {
 				for (String packet : COP.packets) {
@@ -153,7 +158,7 @@ public class Game extends GameStateMenu {
 				if(MouseIsOverMap(mx, my)){
 					MapPos clickPos = getMapPos(mx-x, my);
 
-					if(shootingMode==null && !currentPlayer.turnIsOver){
+					if(shootingMode==null && !currentPlayer.turnIsOver && !freelook){
 						if(!leftClick){
 							if(!path.isEmpty())
 								if(clickPos.equals(path.get(path.size()-1))){
@@ -179,17 +184,32 @@ public class Game extends GameStateMenu {
 						}
 					}
 
-					else if(!currentPlayer.hasShot && shootingMode!=null){
+					else if(!currentPlayer.hasShot && shootingMode!=null && !freelook){
 						if(Game.shoot(currentPlayer, clickPos, shootingMode)) {
 							COP.sendPacket("shoot;" + COP.serializeMapPos(clickPos));
 							shootingMode=null;
+						}
+					}
+					
+					else if(freelook){
+						if(!leftClick){
+							grabbedx=mx-mapx;
+							grabbedy=my-mapy;
+						}
+						else{
+							mapx=mx-grabbedx;
+							mapy=my-grabbedy;
+							if(c*map.dimX<=COP.width-x)
+								mapx=(int)(x+COP.width-c*map.dimX)/2;
+							if(c*map.dimY<=480)
+								mapy=(int)(480-c*map.dimY)/2;
 						}
 					}
 				}
 			}
 
 			Engine.removePosEffect(MouseHover.class);
-			if(MouseIsOverMap(mx, my) && my<y && !showGrid){
+			if(MouseIsOverMap(mx, my) && !showGrid){
 				MapPos clickPos = getMapPos(mx-x, my);
 				if(shootingMode==null)
 					Engine.addPosEffect(new MouseHover(clickPos, Color.black));
@@ -204,7 +224,7 @@ public class Game extends GameStateMenu {
 			leftClick = input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
 		}
 		else{
-			if(Math.abs(currentPlayer.xgoffset)>=Math.abs(TextureLoader.textureRes*scale) || Math.abs(currentPlayer.ygoffset)>=Math.abs(TextureLoader.textureRes*scale) || pathpos==path.size()-1){
+			if(Math.abs(currentPlayer.xgoffset)>=Math.abs(c) || Math.abs(currentPlayer.ygoffset)>=Math.abs(c) || pathpos==path.size()-1){
 				pathpos++;
 
 				if(pathpos==path.size()){
@@ -305,13 +325,15 @@ public class Game extends GameStateMenu {
 	
 	private static boolean MouseIsOverMap(int mx, int my){
 		int x=168, y=480;
-		return (mx>x && my<y && mx<map.dimX*TextureLoader.textureRes*scale+x && my<map.dimY*TextureLoader.textureRes*scale);	
+		float c = TextureLoader.textureRes*scale;
+		return (mx>x && my<y && mx<COP.width && my>0 && mx>=mapx && my>=mapy && mx<map.dimX*c+mapx && my<map.dimY*c+mapy);	
 	}
 
 	private MapPos getMapPos(int xpos, int ypos){
+		xpos-=mapx-168;
+		ypos-=mapy;
 		int X =(int)((xpos-xpos%(scale*16))/(scale*16));
 		int Y =(int)((ypos-ypos%(scale*16))/(scale*16));
-		Utils.print(X+" "+Y+"     "+xpos+" "+ypos);
 		return new MapPos(X, Y, 0);
 	}
 
@@ -326,7 +348,7 @@ public class Game extends GameStateMenu {
 			currentPlayer=players.get(players.indexOf(currentPlayer)+1);
 
 		currentPlayer.resetTurnStats();
-
+		freelook = false;
 		shootingMode = null;
 
 	}
@@ -419,5 +441,22 @@ public class Game extends GameStateMenu {
 		player.pos = p;
 		player.reset();
 		player.repsawnsLeft--;
+	}
+	
+	@Override
+	public void mouseWheelMoved(int offset) {
+		
+		int x=168;
+		float c = TextureLoader.textureRes*scale;
+		
+		if(offset>0 && scale < 2.5)
+			scale+=0.25;
+		else if(offset<0 && scale > optimalScale)
+			scale-=0.25;
+		
+		if(c*map.dimX<=COP.width-x)
+			mapx=(int)(x+COP.width-c*map.dimX)/2;
+		if(c*map.dimY<=480)
+			mapy=(int)(480-c*map.dimY)/2;
 	}
 }

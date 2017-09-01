@@ -23,8 +23,10 @@ public class GSMainMenu extends GameStateMenu {
 		currentMenu = new Main(container, this);
 		Game.map = null;
 		this.game=game;
-		Sound sound = new Sound("\\assets\\sounds\\main_theme.wav");
-		sound.play();
+		if(COP.music){
+			Sound sound = new Sound("\\assets\\sounds\\main_theme.wav");
+			sound.play();
+		}
 	}
 
 	@Override

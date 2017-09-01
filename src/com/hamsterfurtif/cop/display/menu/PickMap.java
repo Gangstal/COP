@@ -7,7 +7,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.AbstractComponent;
 
 import com.hamsterfurtif.cop.COP;
-import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
 import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.gamestates.GSPlayerEquip;
@@ -49,7 +48,13 @@ public class PickMap extends Menu{
 				float yscale = (float)480/(float)(Game.map.dimY*TextureLoader.textureRes);
 				float optimalScale = xscale > yscale ? yscale : xscale;
 				optimalScale -= optimalScale%0.25f;
+				Game.optimalScale=optimalScale;
 				Game.scale=optimalScale;
+				float c = TextureLoader.textureRes*optimalScale;
+				if(c*Game.map.dimX<=COP.width-168)
+					Game.mapx=(int)(168+COP.width-c*Game.map.dimX)/2;
+				if(c*Game.map.dimY<=480)
+					Game.mapy=(int)(480-c*Game.map.dimY)/2;
 
 			} catch (SlickException e) {
 				// TODO Auto-generated catch block

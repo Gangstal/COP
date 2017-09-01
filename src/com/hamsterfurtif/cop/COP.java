@@ -43,6 +43,7 @@ public class COP extends StateBasedGame{
 	public static List<String> packets;
 	
 	public static String savedip;
+	public static boolean music;
 
 
 	public static void main(String[] args) throws SlickException, FontFormatException, IOException{
@@ -100,9 +101,10 @@ public class COP extends StateBasedGame{
 	}
 	
 	private static void readSavedIP() throws IOException{
-		FileReader fileReader = new FileReader("ip.txt");
+		FileReader fileReader = new FileReader("config.txt");
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         savedip = bufferedReader.readLine();
+        music = bufferedReader.readLine()=="true" ? true : false;
         bufferedReader.close();         
 	}
 	
@@ -110,6 +112,7 @@ public class COP extends StateBasedGame{
 		File file = new File("ip.txt");
 		FileOutputStream fos = new FileOutputStream(file);
 		fos.write(string.getBytes());
+		fos.write((music ? "true" : "false").getBytes());
 		fos.close();
 	}
 }
