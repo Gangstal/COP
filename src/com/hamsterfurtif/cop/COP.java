@@ -31,7 +31,7 @@ public class COP extends StateBasedGame{
 
 	public static int width = 1008, height = 600;
 	public static COP instance = new COP();
-	private final static String version = "Pre-Alpha -1.7";
+	private final static String version = "Pre-Alpha -1.8";
 	public static Image background;
 	public static AppGameContainer app;
 	public static Game game;
@@ -109,9 +109,10 @@ public class COP extends StateBasedGame{
 	}
 	
 	public static void writeSavedIP(String string) throws IOException{
-		File file = new File("ip.txt");
+		File file = new File("config.txt");
 		FileOutputStream fos = new FileOutputStream(file);
 		fos.write(string.getBytes());
+		fos.write("\t".getBytes());
 		fos.write((music ? "true" : "false").getBytes());
 		fos.close();
 	}
