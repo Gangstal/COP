@@ -13,6 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.Player;
+import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.display.Engine;
 import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.display.menu.MainGame;
@@ -28,7 +29,7 @@ public class Game extends GameStateMenu {
 
 	public static final int ID = 2;
 	public static Image health_end_full, health_end_empty, health_middle_full, health_middle_empty, heart;
-	public static float scale = 2.5f;
+	public static float scale = 1.5f;
 	public boolean showGrid = false;
 	public boolean movementSelection = false;
 	private int mx, my;
@@ -67,8 +68,8 @@ public class Game extends GameStateMenu {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		g.drawImage(COP.background, 0, 0);
+		Engine.drawMapWithPlayers(g, scale,168, 0, showGrid);
 		currentMenu.render(g);
-		Engine.drawMapWithPlayers(g, scale,(int)(COP.width-TextureLoader.textureRes*Game.map.dimX*scale), 0, showGrid);
 
 		int x=168, y=480;
 
@@ -81,14 +82,15 @@ public class Game extends GameStateMenu {
 		drawPlayerInfoBox(x, y, currentPlayer, g);
 
 
-		if(mx>(int)(COP.width-TextureLoader.textureRes*21*scale) && my<(int)(TextureLoader.textureRes*12*scale)){
-			renderInfoBox(mx-(int)(COP.width-TextureLoader.textureRes*21*scale), my, g);
+		if(MouseIsOverMap(mx, my)){
+			renderInfoBox(mx-x, my, g);
 		}
 
 	}
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+		int x=168, y=480;
 		try {
 			synchronized (COP.packets) {
 				for (String packet : COP.packets) {
@@ -148,8 +150,8 @@ public class Game extends GameStateMenu {
 		my = input.getMouseY();
 		if(!animation){
 			if(input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)){
-				if(mx>(int)(COP.width-TextureLoader.textureRes*21*scale) && my<(int)(TextureLoader.textureRes*12*scale)){
-					MapPos clickPos = getMapPos(mx-(int)(COP.width-TextureLoader.textureRes*21*scale), my);
+				if(MouseIsOverMap(mx, my)){
+					MapPos clickPos = getMapPos(mx-x, my);
 
 					if(shootingMode==null && !currentPlayer.turnIsOver){
 						if(!leftClick){
@@ -187,8 +189,8 @@ public class Game extends GameStateMenu {
 			}
 
 			Engine.removePosEffect(MouseHover.class);
-			if(mx>(int)(COP.width-TextureLoader.textureRes*21*scale) && my<(int)(TextureLoader.textureRes*12*scale) && !showGrid){
-				MapPos clickPos = getMapPos(mx-(int)(COP.width-TextureLoader.textureRes*21*scale), my);
+			if(MouseIsOverMap(mx, my) && my<y && !showGrid){
+				MapPos clickPos = getMapPos(mx-x, my);
 				if(shootingMode==null)
 					Engine.addPosEffect(new MouseHover(clickPos, Color.black));
 				else
@@ -300,10 +302,16 @@ public class Game extends GameStateMenu {
 		}
 
 	}
+	
+	private static boolean MouseIsOverMap(int mx, int my){
+		int x=168, y=480;
+		return (mx>x && my<y && mx<map.dimX*TextureLoader.textureRes*scale+x && my<map.dimY*TextureLoader.textureRes*scale);	
+	}
 
 	private MapPos getMapPos(int xpos, int ypos){
 		int X =(int)((xpos-xpos%(scale*16))/(scale*16));
 		int Y =(int)((ypos-ypos%(scale*16))/(scale*16));
+		Utils.print(X+" "+Y+"     "+xpos+" "+ypos);
 		return new MapPos(X, Y, 0);
 	}
 

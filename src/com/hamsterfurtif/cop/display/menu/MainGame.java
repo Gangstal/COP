@@ -34,7 +34,7 @@ public class MainGame extends Menu {
 
 	public MainGame(GameContainer container, Game game) throws SlickException {
 		super(container, "", game);
-		width = (int)(COP.width-TextureLoader.textureRes*21*Game.scale);
+		width = 168;
 		height = COP.height;
 		this.state = game;
 
@@ -67,21 +67,21 @@ public class MainGame extends Menu {
 			}
 		}.setTextPlacement(TextPlacement.LEFT);
 
-		endTurn = new Button("Fin du tour", this, 0, (int)(12*16*Game.scale), this.width, (int)(this.height-12*16*Game.scale)){
+		endTurn = new Button("Fin du tour", this, 0, 480, this.width, 120){
 			@Override
 			public void additionalRender(Graphics g){
 				g.drawImage(TextureLoader.loadTexture("GUI\\endturn.gif").getScaledCopy(50, 50) , this.getWidth()/2-25,this.getY()+this.getHeight()/2);;
 			}
 		}.setTextPlacement(TextPlacement.CENTERED).setTextMargins(0, 15);
 
-		showGrid = new Button("Grille", this, 0, (int)(12*16*Game.scale-50), this.width, 50){
+		showGrid = new Button("Grille", this, 0, 430, this.width, 50){
 			@Override
 			public void additionalRender(Graphics g){
 				g.drawImage(TextureLoader.loadTexture("GUI\\show_grid.gif").getScaledCopy(50, 50), this.getWidth()-50,this.getY());
 			}
 		}.setTextPlacement(TextPlacement.LEFT);
 
-		reload = new Button("Recharger", this, 0, (int)(12*16*Game.scale-100), this.width, 50){
+		reload = new Button("Recharger", this, 0, 380, this.width, 50){
 			@Override
 			public void additionalRender(Graphics g){
 				g.drawImage(TextureLoader.loadTexture("GUI\\reload.gif").getScaledCopy(50, 50), this.getWidth()-50,this.getY());

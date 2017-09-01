@@ -7,7 +7,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.AbstractComponent;
 
 import com.hamsterfurtif.cop.COP;
+import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
+import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.gamestates.GSPlayerEquip;
 import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.gamestates.GameStateMenu;
@@ -43,6 +45,12 @@ public class PickMap extends Menu{
 			GSPlayerEquip g = (GSPlayerEquip)COP.instance.getState(1);
 			try {
 				g.mainMenu = new PlayerEquip(g.container, g, Game.players.get(0));
+				float xscale = (float)840/(float)(Game.map.dimX*TextureLoader.textureRes);
+				float yscale = (float)480/(float)(Game.map.dimY*TextureLoader.textureRes);
+				float optimalScale = xscale > yscale ? yscale : xscale;
+				optimalScale -= optimalScale%0.25f;
+				Game.scale=optimalScale;
+
 			} catch (SlickException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -62,5 +70,4 @@ public class PickMap extends Menu{
 			Game.map = new Map(MapReader.read("assets\\maps\\"+button.name+".txt"));
 		}
 	}
-	
 }

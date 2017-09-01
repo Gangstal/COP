@@ -66,7 +66,6 @@ public class Engine {
 				g.drawImage(scaledImage, posX+pos.X*r*scale, posY+pos.Y*r*scale);
 			}
 		}
-		g.scale(1, 1);
 	}
 	
 	public static void drawMapWithPlayers(Graphics g, float scale, int posX, int posY, boolean squares){
@@ -95,7 +94,6 @@ public class Engine {
 				}		
 			}
 		}
-		g.scale(1, 1);
 	}
 	
 	private static Player checkPlayerOnPos(MapPos pos){
