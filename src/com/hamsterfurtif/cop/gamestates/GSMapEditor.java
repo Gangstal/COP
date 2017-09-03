@@ -50,9 +50,8 @@ public class GSMapEditor extends GameStateMenu {
 	public void init(GameContainer container, StateBasedGame state) throws SlickException {
 		this.currentMenu = new MapEditor(container, this);
 		this.container = container;
-		Utils.print("P:"+Tiles.wall.name);
 		try {
-			GSMapEditor.map = new Map(MapReader.readMap("test.txt"));
+			GSMapEditor.map = MapReader.readMap("test.txt");
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

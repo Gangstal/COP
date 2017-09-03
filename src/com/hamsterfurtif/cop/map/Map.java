@@ -6,6 +6,7 @@ public class Map {
 	
 	public Tile[][] map = new Tile[21][12];
 	public int dimX, dimY, dimZ;
+	public boolean locked = true;
 
 	public Map(Tile[][] map){
 		this.map = map;
@@ -15,6 +16,13 @@ public class Map {
 
 	}
 	
+	public Map(Tile[][] map, boolean locked) {
+		this.map = map;
+		dimY=map.length;
+		dimX=map[0].length;
+		this.locked = locked;
+	}
+
 	public Tile getTile(MapPos pos){
 		try{
 			return map[pos.Y][pos.X];

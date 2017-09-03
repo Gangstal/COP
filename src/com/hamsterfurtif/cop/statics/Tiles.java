@@ -15,7 +15,7 @@ public class Tiles {
 	
 	public static Tile wall = new TileWall("Mur de brique", "bricks");
 	public static Tile grass = new TileFloor("Herbe", "grass");
-	public static Tile window = new TileWindow("Fenêtre", "bricks_window");
+	public static Tile window = new TileWindow("Fenetre", "bricks_window");
 	public static Tile door_grass = new TileDoor("Porte en métal", "metal_door", grass);
 	public static Tile stone = new TileFloor("Dalles", "stone");
 	public static Tile door_stone = new TileDoor("Porte en métal", "metal_door", stone);

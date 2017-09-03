@@ -1,6 +1,5 @@
 package com.hamsterfurtif.cop.map;
 
-import java.awt.List;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -87,9 +86,10 @@ public class MapReader {
 		return mapList;
 	}
 	
-	public static Tile[][] readMap(String location) throws NumberFormatException, IOException{
+	public static Map readMap(String location) throws NumberFormatException, IOException{
 		FileReader fr = new FileReader(location);
 		BufferedReader bf = new BufferedReader(fr);
+		boolean locked = bf.readLine() == "locked" ? true : false;
         int resX = Integer.parseInt(bf.readLine());
         int resY = Integer.parseInt(bf.readLine());
         Tile[][] map = new Tile[resY][resX];
@@ -112,7 +112,7 @@ public class MapReader {
         }while((line = bf.readLine()) != null );
         
         bf.close();
-        return map;
+        return new Map(map, locked);
 
 	}
 	
@@ -120,6 +120,7 @@ public class MapReader {
 		Tile[][] map = m.map;
         HashMap<String, Character> dic = new HashMap<String, Character>();
         ArrayList<String> lines = new ArrayList<String>();
+		lines.add("unlocked");
         lines.add(""+m.dimX);
         lines.add(""+m.dimY);
         for(int y=0; y<m.dimY; y++){

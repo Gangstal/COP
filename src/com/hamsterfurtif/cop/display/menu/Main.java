@@ -42,6 +42,10 @@ public class Main extends Menu{
 
 	@Override
 	public void componentActivated(AbstractComponent source) {
+		
+		if(source==ip)
+			Utils.print(ip.getText());
+		
 		if(source== solo || source == server || source==client){
 			if(source==solo)
 				COP.mode = COP.MODE_SINGLEPLAYER;

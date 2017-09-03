@@ -26,13 +26,11 @@ public abstract class Tile {
 	public Tile(String name, String imagename){
 		this.imagename = imagename;
 		this.name = name;
-		Utils.print("K:"+name);
 		register();
 	}
 	
 	private void register(){
 		Tiles.tiles.add(this);
-		Utils.print("R:"+name);
 	}
 	
 	public Tile destroy(){
