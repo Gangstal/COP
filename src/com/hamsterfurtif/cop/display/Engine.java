@@ -11,6 +11,7 @@ import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.display.poseffects.PosEffect;
 import com.hamsterfurtif.cop.gamestates.Game;
+import com.hamsterfurtif.cop.map.Map;
 import com.hamsterfurtif.cop.map.MapPos;
 
 public class Engine {
@@ -53,27 +54,36 @@ public class Engine {
 
 	}
 	
-	public static void drawMap(Graphics g){
-		drawMap(g, 1, 0, 0);
+	public static void drawMap(Graphics g, Map map){
+		drawMap(g, 1, 0, 0, false, map);
 	}
 	
-	public static void drawMap(Graphics g, float scale, int posX, int posY){		
-		for(int y=0; y<Game.map.dimY ;y++){
-			for(int x=0; x<Game.map.dimX; x++){
+	public static void drawMap(Graphics g, float scale, int posX, int posY, boolean showGrid, Map map){		
+		for(int y=0; y<map.dimY ;y++){
+			for(int x=0; x<map.dimX; x++){
 				MapPos pos = new MapPos(x,y,0);
-				Image scaledImage = Game.map.getTile(pos).image.getScaledCopy(scale);
+				Image scaledImage = map.getTile(pos).image.getScaledCopy(scale);
 				scaledImage.setFilter(Image.FILTER_NEAREST);
 				g.drawImage(scaledImage, posX+pos.X*r*scale, posY+pos.Y*r*scale);
+				
+				g.setColor(Color.black);
+				if(showGrid)
+					g.drawRect(posX+pos.X*r*scale,  posY+pos.Y*r*scale, r*scale, r*scale);
+				
+				for(PosEffect effect : posEffects){
+					if(effect.pos.equals(pos))
+						effect.render(g, (int)(posX+pos.X*r*scale), (int)(posY+pos.Y*r*scale));
+				}
 			}
 		}
 	}
 	
-	public static void drawMapWithPlayers(Graphics g, float scale, int posX, int posY, boolean squares){
+	public static void drawMapWithPlayers(Graphics g, float scale, int posX, int posY, boolean squares, Map map){
 		
-		for(int y=0; y<Game.map.dimY ;y++){
-			for(int x=0; x<Game.map.dimX; x++){
+		for(int y=0; y<map.dimY ;y++){
+			for(int x=0; x<map.dimX; x++){
 				MapPos pos = new MapPos(x,y,0);
-				Image scaledImage = Game.map.getTile(pos).image.getScaledCopy(scale);
+				Image scaledImage = map.getTile(pos).image.getScaledCopy(scale);
 				scaledImage.setFilter(Image.FILTER_NEAREST);
 				g.drawImage(scaledImage, posX+pos.X*r*scale, posY+pos.Y*r*scale);
 				g.setColor(Color.black);

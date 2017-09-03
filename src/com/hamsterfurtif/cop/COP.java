@@ -19,6 +19,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.gamestates.GSMainMenu;
+import com.hamsterfurtif.cop.gamestates.GSMapEditor;
 import com.hamsterfurtif.cop.gamestates.GSPlayerEquip;
 import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.map.MapPos;
@@ -70,6 +71,7 @@ public class COP extends StateBasedGame{
 		addState(new GSMainMenu());
 		addState(new GSPlayerEquip());
 		addState(COP.game = new Game());
+		addState(new GSMapEditor());
 
 	}
 
@@ -112,7 +114,7 @@ public class COP extends StateBasedGame{
 		File file = new File("config.txt");
 		FileOutputStream fos = new FileOutputStream(file);
 		fos.write(string.getBytes());
-		fos.write("\t".getBytes());
+		fos.write("\n".getBytes());
 		fos.write((music ? "true" : "false").getBytes());
 		fos.close();
 	}

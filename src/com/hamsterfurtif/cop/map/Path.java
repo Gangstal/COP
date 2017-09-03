@@ -4,7 +4,6 @@ import com.hamsterfurtif.cop.gamestates.Game;
 
 public class Path {
 	
-	//From http://playtechs.blogspot.fr/2007/03/raytracing-on-grid.html
 		public static Boolean directLOS(MapPos pos1, MapPos pos2)
 		{
 			int x0 = pos1.X, x1 = pos2.X;

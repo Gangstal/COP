@@ -47,16 +47,20 @@ public abstract class Utils {
 	    try {
 	        return (String)Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
 	    } catch (HeadlessException e) {
-	        // TODO Auto-generated catch block
 	        e.printStackTrace();            
 	    } catch (UnsupportedFlavorException e) {
-	        // TODO Auto-generated catch block
 	        e.printStackTrace();            
 	    } catch (IOException e) {
-	        // TODO Auto-generated catch block
 	        e.printStackTrace();
 	    }
 	    return "";
+	}
+	
+	public static int bigger(int a, int b){
+		return a>b?a:b;
+	}
+	public static int smaller(int a, int b){
+		return a<b?a:b;
 	}
 	
 }

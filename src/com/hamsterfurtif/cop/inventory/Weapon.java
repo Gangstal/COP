@@ -23,7 +23,7 @@ public class Weapon {
 		this.range = range;
 		this.damage = damage;
 		this.ammo = maxAmmo;
-		this.skin = TextureLoader.loadTexture("sprites\\weapons\\"+name+".gif");
+		this.skin = TextureLoader.loadTexture("sprites\\weapons\\"+name+".png");
 		
 		switch(type){
 		case PRIMARY:

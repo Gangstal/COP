@@ -53,10 +53,12 @@ public class Game extends GameStateMenu {
 	public boolean animation = false;
 	public int pathpos=0;
 	public int speed=1;
+	public static GameContainer container;
 
 	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		currentMenu = new MainGame(container, this);
+		Game.container = container;
 	}
 
 	@Override
@@ -72,7 +74,7 @@ public class Game extends GameStateMenu {
 	@Override
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
 		g.drawImage(COP.background, 0, 0);
-		Engine.drawMapWithPlayers(g, scale,mapx, mapy, showGrid);
+		Engine.drawMapWithPlayers(g, scale,mapx, mapy, showGrid, map);
 		currentMenu.render(g);
 
 		int x=168, y=480;
@@ -449,10 +451,25 @@ public class Game extends GameStateMenu {
 		int x=168;
 		float c = TextureLoader.textureRes*scale;
 		
+		float rx = (mx-mapx)/(c*map.dimX);
+		float ry = (my-mapy)/(c*map.dimY);
+		
 		if(offset>0 && scale < 2.5)
 			scale+=0.25;
 		else if(offset<0 && scale > optimalScale)
 			scale-=0.25;
+		
+		c = TextureLoader.textureRes*scale;
+		
+		int px = (int) (c*map.dimX*rx);
+		int py = (int) (c*map.dimY*ry);
+		
+		Input input = Game.container.getInput();
+		mx = input.getMouseX();
+		my = input.getMouseY();
+		
+		mapx = mx-px;
+		mapy = my-py;
 		
 		if(c*map.dimX<=COP.width-x)
 			mapx=(int)(x+COP.width-c*map.dimX)/2;

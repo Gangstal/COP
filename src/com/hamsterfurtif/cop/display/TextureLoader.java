@@ -28,7 +28,7 @@ public abstract class TextureLoader {
 	public static void loadTilesTextures(){
 		for(Tile tile : Tiles.tiles){
 			try {
-				tile.image=new Image("assets\\textures\\tiles\\"+tile.name+".bmp");
+				tile.image=new Image("assets\\textures\\tiles\\"+tile.imagename+".png");
 			} catch (SlickException e) {
 				e.printStackTrace();
 			}
@@ -37,13 +37,13 @@ public abstract class TextureLoader {
 	
 	private static void loadMiscTextures(){
 		try {
-			Button.default_image = new Image("assets\\textures\\GUI\\menu_square.bmp");
-			COP.background = TextureLoader.loadTexture("GUI\\main_wallpaper.bmp");
-			Game.health_end_empty = TextureLoader.loadTexture("GUI\\health_end_empty.gif");
-			Game.health_end_full = TextureLoader.loadTexture("GUI\\health_end_full.gif");
-			Game.health_middle_empty = TextureLoader.loadTexture("GUI\\health_middle_empty.gif");
-			Game.health_middle_full = TextureLoader.loadTexture("GUI\\health_middle_full.gif");
-			Game.heart= TextureLoader.loadTexture("GUI\\heart.gif");
+			Button.default_image = new Image("assets\\textures\\GUI\\menu_square.png");
+			COP.background = TextureLoader.loadTexture("GUI\\main_wallpaper.png");
+			Game.health_end_empty = TextureLoader.loadTexture("GUI\\health_end_empty.png");
+			Game.health_end_full = TextureLoader.loadTexture("GUI\\health_end_full.png");
+			Game.health_middle_empty = TextureLoader.loadTexture("GUI\\health_middle_empty.png");
+			Game.health_middle_full = TextureLoader.loadTexture("GUI\\health_middle_full.png");
+			Game.heart= TextureLoader.loadTexture("GUI\\heart.png");
 
 
 			
@@ -57,7 +57,7 @@ public abstract class TextureLoader {
 		Player.skins = new ArrayList<Image>();
 		
 		for (File fileEntry : folder.listFiles()) 
-		      if (!fileEntry.isDirectory() && Utils.getFileExtension(fileEntry).equals("gif"))
+		      if (!fileEntry.isDirectory() && Utils.getFileExtension(fileEntry).equals("png"))
 		    	  Player.skins.add(new Image("assets\\textures\\sprites\\players\\"+fileEntry.getName()));
 	}
 	

@@ -37,7 +37,7 @@ public class GSMainMenu extends GameStateMenu {
 			g.setColor(Color.orange);
 			g.fillRect(COP.width/2-5, COP.height/3-5, 21*16+10, 12*16+10);
 			if(Game.map != null)
-				Engine.drawMap(g, 1f, COP.width/2, COP.height/3);
+				Engine.drawMap(g, 1f, COP.width/2, COP.height/3, false, Game.map);
 			
 		}
 	}

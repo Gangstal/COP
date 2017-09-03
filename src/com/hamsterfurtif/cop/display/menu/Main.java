@@ -17,23 +17,26 @@ import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.Conn;
 import com.hamsterfurtif.cop.ServerThread;
 import com.hamsterfurtif.cop.Utils;
+import com.hamsterfurtif.cop.display.TextureLoader;
+import com.hamsterfurtif.cop.gamestates.GSMapEditor;
 import com.hamsterfurtif.cop.gamestates.GameStateMenu;
 
 public class Main extends Menu{
 
 
 
-	private Button solo = new Button("Jouer en Solo", this, COP.width/2, COP.height/2-70, 250, 40).centered();
-	private Button server = new Button("Multijoueur (Héberger)", this, COP.width/2, COP.height/2+70, 250, 40).centered();
-	private Button client = new Button("Multijoueur (Rejoindre)", this, COP.width/2, COP.height/2, 250, 40).centered();
+	private Button solo = new Button("Jouer en Solo", this, COP.width/2, COP.height/2-150, 250, 40).centered();
+	private Button client = new Button("Multijoueur (Rejoindre)", this, COP.width/2, COP.height/2-80, 250, 40).centered();
+	private Button server = new Button("Multijoueur (Héberger)", this, COP.width/2, COP.height/2-10, 250, 40).centered();
+	private Button mapeditor = new Button("Editeur de niveaux", this, COP.width/2, COP.height/2+150, 250, 40).centered();
 	private Button quit = new Button("Quitter", this, width/2, height-40, 100, 30).centered();
 	
-	private TextInput ip = new TextInput(this, COP.width/2, COP.height/2+150, 250, 23, COP.savedip).centered();
-	private Button paste = new Button("Coller", this, (COP.width+260+60)/2,COP.height/2+150, 60, 23).centered();
+	private TextInput ip = new TextInput(this, COP.width/2, COP.height/2+50, 250, 23, COP.savedip).centered();
+	private Button paste = new Button("Coller", this, (COP.width+260+60)/2,COP.height/2+50, 60, 23).centered();
 	
 	public Main(GameContainer container, GameStateMenu state) throws SlickException {
 		super(container, "Call Of Paper", state);
-		this.choices = new ArrayList<Button>(Arrays.asList(solo,server,client,quit, paste));
+		this.choices = new ArrayList<Button>(Arrays.asList(solo,server,client,quit, paste, mapeditor));
 		this.titleX=width/2-50;
 	}
 
@@ -75,7 +78,21 @@ public class Main extends Menu{
 		}else if(source==quit){
 			container.exit();
 		}else if(source==paste){
-			ip.setText(Utils.getClipBoard());;
+			ip.setText(Utils.getClipBoard());
+		}else if(source==mapeditor){
+			float xscale = (float)840/(float)(GSMapEditor.map.dimX*TextureLoader.textureRes);
+			float yscale = (float)480/(float)(GSMapEditor.map.dimY*TextureLoader.textureRes);
+			float optimalScale = xscale > yscale ? yscale : xscale;
+			optimalScale -= optimalScale%0.25f;
+			GSMapEditor.optimalScale=optimalScale;
+			GSMapEditor.scale=optimalScale;
+			float c = TextureLoader.textureRes*optimalScale;
+			if(c*GSMapEditor.map.dimX<=COP.width-168)
+				GSMapEditor.mapx=(int)(168+COP.width-c*GSMapEditor.map.dimX)/2;
+			if(c*GSMapEditor.map.dimY<=480)
+				GSMapEditor.mapy=(int)(480-c*GSMapEditor.map.dimY)/2;
+
+			COP.instance.enterState(GSMapEditor.ID);
 		}
 				
 	}
