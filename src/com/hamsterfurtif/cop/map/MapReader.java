@@ -128,7 +128,7 @@ public class MapReader {
         	for(int x=0; x<m.dimX;x++){
         		if(!dic.containsKey(map[y][x].name)){
         			dic.put(map[y][x].name, Utils.alphabet.charAt(dic.size()));
-        			lines.add(dic.size()+1, map[y][x].name+">"+ Utils.alphabet.charAt(dic.size()-1));
+        			lines.add(dic.size()+2, map[y][x].name+">"+ Utils.alphabet.charAt(dic.size()-1));
         		}
         		line += dic.get(map[y][x].name)+"|";
    

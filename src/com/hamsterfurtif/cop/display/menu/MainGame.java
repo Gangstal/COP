@@ -42,7 +42,7 @@ public class MainGame extends Menu {
 		move = new Button("Bouger", this, 0, 0, this.width, 50){
 			@Override
 			public void additionalRender(Graphics g){
-				g.drawImage(TextureLoader.loadTexture("GUI\\move.gif").getScaledCopy(50, 50) , this.getWidth()-50, this.getY());
+				g.drawImage(TextureLoader.loadTexture("GUI\\move.png").getScaledCopy(50, 50) , this.getWidth()-50, this.getY());
 				g.setColor(Color.gray);
 				g.fillRect(0, this.getY()+this.getHeight(), this.getWidth(), 50);
 				g.setColor(Color.darkGray);
@@ -75,21 +75,21 @@ public class MainGame extends Menu {
 		endTurn = new Button("Fin du tour", this, 0, 480, this.width, 120){
 			@Override
 			public void additionalRender(Graphics g){
-				g.drawImage(TextureLoader.loadTexture("GUI\\endturn.gif").getScaledCopy(50, 50) , this.getWidth()/2-25,this.getY()+this.getHeight()/2);;
+				g.drawImage(TextureLoader.loadTexture("GUI\\endturn.png").getScaledCopy(50, 50) , this.getWidth()/2-25,this.getY()+this.getHeight()/2);;
 			}
 		}.setTextPlacement(TextPlacement.CENTERED).setTextMargins(0, 15);
 
 		showGrid = new Button("Grille", this, 0, 430, this.width, 50){
 			@Override
 			public void additionalRender(Graphics g){
-				g.drawImage(TextureLoader.loadTexture("GUI\\show_grid.gif").getScaledCopy(50, 50), this.getWidth()-50,this.getY());
+				g.drawImage(TextureLoader.loadTexture("GUI\\show_grid.png").getScaledCopy(50, 50), this.getWidth()-50,this.getY());
 			}
 		}.setTextPlacement(TextPlacement.LEFT);
 
 		reload = new Button("Recharger", this, 0, 380, this.width, 50){
 			@Override
 			public void additionalRender(Graphics g){
-				g.drawImage(TextureLoader.loadTexture("GUI\\reload.gif").getScaledCopy(50, 50), this.getWidth()-50,this.getY());
+				g.drawImage(TextureLoader.loadTexture("GUI\\reload.png").getScaledCopy(50, 50), this.getWidth()-50,this.getY());
 				if(state.currentPlayer.turnIsOver){
 					g.setColor(color_red);
 					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());

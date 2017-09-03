@@ -8,6 +8,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.AbstractComponent;
 
+import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
@@ -24,10 +25,12 @@ public class PlayerAmount extends Menu{
 	private Button minus = new Button("-", this, 275, 160, 20, 20).setTextPlacement(TextPlacement.CENTERED);
 	
 	public Button confirmer = new Button("Confirmer", this, width/2, height-80, 100, 30).centered();
+	public Button quit = new Button("Quitter", this, COP.width-168, 550, 168, 50);
 
+	
 	public PlayerAmount(GameContainer container, GameStateMenu state2) throws SlickException {
 		super(container, "Nombre de joueurs", state2);
-		choices = new ArrayList<Button>(Arrays.asList(plus, minus, confirmer));
+		choices = new ArrayList<Button>(Arrays.asList(plus, minus, confirmer, quit));
 	}
 
 	@Override
@@ -48,6 +51,14 @@ public class PlayerAmount extends Menu{
 			playercount++;
 		else if(source==minus && playercount>1)
 			playercount--;
+		else if(source == quit){
+			try {
+				this.state.currentMenu = new Main(container, state);
+			} catch (SlickException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		players.setText(""+playercount);
 	}
 	

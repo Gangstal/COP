@@ -1,7 +1,5 @@
 package com.hamsterfurtif.cop.gamestates;
 
-import java.io.IOException;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -17,7 +15,6 @@ import com.hamsterfurtif.cop.display.menu.MapEditor;
 import com.hamsterfurtif.cop.display.poseffects.MapEditorSelect;
 import com.hamsterfurtif.cop.map.Map;
 import com.hamsterfurtif.cop.map.MapPos;
-import com.hamsterfurtif.cop.map.MapReader;
 import com.hamsterfurtif.cop.map.tiles.Tile;
 import com.hamsterfurtif.cop.statics.Tiles;
 
@@ -45,20 +42,12 @@ public class GSMapEditor extends GameStateMenu {
 	private GameContainer container;
 
 	public static Map map;
+	public static String mapname;
 
 	@Override
 	public void init(GameContainer container, StateBasedGame state) throws SlickException {
 		this.currentMenu = new MapEditor(container, this);
 		this.container = container;
-		try {
-			GSMapEditor.map = MapReader.readMap("test.txt");
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	@Override

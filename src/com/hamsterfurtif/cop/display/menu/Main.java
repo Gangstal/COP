@@ -17,8 +17,6 @@ import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.Conn;
 import com.hamsterfurtif.cop.ServerThread;
 import com.hamsterfurtif.cop.Utils;
-import com.hamsterfurtif.cop.display.TextureLoader;
-import com.hamsterfurtif.cop.gamestates.GSMapEditor;
 import com.hamsterfurtif.cop.gamestates.GameStateMenu;
 
 public class Main extends Menu{
@@ -84,19 +82,12 @@ public class Main extends Menu{
 		}else if(source==paste){
 			ip.setText(Utils.getClipBoard());
 		}else if(source==mapeditor){
-			float xscale = (float)840/(float)(GSMapEditor.map.dimX*TextureLoader.textureRes);
-			float yscale = (float)480/(float)(GSMapEditor.map.dimY*TextureLoader.textureRes);
-			float optimalScale = xscale > yscale ? yscale : xscale;
-			optimalScale -= optimalScale%0.25f;
-			GSMapEditor.optimalScale=optimalScale;
-			GSMapEditor.scale=optimalScale;
-			float c = TextureLoader.textureRes*optimalScale;
-			if(c*GSMapEditor.map.dimX<=COP.width-168)
-				GSMapEditor.mapx=(int)(168+COP.width-c*GSMapEditor.map.dimX)/2;
-			if(c*GSMapEditor.map.dimY<=480)
-				GSMapEditor.mapy=(int)(480-c*GSMapEditor.map.dimY)/2;
-
-			COP.instance.enterState(GSMapEditor.ID);
+			try {
+				state.currentMenu = new MapEditorMenu(container, state);
+			} catch (SlickException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 				
 	}

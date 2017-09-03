@@ -12,6 +12,7 @@ import org.newdawn.slick.gui.AbstractComponent;
 import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
 import com.hamsterfurtif.cop.display.TextureLoader;
+import com.hamsterfurtif.cop.gamestates.GSMainMenu;
 import com.hamsterfurtif.cop.gamestates.GSMapEditor;
 import com.hamsterfurtif.cop.gamestates.GSMapEditor.Edit;
 import com.hamsterfurtif.cop.map.MapReader;
@@ -84,6 +85,7 @@ public class MapEditor extends Menu{
 	public BlockButton stone;
 
 	public Button confirm = new Button("Confirmer", this, 0, 550, 168, 50);
+	public Button quit = new Button("Quitter", this, COP.width-168, 550, 168, 50);
 
 
 	public MapEditor(GameContainer container, GSMapEditor state) throws SlickException {
@@ -98,6 +100,7 @@ public class MapEditor extends Menu{
 		grass = new BlockButton(400, this, Tiles.grass);
 	 	stone = new BlockButton(450, this, Tiles.stone);
 	 	choices.add(confirm);
+	 	choices.add(quit);
 	}
 
 	@Override
@@ -107,13 +110,15 @@ public class MapEditor extends Menu{
 			GSMapEditor.mode = ((ModeButton)source).mode;
 		else if(source instanceof BlockButton)
 			GSMapEditor.tile = ((BlockButton)source).tile;
-		if(source==confirm)
+		else if(source==confirm)
 			try {
-				MapReader.writeMap(GSMapEditor.map, "test.txt");
+				MapReader.writeMap(GSMapEditor.map, "assets\\maps\\"+GSMapEditor.mapname+".txt");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		else if(source==quit)
+			COP.instance.enterState(GSMainMenu.ID);
 
 	}
 	

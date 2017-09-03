@@ -64,7 +64,6 @@ public class COP extends StateBasedGame{
 			TextureLoader.load();
 			SoundHandler.loadSounds();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Game.init();
