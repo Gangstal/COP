@@ -19,6 +19,8 @@ public class Tiles {
 	public static Tile door_grass = new TileDoor("Porte en metal", "metal_door", grass);
 	public static Tile stone = new TileFloor("Dalles", "stone");
 	public static Tile door_stone = new TileDoor("Porte en metal", "metal_door", stone);
+	public static Tile water = new TileWindow("Eau", "water");
+	public static Tile planks = new TileFloor("Planches", "planks");
 
 	
 	

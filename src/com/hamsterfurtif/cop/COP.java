@@ -32,7 +32,7 @@ public class COP extends StateBasedGame{
 
 	public static int width = 1008, height = 600;
 	public static COP instance = new COP();
-	private final static String version = "Pre-Alpha -1.8";
+	private final static String version = "Pre-Alpha -1.9.1";
 	public static Image background;
 	public static AppGameContainer app;
 	public static Game game;

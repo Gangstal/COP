@@ -83,8 +83,11 @@ public class MapEditor extends Menu{
 	public BlockButton door_stone;
 	public BlockButton grass;
 	public BlockButton stone;
+	public BlockButton planks;
+	public BlockButton water;
 
-	public Button confirm = new Button("Confirmer", this, 0, 550, 168, 50);
+
+	public Button confirm = new Button("Confirmer", this, COP.width-2*168, 550, 168, 50);
 	public Button quit = new Button("Quitter", this, COP.width-168, 550, 168, 50);
 
 
@@ -99,6 +102,9 @@ public class MapEditor extends Menu{
 		door_stone= new BlockButton(350, this, Tiles.door_stone);
 		grass = new BlockButton(400, this, Tiles.grass);
 	 	stone = new BlockButton(450, this, Tiles.stone);
+	 	planks = new BlockButton(500, this, Tiles.planks);
+	 	water = new BlockButton(550, this, Tiles.water);
+	 	
 	 	choices.add(confirm);
 	 	choices.add(quit);
 	}
