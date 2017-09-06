@@ -13,11 +13,11 @@ import com.hamsterfurtif.cop.display.menu.Main;
 import com.hamsterfurtif.cop.display.menu.PickMap;
 
 public class GSMainMenu extends GameStateMenu {
-	
+
 	  public static final int ID = 0;
-	
+
 	StateBasedGame game;
-	
+
 	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
 		currentMenu = new Main(container, this);
@@ -38,12 +38,13 @@ public class GSMainMenu extends GameStateMenu {
 			g.fillRect(COP.width/2-5, COP.height/3-5, 21*16+10, 12*16+10);
 			if(Game.map != null)
 				Engine.drawMap(g, 1f, COP.width/2, COP.height/3, false, Game.map);
-			
+
 		}
 	}
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+		COP.updatePackets();
 		if(currentMenu instanceof PickMap){
 			PickMap menu = (PickMap)currentMenu;
 			if(!menu.choices.contains(menu.confirmer) && Game.map!=null)

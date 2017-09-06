@@ -6,9 +6,8 @@ public class ServerThread extends Thread {
 
 	public void run() {
 		try {
-			while (true) {
+			while (true)
 				COP.conns.add(new Conn(COP.serverSocket.accept()));
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

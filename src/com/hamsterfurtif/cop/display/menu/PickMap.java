@@ -9,24 +9,23 @@ import org.newdawn.slick.gui.AbstractComponent;
 
 import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
-import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.gamestates.GSPlayerEquip;
 import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.gamestates.GameStateMenu;
 import com.hamsterfurtif.cop.map.MapReader;
 
 public class PickMap extends Menu{
-	
+
 	public Button confirmer = new Button("Confirmer", this, width/2, height-80, 100, 30).centered();
 	public Button quit = new Button("Quitter", this, COP.width-168, 550, 168, 50);
 
-	
+
 	public PickMap(GameContainer container, GameStateMenu state) throws SlickException {
 		super(container, "Choisir une map", state);
 		titleX = this.width/2-60;
-		
+
 		choices.clear();
-		
+
 		ArrayList<String> mapList = MapReader.scanMapFolder("assets\\maps\\");
 		int offset = 0;
 		for(String map : mapList){
@@ -35,7 +34,7 @@ public class PickMap extends Menu{
 		}
 
 		choices.add(quit);
-	
+
 	}
 
 	@Override
@@ -43,19 +42,7 @@ public class PickMap extends Menu{
 		if(source==confirmer){
 			GSPlayerEquip g = (GSPlayerEquip)COP.instance.getState(1);
 			try {
-				g.mainMenu = new PlayerEquip(g.container, g, Game.players.get(0));
-				float xscale = (float)840/(float)(Game.map.dimX*TextureLoader.textureRes);
-				float yscale = (float)480/(float)(Game.map.dimY*TextureLoader.textureRes);
-				float optimalScale = xscale > yscale ? yscale : xscale;
-				optimalScale -= optimalScale%0.25f;
-				Game.optimalScale=optimalScale;
-				Game.scale=optimalScale;
-				float c = TextureLoader.textureRes*optimalScale;
-				if(c*Game.map.dimX<=COP.width-168)
-					Game.mapx=(int)(168+COP.width-c*Game.map.dimX)/2;
-				if(c*Game.map.dimY<=480)
-					Game.mapy=(int)(480-c*Game.map.dimY)/2;
-
+				g.mainMenu = new ConfirmGameSettings(g.container, g);
 			} catch (SlickException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

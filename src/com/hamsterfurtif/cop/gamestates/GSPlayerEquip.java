@@ -6,21 +6,24 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.COP;
-import com.hamsterfurtif.cop.display.menu.ConfirmGameSettings;
+import com.hamsterfurtif.cop.COP.Mode;
 import com.hamsterfurtif.cop.display.menu.Menu;
 import com.hamsterfurtif.cop.display.menu.PlayerEquip;
+import com.hamsterfurtif.cop.display.menu.WaitingForPlayers;
+import com.hamsterfurtif.cop.entities.EntityCharacter;
+import com.hamsterfurtif.cop.inventory.WeaponType;
+import com.hamsterfurtif.cop.packets.PacketCharacterReady;
 
 public class GSPlayerEquip extends GameStateMenu{
 
 	public static final int ID = 1;
-	
-	public int currentPlayer;
+
+	public EntityCharacter currentCharacter;
 	public GameContainer container;
 	public Menu mainMenu;
-	
+
 	@Override
 	public void init(GameContainer container, StateBasedGame game) throws SlickException {
-		currentPlayer=0;
 		this.game=game;
 		currentMenu= mainMenu;
 		this.container = container;
@@ -37,6 +40,7 @@ public class GSPlayerEquip extends GameStateMenu{
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+		COP.updatePackets();
 		if(mainMenu != null)
 			mainMenu.update();
 	}
@@ -45,17 +49,25 @@ public class GSPlayerEquip extends GameStateMenu{
 	public int getID() {
 		return ID;
 	}
-	
-	public void nextPlayer() throws SlickException{
-		currentPlayer++;
-		if(currentPlayer<Game.players.size()){
-			mainMenu = new PlayerEquip(container, this, Game.players.get(currentPlayer));
-			currentMenu=mainMenu;
+
+	public void nextCharacter() throws SlickException {
+		COP.sendPacket(new PacketCharacterReady(currentCharacter.player.id, currentCharacter.id, EntityCharacter.skins.indexOf(currentCharacter.skin), currentCharacter.getWeapon(WeaponType.PRIMARY), currentCharacter.getWeapon(WeaponType.SECONDARY)));
+		if (COP.mode == Mode.SERVER)
+			currentCharacter.configured = true;
+		if (currentCharacter.id + 1 < Game.charactersCount) {
+			currentCharacter = COP.self.characters[currentCharacter.id + 1];
+			mainMenu = new PlayerEquip(container, this, currentCharacter);
+		} else {
+			if (COP.mode == Mode.SERVER) {
+				COP.playersReady++;
+				if (COP.playersReady == Game.playersCount) {
+					COP.instance.enterState(2);
+					return;
+				}
+			}
+			mainMenu = new WaitingForPlayers(container, this);
 		}
-		else{
-			mainMenu = new ConfirmGameSettings(container, this);
-			currentMenu=null;
-		}
+		currentMenu = null;
 	}
 
 }

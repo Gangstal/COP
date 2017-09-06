@@ -4,6 +4,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
 
 import com.hamsterfurtif.cop.display.menu.Button;
+import com.hamsterfurtif.cop.entities.EntityCharacter;
 import com.hamsterfurtif.cop.inventory.Weapon;
 import com.hamsterfurtif.cop.map.tiles.Tile;
 import com.hamsterfurtif.cop.statics.Weapons;
@@ -30,8 +31,8 @@ public class SoundHandler {
 	}
 	
 	private static void loadPlayerSounds() throws SlickException{
-		Player.deathSounds.add(new Sound("\\assets\\sounds\\players\\death1.wav"));
-		Player.deathSounds.add(new Sound("\\assets\\sounds\\players\\death2.wav"));
-		Player.hurtSounds.add(new Sound("\\assets\\sounds\\players\\death1.wav"));
+		EntityCharacter.deathSounds.add(new Sound("\\assets\\sounds\\players\\death1.wav"));
+		EntityCharacter.deathSounds.add(new Sound("\\assets\\sounds\\players\\death2.wav"));
+		EntityCharacter.hurtSounds.add(new Sound("\\assets\\sounds\\players\\death1.wav"));
 	}
 }

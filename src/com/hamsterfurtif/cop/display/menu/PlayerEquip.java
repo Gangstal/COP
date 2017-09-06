@@ -11,21 +11,21 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.AbstractComponent;
 
 import com.hamsterfurtif.cop.COP;
-import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
+import com.hamsterfurtif.cop.entities.EntityCharacter;
 import com.hamsterfurtif.cop.gamestates.GSPlayerEquip;
 import com.hamsterfurtif.cop.gamestates.GameStateMenu;
 import com.hamsterfurtif.cop.inventory.WeaponType;
 
 public class PlayerEquip extends Menu{
-	
+
 	private String princName = "Aucune actuellement";
 	private String secName   = "Aucune actuellement";
 	private Image picture;
-	private Player player;
-	
+	private EntityCharacter player;
+
 	public Button appearance = new Button("Changer son apparence", this, 50, 80, 320, 25){
-		
+
 		@Override
 		public void additionalRender(Graphics g){
 			if(picture != null){
@@ -37,32 +37,32 @@ public class PlayerEquip extends Menu{
 	}.setTextPlacement(TextPlacement.LEFT);
 
 	public Button princ = new Button("Arme principale", this, 50, 160, 160, 25){
-		
+
 		@Override
 		public void additionalRender(Graphics g){
 			g.setColor(Color.white);
 			g.drawString(princName, 50, this.getY()+25);
 		}
-		
+
 	}.setTextPlacement(TextPlacement.LEFT);
-	
+
 	public Button sec = new Button("Arme secondaire", this, 50, 240, 160, 25){
-		
+
 		@Override
 		public void additionalRender(Graphics g){
 			g.setColor(Color.white);
 			g.drawString(secName, 50, this.getY()+25);
 		}
-		
+
 	}.setTextPlacement(TextPlacement.LEFT);
-	
+
 	private TextInput playername = new TextInput(this, 50, 360, 160, 25, "");
 
-	
-	
+
+
 	public Button confirmer = new Button("Confirmer", this, width/4, height-60, 140, 40).centered();
-	
-	public PlayerEquip(GameContainer container, GameStateMenu state, Player player) throws SlickException {
+
+	public PlayerEquip(GameContainer container, GameStateMenu state, EntityCharacter player) throws SlickException {
 		super(container, "Équipement des joueurs", state);
 		this.choices = new ArrayList<Button>(Arrays.asList(appearance, princ,sec, confirmer));
 		width= COP.width/4;
@@ -71,7 +71,7 @@ public class PlayerEquip extends Menu{
 		titleY = 40;
 		this.player=player;
 		playername.setText(player.name);
-		
+
 		if(player.inventory.primary != null)
 			princName = player.inventory.primary.name;
 		if(player.inventory.secondary != null)
@@ -104,9 +104,10 @@ public class PlayerEquip extends Menu{
 				if(state instanceof GSPlayerEquip){
 					player.name=playername.getText();
 					player.reset();
+					playername.deactivate();
 					GSPlayerEquip s = (GSPlayerEquip)state;
 					try {
-						s.nextPlayer();
+						s.nextCharacter();
 					} catch (SlickException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -114,15 +115,15 @@ public class PlayerEquip extends Menu{
 				}
 			}
 		}
-		
+
 	}
-	
+
 	@Override
-	public void render(Graphics g) { 
+	public void render(Graphics g) {
 		g.drawString(name, titleX+x, titleY+y);
 		for(Button button : choices)
 			button.render(g);
-		
+
 		playername.render(container, g);
 
 	}
@@ -135,5 +136,5 @@ public class PlayerEquip extends Menu{
 		if(player.skin != null && (picture == null || !picture.equals(player.skin.getScaledCopy(2))))
 			picture = player.skin.getScaledCopy(2);
 	}
-	
+
 }

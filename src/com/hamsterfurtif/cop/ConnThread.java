@@ -1,5 +1,8 @@
 package com.hamsterfurtif.cop;
 
+import com.hamsterfurtif.cop.packets.Packet;
+import com.hamsterfurtif.cop.packets.types.PacketTypes;
+
 public class ConnThread extends Thread {
 	public Conn conn;
 
@@ -9,13 +12,13 @@ public class ConnThread extends Thread {
 
 	public void run() {
 		try {
+			Packet packet;
 			while (true) {
-				String packet = conn.in.readLine();
-				System.out.println("Packet received: [" + packet + "]");
-				synchronized (COP.packets) {
-					COP.packets.add(packet);
+				if ((packet = PacketTypes.readPacket(conn.in, conn)) != null) {
+					synchronized (COP.packets) {
+						COP.packets.add(packet);
+					}
 				}
-				COP.sendPacket(packet, conn);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);

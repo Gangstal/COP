@@ -1,2 +1,2 @@
-10.218.24.2
+localhost
 false

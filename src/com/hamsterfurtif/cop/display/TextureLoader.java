@@ -8,9 +8,9 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import com.hamsterfurtif.cop.COP;
-import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.display.menu.Button;
+import com.hamsterfurtif.cop.entities.EntityCharacter;
 import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.map.tiles.Tile;
 import com.hamsterfurtif.cop.statics.Tiles;
@@ -54,11 +54,11 @@ public abstract class TextureLoader {
 	
 	public static void loadPlayerSkins() throws FileNotFoundException, SlickException{
 		File folder = new File("assets\\textures\\sprites\\players\\");
-		Player.skins = new ArrayList<Image>();
+		EntityCharacter.skins = new ArrayList<Image>();
 		
 		for (File fileEntry : folder.listFiles()) 
 		      if (!fileEntry.isDirectory() && Utils.getFileExtension(fileEntry).equals("png"))
-		    	  Player.skins.add(new Image("assets\\textures\\sprites\\players\\"+fileEntry.getName()));
+		    	  EntityCharacter.skins.add(new Image("assets\\textures\\sprites\\players\\"+fileEntry.getName()));
 	}
 	
 	public static Image loadTexture(String location, int filter){

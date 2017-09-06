@@ -1,6 +1,8 @@
 package com.hamsterfurtif.cop.statics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.hamsterfurtif.cop.inventory.Weapon;
 import com.hamsterfurtif.cop.inventory.WeaponType;
@@ -9,18 +11,17 @@ public class Weapons {
 
 	public static ArrayList<Weapon> primary   = new ArrayList<Weapon>();
 	public static ArrayList<Weapon> secondary = new ArrayList<Weapon>();
-	
-	private static WeaponType PRIMARY = WeaponType.PRIMARY;
-	private static WeaponType SECONDARY = WeaponType.SECONDARY;
+
+	public static final Map<String, Weapon> weaponsByID = new HashMap<String, Weapon>();
 
 	//				Weapon("name", range, damage, ammo)
-	
-	public static Weapon shotgun = new Weapon("Shotgun", 5, 10, 2, PRIMARY);
-	public static Weapon AR = new Weapon("AR", 10, 7, 4, PRIMARY);
-	
-	public static Weapon handgun = new Weapon("Handgun", 7, 3, 3, SECONDARY);
-	public static Weapon revolver = new Weapon("Revolver", 5, 4, 2, SECONDARY); 
-	
+
+	public static Weapon shotgun	= new Weapon("shotgun", "Shotgun", 5, 10, 2, WeaponType.PRIMARY);
+	public static Weapon AR			= new Weapon("ar", "AR", 10, 7, 4, WeaponType.PRIMARY);
+
+	public static Weapon handgun	= new Weapon("handgun", "Handgun", 7, 3, 3, WeaponType.SECONDARY);
+	public static Weapon revolver	= new Weapon("revolver", "Revolver", 5, 4, 2, WeaponType.SECONDARY);
+
 	public static ArrayList<Weapon> getWeaponsByType(WeaponType type){
 		switch (type) {
 		case PRIMARY:
@@ -30,5 +31,9 @@ public class Weapons {
 			return secondary;
 		}
 	}
-	
+
+	public static Weapon getWeaponByID(String id) {
+		return weaponsByID.get(id);
+	}
+
 }

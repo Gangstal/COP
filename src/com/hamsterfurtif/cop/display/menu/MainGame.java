@@ -11,14 +11,17 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.AbstractComponent;
 
 import com.hamsterfurtif.cop.COP;
-import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
 import com.hamsterfurtif.cop.display.Engine;
 import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.display.poseffects.MoveSelect;
+import com.hamsterfurtif.cop.entities.EntityCharacter;
 import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.inventory.Weapon;
 import com.hamsterfurtif.cop.inventory.WeaponType;
+import com.hamsterfurtif.cop.packets.PacketChangeWeapon;
+import com.hamsterfurtif.cop.packets.PacketNextPlayer;
+import com.hamsterfurtif.cop.packets.PacketReload;
 
 public class MainGame extends Menu {
 
@@ -48,19 +51,19 @@ public class MainGame extends Menu {
 				g.setColor(Color.darkGray);
 				g.drawRect(0, this.getY()+this.getHeight(), this.getWidth()-1, 49);
 
-				String stats = game.currentPlayer.movesLeft+"/"+game.currentPlayer.maxMoves;
+				String stats = game.currentCharacter.movesLeft+"/"+game.currentCharacter.maxMoves;
 				Font font = g.getFont();
 				int w = font.getWidth(stats);
 				int h = font.getLineHeight();
 				int xpos = this.getX()-(w-this.getWidth())/2;
 				int ypos = this.getY()-(h-this.getHeight())/2+50;
-				if(game.currentPlayer.movesLeft>0)
+				if(game.currentCharacter.player == COP.self && game.currentCharacter.movesLeft>0)
 					g.setColor(Color.black);
 				else
 					g.setColor(Color.red);
 				g.drawString(stats, xpos, ypos);
-				
-				if(state.currentPlayer.turnIsOver || state.currentPlayer.movesLeft==0){
+
+				if(game.currentCharacter.player != COP.self || state.currentCharacter.turnIsOver || state.currentCharacter.movesLeft==0){
 					g.setColor(color_red);
 					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 				}
@@ -75,6 +78,10 @@ public class MainGame extends Menu {
 		endTurn = new Button("Fin du tour", this, 0, 480, this.width, 120){
 			@Override
 			public void additionalRender(Graphics g){
+				if (game.currentCharacter.player != COP.self) {
+					g.setColor(color_red);
+					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+				}
 				g.drawImage(TextureLoader.loadTexture("GUI\\endturn.png").getScaledCopy(50, 50) , this.getWidth()/2-25,this.getY()+this.getHeight()/2);;
 			}
 		}.setTextPlacement(TextPlacement.CENTERED).setTextMargins(0, 15);
@@ -90,7 +97,7 @@ public class MainGame extends Menu {
 			@Override
 			public void additionalRender(Graphics g){
 				g.drawImage(TextureLoader.loadTexture("GUI\\reload.png").getScaledCopy(50, 50), this.getWidth()-50,this.getY());
-				if(state.currentPlayer.turnIsOver){
+				if (game.currentCharacter.player != COP.self || state.currentCharacter.turnIsOver) {
 					g.setColor(color_red);
 					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 				}
@@ -104,7 +111,7 @@ public class MainGame extends Menu {
 				g.fillRect(0, this.getY()+49, this.getWidth(), 91);
 				g.setColor(Color.black);
 				g.drawRect(0, this.getY()-1, this.getWidth()-1, 140);
-				Player player = game.currentPlayer;
+				EntityCharacter player = game.currentCharacter;
 				Weapon w = player.inventory.primary;
 				int ypos =  this.getY()+this.getHeight()+5;
 				g.drawImage(w.skin.getScaledCopy(64, 32),this.getWidth()-66, ypos);
@@ -112,7 +119,7 @@ public class MainGame extends Menu {
 				g.drawString("A: "+player.inventory.ammoP+"/"+w.ammo, 5, ypos+30);
 				g.drawString("D: "+w.damage, 5, ypos+45);
 				g.drawString("R: "+w.range, 5, ypos+60);
-				if(state.currentPlayer.turnIsOver){
+				if(game.currentCharacter.player != COP.self || state.currentCharacter.turnIsOver){
 					g.setColor(color_red);
 					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 				}
@@ -131,7 +138,7 @@ public class MainGame extends Menu {
 				g.fillRect(0, this.getY()+49, this.getWidth(), 91);
 				g.setColor(Color.black);
 				g.drawRect(0, this.getY()-1, this.getWidth()-1, 140);
-				Player player = game.currentPlayer;
+				EntityCharacter player = game.currentCharacter;
 				Weapon w = player.inventory.secondary;
 				int ypos =  this.getY()+this.getHeight()+5;
 				g.drawImage(w.skin.getScaledCopy(64, 32),this.getWidth()-66, ypos);
@@ -139,7 +146,7 @@ public class MainGame extends Menu {
 				g.drawString("A: "+player.inventory.ammoS+"/"+w.ammo, 5, ypos+30);
 				g.drawString("D: "+w.damage, 5, ypos+45);
 				g.drawString("R: "+w.range, 5, ypos+60);
-				if(state.currentPlayer.turnIsOver){
+				if(game.currentCharacter.player != COP.self || state.currentCharacter.turnIsOver){
 					g.setColor(color_red);
 					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 				}
@@ -157,52 +164,59 @@ public class MainGame extends Menu {
 	@Override
 	public void componentActivated(AbstractComponent source) {
 		if(choices.contains(source)){
-			
-			
+
+
 			if(source==showGrid)
 				state.showGrid = !state.showGrid;
 			else if(source==endTurn) {
-				state.nextPlayer();
-				state.freelook=false;
-				COP.sendPacket("next_player");
+				if (COP.game.currentCharacter.player == COP.self) {
+					state.nextPlayer();
+					state.freelook=false;
+					COP.sendPacket(new PacketNextPlayer());
+				}
 			}
 			else if(source==primary){
-				Engine.removePosEffect(MoveSelect.class);
-				if(state.shootingMode == WeaponType.PRIMARY) {
-					state.shootingMode=null;
-					state.freelook=true;
-					COP.sendPacket("change_weapon;null");
-				}
-				else {
-					state.freelook=false;
-					state.shootingMode=WeaponType.PRIMARY;
-					COP.sendPacket("change_weapon;primary");
+				if (COP.game.currentCharacter.player == COP.self) {
+					Engine.removePosEffect(MoveSelect.class);
+					if(state.shootingMode == WeaponType.PRIMARY) {
+						state.shootingMode=null;
+						state.freelook=true;
+					}
+					else {
+						state.freelook=false;
+						state.shootingMode=WeaponType.PRIMARY;
+					}
+					COP.sendPacket(new PacketChangeWeapon(state.shootingMode));
 				}
 			}
 			else if(source==secondary){
-				Engine.removePosEffect(MoveSelect.class);
-				if(state.shootingMode == WeaponType.SECONDARY) {
-					state.shootingMode=null;
-					state.freelook=true;
-					COP.sendPacket("change_weapon;null");
-				}
-				else {
-					state.freelook=false;
-					state.shootingMode=WeaponType.SECONDARY;
-					COP.sendPacket("change_weapon;secondary");
+				if (COP.game.currentCharacter.player == COP.self) {
+					Engine.removePosEffect(MoveSelect.class);
+					if(state.shootingMode == WeaponType.SECONDARY) {
+						state.shootingMode=null;
+						state.freelook=true;
+					}
+					else {
+						state.freelook=false;
+						state.shootingMode=WeaponType.SECONDARY;
+					}
+					COP.sendPacket(new PacketChangeWeapon(state.shootingMode));
 				}
 			}
 
-			else if(source==reload && !state.currentPlayer.turnIsOver){
-				Game.reload(state.currentPlayer);
-				state.currentPlayer.turnIsOver=true;
-				COP.sendPacket("reload");
+			else if(source==reload){
+				if (COP.game.currentCharacter.player == COP.self && !state.currentCharacter.turnIsOver) {
+					Game.reload(state.currentCharacter);
+					state.currentCharacter.turnIsOver=true;
+					COP.sendPacket(new PacketReload());
+				}
 			}
 
 			else if(source==move){
-				state.freelook = !state.freelook;
-				state.shootingMode=null;
-				COP.sendPacket("start_moving");
+				if (COP.game.currentCharacter.player == COP.self) {
+					state.freelook = !state.freelook;
+					state.shootingMode=null;
+				}
 			}
 		}
 	}

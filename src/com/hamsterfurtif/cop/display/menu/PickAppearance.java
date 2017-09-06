@@ -8,12 +8,12 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.AbstractComponent;
 
 import com.hamsterfurtif.cop.COP;
-import com.hamsterfurtif.cop.Player;
+import com.hamsterfurtif.cop.entities.EntityCharacter;
 import com.hamsterfurtif.cop.gamestates.GameStateMenu;
 
 public class PickAppearance extends Menu{
 
-	public PickAppearance(GameContainer container, GameStateMenu state, Player player) throws SlickException {
+	public PickAppearance(GameContainer container, GameStateMenu state, EntityCharacter player) throws SlickException {
 		super(container, "Choisir son apparence", state);
 		width= COP.width/2;
 		height=COP.height;
@@ -24,7 +24,7 @@ public class PickAppearance extends Menu{
 		
 		int xoffset = 0;
 		int yoffset = 0;
-		for(Image s : Player.skins){
+		for(Image s : EntityCharacter.skins){
 			s.setFilter(Image.FILTER_NEAREST);
 			
 			Button choice = new Button("", this, s, 50+xoffset, 100+yoffset, 16*3, 16*3){

@@ -2,10 +2,11 @@ package com.hamsterfurtif.cop;
 
 import java.awt.FontFormatException;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.List;
@@ -18,37 +19,52 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.display.TextureLoader;
+import com.hamsterfurtif.cop.display.menu.PlayerEquip;
+import com.hamsterfurtif.cop.entities.EntityCharacter;
 import com.hamsterfurtif.cop.gamestates.GSMainMenu;
 import com.hamsterfurtif.cop.gamestates.GSMapEditor;
 import com.hamsterfurtif.cop.gamestates.GSPlayerEquip;
 import com.hamsterfurtif.cop.gamestates.Game;
+import com.hamsterfurtif.cop.inventory.WeaponType;
 import com.hamsterfurtif.cop.map.MapPos;
+import com.hamsterfurtif.cop.packets.Packet;
+import com.hamsterfurtif.cop.packets.PacketCharacterReady;
+import com.hamsterfurtif.cop.packets.PacketPlayerInfo;
+import com.hamsterfurtif.cop.packets.PacketSendSettings;
 
 public class COP extends StateBasedGame{
 
-	public static final int MODE_CLIENT			= 0;
-	public static final int MODE_SERVER			= 1;
-	public static final int MODE_SINGLEPLAYER	= 2;
+	public enum Mode {
+		CLIENT,
+		SERVER,
+		SINGLEPLAYER,
+	}
 
 	public static int width = 1008, height = 600;
 	public static COP instance = new COP();
-	private final static String version = "Pre-Alpha -1.9.1";
+	private final static String version = "Pre-Alpha -1.10";
 	public static Image background;
 	public static AppGameContainer app;
 	public static Game game;
 	public static Random rd;
 
-	public static int mode;
+	public static Mode mode;
 	public static ServerSocket serverSocket;
 	public static List<Conn> conns;
-	public static List<String> packets;
-	
+	public static List<Packet> packets;
+	public static int selfID;
+	public static Player self;
+	public static Conn serverConn;
+
 	public static String savedip;
 	public static boolean music;
+	public static int playersConnected, playersReady;
+	public static boolean settingsDone;
+	public static boolean started;
 
 
 	public static void main(String[] args) throws SlickException, FontFormatException, IOException{
-		
+		started = false;
 		readSavedIP();
         app = new AppGameContainer(instance, width, height, false);
         app.setShowFPS(false);
@@ -80,41 +96,184 @@ public class COP extends StateBasedGame{
 
 	public static MapPos unserializeMapPos(String args) {
 		String[] sp = args.split(";");
-		return new MapPos(Integer.parseUnsignedInt(sp[0]), Integer.parseUnsignedInt(sp[1]), Integer.parseUnsignedInt(sp[2]));
+		if (sp.length != 3) {
+			System.out.println("WARNING: MapPos should contains 3 coordinates, got " + sp.length);
+			return null;
+		}
+		int[] coords = new int[3];
+		for (int i = 0; i < 3; i++) {
+			try {
+				coords[i] = Integer.parseInt(sp[i]);
+			} catch (NumberFormatException e) {
+				System.out.println("WARNING: \"" + sp[i] + "\" isn't a number");
+				return null;
+			}
+		}
+		return new MapPos(coords[0], coords[1], coords[2]);
 	}
 
-	public static void sendPacket(String packet, Conn ignore) {
+	public static void sendPacket(Packet packet, Conn ignore) {
 		try {
-			System.out.println("Sending packet [" + packet + "]");
-			for (Conn conn : conns) {
-				if (conn != ignore) {
-					conn.out.write(packet + "\n");
-					conn.out.flush();
-				}
+			for (Player player : Game.players) {
+				if (player.conn != null && player.conn != ignore)
+					player.conn.send(packet);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void sendPacket(String packet) {
+	public static void sendPacket(Packet packet) {
 		sendPacket(packet, null);
 	}
-	
+
 	private static void readSavedIP() throws IOException{
-		FileReader fileReader = new FileReader("config.txt");
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        BufferedReader bufferedReader = new BufferedReader(new FileReader("config.txt"));
         savedip = bufferedReader.readLine();
         music = bufferedReader.readLine()=="true" ? true : false;
-        bufferedReader.close();         
+        bufferedReader.close();
 	}
-	
+
 	public static void writeSavedIP(String string) throws IOException{
-		File file = new File("config.txt");
-		FileOutputStream fos = new FileOutputStream(file);
-		fos.write(string.getBytes());
-		fos.write("\n".getBytes());
-		fos.write((music ? "true" : "false").getBytes());
-		fos.close();
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File("config.txt")));
+		bufferedWriter.write(string);
+		bufferedWriter.write("\n");
+		bufferedWriter.write((music ? "true" : "false"));
+		bufferedWriter.close();
+	}
+
+	public static void sendSettings(Conn conn) throws IOException {
+		conn.send(new PacketSendSettings(Game.map, Game.maxHP, Game.maxSpawn));
+	}
+
+	public static void sendSettings() throws IOException {
+		for (Player player : Game.players)
+			if (player.conn != null)
+				sendSettings(player.conn);
+	}
+
+	public static void setupFromSettings() {
+		try {
+			for (int i = 0; i < Game.playersCount; i++) {
+				Player p = Game.players[i];
+				for (int j = 0; j < Game.charactersCount; j++) {
+					EntityCharacter c = p.characters[j];
+					c.repsawnsLeft = Game.maxSpawn;
+					c.health = Game.maxHP;
+				}
+			}
+			float xscale = (float)840/(float)(Game.map.dimX*TextureLoader.textureRes);
+			float yscale = (float)480/(float)(Game.map.dimY*TextureLoader.textureRes);
+			float optimalScale = xscale > yscale ? yscale : xscale;
+			optimalScale -= optimalScale%0.25f;
+			Game.optimalScale=optimalScale;
+			Game.scale=optimalScale;
+			float c = TextureLoader.textureRes*optimalScale;
+			if(c*Game.map.dimX<=COP.width-168)
+				Game.mapx=(int)(168+COP.width-c*Game.map.dimX)/2;
+			if(c*Game.map.dimY<=480)
+				Game.mapy=(int)(480-c*Game.map.dimY)/2;
+			Game.setCharactersInitialSpawn();
+			GSPlayerEquip state = (GSPlayerEquip) COP.instance.getCurrentState();
+			state.currentCharacter = COP.self.characters[0];
+			state.mainMenu = new PlayerEquip(state.container, state, state.currentCharacter);
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void updatePackets() {
+		if (started) {
+			if (mode == Mode.SERVER) {
+				while (true) {
+					Conn conn;
+					synchronized (conns) {
+						if (conns.size() == 0)
+							break;
+						conn = conns.remove(0);
+					}
+					for (Player player : Game.players) {
+						if (!player.used) {
+							player.used = true;
+							player.conn = conn;
+							conn.player = player;
+							try {
+								conn.send(new PacketPlayerInfo(Game.playersCount, Game.charactersCount, player.id));
+							} catch (IOException e) {
+								throw new RuntimeException(e);
+							}
+							break;
+						}
+					}
+					if (settingsDone) {
+						try {
+							sendSettings(conn);
+							for (Player player : Game.players)
+								for (EntityCharacter character : player.characters)
+									if (character.configured)
+										conn.send(new PacketCharacterReady(player.id, character.id, EntityCharacter.skins.indexOf(character.skin), character.getWeapon(WeaponType.PRIMARY), character.getWeapon(WeaponType.SECONDARY)));
+						} catch (IOException e) {
+							throw new RuntimeException(e);
+						}
+					}
+				}
+			}
+			while (true) {
+				Packet packet;
+				synchronized (packets) {
+					if (packets.size() == 0)
+						break;
+					packet = packets.remove(0);
+				}
+				if (packet instanceof PacketPlayerInfo) {
+					Game.playersCount = ((PacketPlayerInfo) packet).playersCount;
+					Game.charactersCount = ((PacketPlayerInfo) packet).charactersCount;
+					selfID = ((PacketPlayerInfo) packet).playerID;
+					setupPlayers();
+					Game.players[0].conn = serverConn;
+				} else if (packet instanceof PacketSendSettings) {
+					Game.map = ((PacketSendSettings) packet).map;
+					Game.maxHP = ((PacketSendSettings) packet).maxHP;
+					Game.maxSpawn = ((PacketSendSettings) packet).maxSpawn;
+					setupFromSettings();
+				} else if (packet instanceof PacketCharacterReady) {
+					if (mode == Mode.SERVER)
+						sendPacket(packet);
+					EntityCharacter c = Game.players[((PacketCharacterReady) packet).playerID].characters[((PacketCharacterReady) packet).characterID];
+					c.skin = EntityCharacter.skins.get(((PacketCharacterReady) packet).skinID);
+					c.inventory.primary = ((PacketCharacterReady) packet).primary;
+					c.inventory.secondary = ((PacketCharacterReady) packet).secondary;
+					c.configured = true;
+					boolean ok = true;
+					for (EntityCharacter character : Game.players[((PacketCharacterReady) packet).playerID].characters) {
+						if (!character.configured) {
+							ok = false;
+							break;
+						}
+					}
+					if (ok) {
+						playersReady++;
+						if (playersReady == Game.playersCount) {
+							instance.enterState(2);
+							return;
+						}
+					}
+				} else {
+					System.out.println("WARNING: Ignoring unexpected packet \"" + packet.pt.name + "\"");
+				}
+			}
+		}
+	}
+
+	public static void setupPlayers() {
+		Game.players = new Player[Game.playersCount];
+		for (int i = 0; i < Game.playersCount; i++) {
+			Game.players[i] = new Player(i, "Joueur " + (i + 1), new EntityCharacter[Game.charactersCount]);
+			for (int j = 0; j < Game.charactersCount; j++)
+				Game.players[i].characters[j] = new EntityCharacter(Game.players[i], j, "Joueur " + (i + 1) + ", personnage " + (j + 1));
+		}
+		COP.self = Game.players[COP.selfID];
+		COP.self.used = true;
 	}
 }
