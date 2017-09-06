@@ -42,7 +42,7 @@ public class COP extends StateBasedGame{
 
 	public static int width = 1008, height = 600;
 	public static COP instance = new COP();
-	private final static String version = "Pre-Alpha -1.10";
+	private final static String version = "Pre-Alpha -1.11.1";
 	public static Image background;
 	public static AppGameContainer app;
 	public static Game game;
@@ -212,7 +212,7 @@ public class COP extends StateBasedGame{
 							for (Player player : Game.players)
 								for (EntityCharacter character : player.characters)
 									if (character.configured)
-										conn.send(new PacketCharacterReady(player.id, character.id, EntityCharacter.skins.indexOf(character.skin), character.getWeapon(WeaponType.PRIMARY), character.getWeapon(WeaponType.SECONDARY)));
+										sendCharacter(conn, character);
 						} catch (IOException e) {
 							throw new RuntimeException(e);
 						}
@@ -244,6 +244,8 @@ public class COP extends StateBasedGame{
 					c.skin = EntityCharacter.skins.get(((PacketCharacterReady) packet).skinID);
 					c.inventory.primary = ((PacketCharacterReady) packet).primary;
 					c.inventory.secondary = ((PacketCharacterReady) packet).secondary;
+					c.name = ((PacketCharacterReady) packet).name;
+					c.reset();
 					c.configured = true;
 					boolean ok = true;
 					for (EntityCharacter character : Game.players[((PacketCharacterReady) packet).playerID].characters) {
@@ -275,5 +277,17 @@ public class COP extends StateBasedGame{
 		}
 		COP.self = Game.players[COP.selfID];
 		COP.self.used = true;
+	}
+
+	public static void sendCharacterToAll(EntityCharacter character) {
+		sendCharacterToAll(character, null);
+	}
+
+	public static void sendCharacterToAll(EntityCharacter character, Conn ignore) {
+		COP.sendPacket(new PacketCharacterReady(character.player.id, character.id, EntityCharacter.skins.indexOf(character.skin), character.getWeapon(WeaponType.PRIMARY), character.getWeapon(WeaponType.SECONDARY), character.name), ignore);
+	}
+
+	public static void sendCharacter(Conn conn, EntityCharacter character) throws IOException {
+		conn.send(new PacketCharacterReady(character.player.id, character.id, EntityCharacter.skins.indexOf(character.skin), character.getWeapon(WeaponType.PRIMARY), character.getWeapon(WeaponType.SECONDARY), character.name));
 	}
 }

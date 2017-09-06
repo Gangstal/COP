@@ -9,6 +9,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.AbstractComponent;
+import org.newdawn.slick.gui.TextField;
 
 import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
@@ -56,7 +57,7 @@ public class PlayerEquip extends Menu{
 
 	}.setTextPlacement(TextPlacement.LEFT);
 
-	private TextInput playername = new TextInput(this, 50, 360, 160, 25, "");
+	private TextInput playername;
 
 
 
@@ -64,6 +65,7 @@ public class PlayerEquip extends Menu{
 
 	public PlayerEquip(GameContainer container, GameStateMenu state, EntityCharacter player) throws SlickException {
 		super(container, "Équipement des joueurs", state);
+		playername = new TextInput(this, 50, 360, 160, 25, "");
 		this.choices = new ArrayList<Button>(Arrays.asList(appearance, princ,sec, confirmer));
 		width= COP.width/4;
 		height=COP.height;
@@ -102,8 +104,8 @@ public class PlayerEquip extends Menu{
 			}
 			else if(source==confirmer){
 				if(state instanceof GSPlayerEquip){
+					playername.setLocation(playername.getX(), playername.getY() + 20);
 					player.name=playername.getText();
-					player.reset();
 					playername.deactivate();
 					GSPlayerEquip s = (GSPlayerEquip)state;
 					try {
@@ -115,7 +117,9 @@ public class PlayerEquip extends Menu{
 				}
 			}
 		}
-
+		if (source instanceof TextInput || source instanceof TextField) {
+			System.out.println(((TextInput) source).getText());
+		}
 	}
 
 	@Override
@@ -129,9 +133,9 @@ public class PlayerEquip extends Menu{
 	}
 
 	public void update(){
-		if(player.inventory.primary != null && princName != player.inventory.primary.name)
+		if(player.inventory.primary != null && !princName.equals(player.inventory.primary.name))
 			princName = player.inventory.primary.name;
-		if(player.inventory.secondary != null && secName != player.inventory.secondary.name)
+		if(player.inventory.secondary != null && !secName.equals(player.inventory.secondary.name))
 			secName = player.inventory.secondary.name;
 		if(player.skin != null && (picture == null || !picture.equals(player.skin.getScaledCopy(2))))
 			picture = player.skin.getScaledCopy(2);

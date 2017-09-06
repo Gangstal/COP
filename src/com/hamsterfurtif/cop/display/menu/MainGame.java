@@ -1,6 +1,5 @@
 package com.hamsterfurtif.cop.display.menu;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.newdawn.slick.Color;
@@ -157,7 +156,7 @@ public class MainGame extends Menu {
 			}
 		};
 
-		choices = new ArrayList<Button>(Arrays.asList(move, endTurn, showGrid, reload, primary, secondary));
+		choices = Arrays.asList(move, endTurn, showGrid, reload, primary, secondary);
 
 	}
 

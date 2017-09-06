@@ -1,7 +1,6 @@
 package com.hamsterfurtif.cop.display.menu;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.newdawn.slick.GameContainer;
@@ -30,7 +29,7 @@ public class ConfirmGameSettings extends Menu {
 
 	public ConfirmGameSettings(GameContainer container, GameStateMenu state) throws SlickException {
 		super(container, "Confirmer les paramètres de jeu", state);
-		choices = new ArrayList<Button>(Arrays.asList(confirmer, plusHP, minusHP, plusLives, minusLives));
+		choices = Arrays.asList(confirmer, plusHP, minusHP, plusLives, minusLives);
 	}
 
 	@Override

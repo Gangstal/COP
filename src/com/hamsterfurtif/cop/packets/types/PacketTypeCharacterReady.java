@@ -16,8 +16,8 @@ public class PacketTypeCharacterReady extends PacketType {
 
 	public Packet readPacket(String args, Conn origin) {
 		String[] sp = args.split(";");
-		if (sp.length != 5) {
-			System.out.println("WARNING: Invalid arguments length, should be 5");
+		if (sp.length != 6) {
+			System.out.println("WARNING: Invalid arguments length, should be 6");
 			return null;
 		}
 		int[] vals = new int[3];
@@ -29,7 +29,7 @@ public class PacketTypeCharacterReady extends PacketType {
 				return null;
 			}
 		}
-		return new PacketCharacterReady(vals[0], vals[1], vals[2], Weapons.getWeaponByID(sp[3]), Weapons.getWeaponByID(sp[4]), origin);
+		return new PacketCharacterReady(vals[0], vals[1], vals[2], Weapons.getWeaponByID(sp[3]), Weapons.getWeaponByID(sp[4]), sp[5], origin);
 	}
 
 	public void writePacket(Packet packet, BufferedWriter out) throws IOException {
@@ -41,7 +41,7 @@ public class PacketTypeCharacterReady extends PacketType {
 	}
 
 	public void writePacket(PacketCharacterReady packet, BufferedWriter out) throws IOException {
-		out.write(name + ";" + packet.playerID + ";" + packet.characterID + ";" + packet.skinID + ";" + packet.primary.id + ";" + packet.secondary.id + "\n");
+		out.write(name + ";" + packet.playerID + ";" + packet.characterID + ";" + packet.skinID + ";" + packet.primary.id + ";" + packet.secondary.id + ";" + packet.name + "\n");
 		out.flush();
 	}
 }

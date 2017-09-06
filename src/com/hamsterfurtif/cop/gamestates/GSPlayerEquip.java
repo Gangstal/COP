@@ -11,8 +11,6 @@ import com.hamsterfurtif.cop.display.menu.Menu;
 import com.hamsterfurtif.cop.display.menu.PlayerEquip;
 import com.hamsterfurtif.cop.display.menu.WaitingForPlayers;
 import com.hamsterfurtif.cop.entities.EntityCharacter;
-import com.hamsterfurtif.cop.inventory.WeaponType;
-import com.hamsterfurtif.cop.packets.PacketCharacterReady;
 
 public class GSPlayerEquip extends GameStateMenu{
 
@@ -51,9 +49,11 @@ public class GSPlayerEquip extends GameStateMenu{
 	}
 
 	public void nextCharacter() throws SlickException {
-		COP.sendPacket(new PacketCharacterReady(currentCharacter.player.id, currentCharacter.id, EntityCharacter.skins.indexOf(currentCharacter.skin), currentCharacter.getWeapon(WeaponType.PRIMARY), currentCharacter.getWeapon(WeaponType.SECONDARY)));
-		if (COP.mode == Mode.SERVER)
+		COP.sendCharacterToAll(currentCharacter);
+		if (COP.mode == Mode.SERVER) {
+			currentCharacter.reset();
 			currentCharacter.configured = true;
+		}
 		if (currentCharacter.id + 1 < Game.charactersCount) {
 			currentCharacter = COP.self.characters[currentCharacter.id + 1];
 			mainMenu = new PlayerEquip(container, this, currentCharacter);

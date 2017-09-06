@@ -47,7 +47,7 @@ public class Game extends GameStateMenu {
 	private boolean leftClick = false;
 	public ArrayList<MapPos> path = new ArrayList<MapPos>();
 	public WeaponType shootingMode=null;
-	public boolean freelook = false;
+	public boolean freelook = true;
 	public static int mapx = 168;
 	public static int mapy=0;
 	private int grabbedx, grabbedy;
@@ -350,7 +350,7 @@ public class Game extends GameStateMenu {
 		}
 
 		currentCharacter.resetTurnStats();
-		freelook = false;
+		freelook = true;
 		shootingMode = null;
 
 	}

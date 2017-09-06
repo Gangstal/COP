@@ -20,6 +20,8 @@ public class PacketTypeChangeWeapon extends PacketType {
 			wt = WeaponType.PRIMARY;
 		} else if (args.equals("secondary")) {
 			wt = WeaponType.SECONDARY;
+		} else if (args.equals("null")) {
+			wt = null;
 		} else {
 			System.out.println("WARNING: Unknown weapong type \"" + args + "\"");
 			return null;
@@ -37,14 +39,13 @@ public class PacketTypeChangeWeapon extends PacketType {
 
 	public void writePacket(PacketChangeWeapon packet, BufferedWriter out) throws IOException {
 		String wtStr;
-		switch (((PacketChangeWeapon) packet).wt) {
-		case PRIMARY:
+		if (((PacketChangeWeapon) packet).wt == WeaponType.PRIMARY) {
 			wtStr = "primary";
-			break;
-		case SECONDARY:
+		} else if (((PacketChangeWeapon) packet).wt == WeaponType.SECONDARY) {
 			wtStr = "secondary";
-			break;
-		default:
+		} else if (((PacketChangeWeapon) packet).wt == null) {
+			wtStr = "null";
+		} else {
 			System.out.println("WARNING: Unknown weapon type");
 			System.out.println("WARNING: Packet not sended");
 			return;

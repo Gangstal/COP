@@ -1,6 +1,8 @@
 package com.hamsterfurtif.cop.display.menu;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -20,14 +22,14 @@ import com.hamsterfurtif.cop.map.tiles.Tile;
 import com.hamsterfurtif.cop.statics.Tiles;
 
 public class MapEditor extends Menu{
-	
+
 	public GSMapEditor state;
-	
+
 	private class ModeButton extends Button{
 
 		public Edit mode;
 		public Image skin;
-		
+
 		public ModeButton(String name, String location, int y, MapEditor me, Edit mode) {
 			super(name, me, 0, y, 168, 50);
 			this.textPlacement = TextPlacement.LEFT;
@@ -35,7 +37,7 @@ public class MapEditor extends Menu{
 			skin = TextureLoader.loadTexture(location);
 			this.mode = mode;
 		}
-		
+
 		public void additionalRender(Graphics g){
 			g.drawImage(skin.getScaledCopy(40, 40), this.getWidth()-45, this.getY()+5);
 			Color color = new Color(Color.green);
@@ -45,13 +47,13 @@ public class MapEditor extends Menu{
 				g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 			}
 		}
-		
+
 	}
-	
+
 	private class BlockButton extends Button{
 		public Tile tile;
 		public Image skin;
-		
+
 		public BlockButton(int y, MapEditor me, Tile tile) {
 			super(tile.name, me, 0, y, 168, 50);
 			this.textPlacement = TextPlacement.LEFT;
@@ -59,7 +61,7 @@ public class MapEditor extends Menu{
 			skin = tile.image;
 			this.tile = tile;
 		}
-		
+
 		public void additionalRender(Graphics g){
 			g.drawImage(skin.getScaledCopy(40, 40), this.getWidth()-45, this.getY()+5);
 			Color color = new Color(Color.green);
@@ -70,12 +72,12 @@ public class MapEditor extends Menu{
 			}
 		}
 	}
-	
+
 	public ModeButton freelook = new ModeButton("Vue libre", "GUI\\freelook.png", 0, this, Edit.freelook);
 	public ModeButton single = new ModeButton("Case", "GUI\\single.png", 50, this, Edit.tile);
 	public ModeButton line = new ModeButton("Ligne", "GUI\\line.png", 100, this, Edit.line);
 	public ModeButton square = new ModeButton("Surface", "GUI\\square.png", 150, this, Edit.square);
-	
+
 	//J'aime hardcoder des trucs
 	public BlockButton brick;
 	public BlockButton glass;
@@ -96,6 +98,9 @@ public class MapEditor extends Menu{
 		width = 168;
 		height = COP.height;
 		this.state=state;
+
+		choices = new ArrayList<Button>();
+
 		brick = new BlockButton(200, this, Tiles.wall);
 		glass = new BlockButton(250, this, Tiles.window);
 		door_grass = new BlockButton(300, this, Tiles.door_grass);
@@ -104,14 +109,13 @@ public class MapEditor extends Menu{
 	 	stone = new BlockButton(450, this, Tiles.stone);
 	 	planks = new BlockButton(500, this, Tiles.planks);
 	 	water = new BlockButton(550, this, Tiles.water);
-	 	
-	 	choices.add(confirm);
-	 	choices.add(quit);
+
+	 	choices.addAll(Arrays.asList(confirm, quit));
 	}
 
 	@Override
 	public void componentActivated(AbstractComponent source) {
-				
+
 		if(source instanceof ModeButton)
 			GSMapEditor.mode = ((ModeButton)source).mode;
 		else if(source instanceof BlockButton)
@@ -127,14 +131,14 @@ public class MapEditor extends Menu{
 			COP.instance.enterState(GSMainMenu.ID);
 
 	}
-	
+
 	@Override
 	public void render(Graphics g) {
 		g.setColor(Color.black);
 		g.drawString(name, titleX+x, titleY+y);
 		for(Button button : choices)
 			button.render(g);
-		
+
 	}
 
 }

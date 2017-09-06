@@ -29,7 +29,7 @@ public class PlayerAmount extends Menu{
 	private Button cPlus = new Button("+", this, 380, 185, 20, 20).setTextPlacement(TextPlacement.CENTERED);
 	private Button cMinus = new Button("-", this, 300, 185, 20, 20).setTextPlacement(TextPlacement.CENTERED);
 
-	public Button confirmer = new Button("Confirmer", this, width/2, height-80, 100, 30).centered();
+	public Button confirmer = new Button("Démarrer le serveur", this, width/2, height-80, 300, 30).centered();
 	public Button quit = new Button("Quitter", this, COP.width-168, 550, 168, 50);
 
 

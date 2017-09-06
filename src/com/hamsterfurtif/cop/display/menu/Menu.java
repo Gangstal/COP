@@ -1,6 +1,7 @@
 package com.hamsterfurtif.cop.display.menu;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -16,7 +17,7 @@ public abstract class Menu implements ComponentListener{
 
 
 	public String name;
-	public ArrayList<Button> choices =  new ArrayList<Button>();
+	public List<Button> choices = new ArrayList<Button>();
 	public int x=0, y=0;
 	public int width= COP.width, height=COP.height;
 	public int titleX = width/2, titleY = 20;
@@ -32,8 +33,9 @@ public abstract class Menu implements ComponentListener{
 	public void render(Graphics g) {
 		g.setColor(Color.black);
 		g.drawString(name, titleX+x, titleY+y);
-		for(Button button : choices)
-			button.render(g);
+		if (choices != null)
+			for(Button button : choices)
+				button.render(g);
 	}
 
 	public void update(){};

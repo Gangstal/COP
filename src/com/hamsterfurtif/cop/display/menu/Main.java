@@ -34,8 +34,8 @@ public class Main extends Menu{
 
 	public Main(GameContainer container, GameStateMenu state) throws SlickException {
 		super(container, "Call Of Paper", state);
-		this.choices = new ArrayList<Button>(Arrays.asList(solo,server,client,quit, paste, mapeditor));
-		this.titleX=width/2-50;
+		choices = Arrays.asList(solo,server,client,quit, paste, mapeditor);
+		titleX=width/2-50;
 	}
 
 	@Override
