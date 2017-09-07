@@ -23,6 +23,8 @@ import com.hamsterfurtif.cop.statics.Tiles;
 
 public class MapEditorMenu extends Menu{
 	
+	public static boolean mapAdded = false;
+
 	private boolean newMapSelected = true;
 	
 	private Button newMap = new Button("Nouveau", this, 50, 100, 250, 50);
@@ -36,15 +38,14 @@ public class MapEditorMenu extends Menu{
 
 	public MapEditorMenu(GameContainer container, GameStateMenu state) throws SlickException {
 		super(container, "Choisir un niveau", state);
-		this.choices.add(newMap);
-		this.choices.add(confirm);
-		this.choices.add(quit);
+		choices = new ArrayList<Button>(Arrays.asList(newMap, confirm, quit));
 		ArrayList<String> mapList = MapReader.scanMapFolder("assets\\maps\\");
 		int offset = 60;
 		for(String map : mapList){
 			choices.add(new Button(map.substring(0, map.length()-4), this, 50, offset+height/6, 250, 50).setTextPlacement(TextPlacement.LEFT));
 			offset+=60;
-		}	}
+			}	
+		}
 
 	@Override
 	public void componentActivated(AbstractComponent source) {
@@ -60,7 +61,9 @@ public class MapEditorMenu extends Menu{
 			}
 		}
 		else if(source ==  confirm){
-				
+			dimensionX.setLocation(420*69, 69*420);
+			dimensionY.setLocation(420*69, 69*420);
+			mapName.setLocation(420*69, 69*420);
 			if(newMapSelected){
 				Tile[][] m = new Tile[Integer.parseInt(dimensionY.getText())][Integer.parseInt(dimensionX.getText())];
 				Tile[] fuckyougaston = new Tile[Integer.parseInt(dimensionX.getText())];
@@ -115,6 +118,23 @@ public class MapEditorMenu extends Menu{
 		}
 		else if(GSMapEditor.map != null){
 			Engine.drawMap(g, 0.5f, 400, 150, false, GSMapEditor.map);
+		}
+	}
+	
+	public void update(){
+		if(mapAdded){
+			choices = new ArrayList<Button>(Arrays.asList(newMap, confirm, quit));
+			ArrayList<String> mapList = MapReader.scanMapFolder("assets\\maps\\");
+			int offset = 60;
+			for(String map : mapList){
+				choices.add(new Button(map.substring(0, map.length()-4), this, 50, offset+height/6, 250, 50).setTextPlacement(TextPlacement.LEFT));
+				offset+=60;
+				}
+			dimensionX = new TextInput(this, 550, 100, 100, 20);
+			dimensionY = new TextInput(this, 550, 130, 100, 20);
+			mapName = new TextInput(this, 550, 160, 100, 20);
+
+			mapAdded = false;
 		}
 	}
 

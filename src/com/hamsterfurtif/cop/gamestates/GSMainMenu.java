@@ -45,6 +45,7 @@ public class GSMainMenu extends GameStateMenu {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		COP.updatePackets();
+		currentMenu.update();
 		if(currentMenu instanceof PickMap){
 			PickMap menu = (PickMap)currentMenu;
 			if(!menu.choices.contains(menu.confirmer) && Game.map!=null)
