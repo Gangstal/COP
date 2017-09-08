@@ -67,6 +67,7 @@ public class GSMainMenu extends GameStateMenu {
 			return;
 		}
 		COP.updateRemote();
+		currentMenu.update();
 		if(currentMenu instanceof PickMap){
 			PickMap menu = (PickMap)currentMenu;
 			if(!menu.choices.contains(menu.confirmer) && Game.map!=null)

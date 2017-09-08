@@ -17,6 +17,7 @@ import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.gamestates.GSMainMenu;
 import com.hamsterfurtif.cop.gamestates.GSMapEditor;
 import com.hamsterfurtif.cop.gamestates.GSMapEditor.Edit;
+import com.hamsterfurtif.cop.gamestates.GameStateMenu;
 import com.hamsterfurtif.cop.map.MapReader;
 import com.hamsterfurtif.cop.map.tiles.Tile;
 import com.hamsterfurtif.cop.statics.Tiles;
@@ -127,9 +128,10 @@ public class MapEditor extends Menu{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		else if(source==quit)
+		else if(source==quit){
+			MapEditorMenu.mapAdded = true;
 			COP.instance.enterState(GSMainMenu.ID);
-
+		}
 	}
 
 	@Override
