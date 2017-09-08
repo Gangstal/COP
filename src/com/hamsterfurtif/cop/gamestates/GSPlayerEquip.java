@@ -38,7 +38,7 @@ public class GSPlayerEquip extends GameStateMenu{
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		COP.updatePackets();
+		COP.updateRemote();
 		if(mainMenu != null)
 			mainMenu.update();
 	}

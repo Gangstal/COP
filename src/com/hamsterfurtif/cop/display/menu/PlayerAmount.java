@@ -42,7 +42,7 @@ public class PlayerAmount extends Menu{
 	public void componentActivated(AbstractComponent source) {
 		if(source==confirmer){
 			try {
-				COP.playersConnected = 0;
+				COP.playersConnected = 1;
 				COP.playersReady = 0;
 				COP.settingsDone = false;
 				Game.playersCount = playersCount;

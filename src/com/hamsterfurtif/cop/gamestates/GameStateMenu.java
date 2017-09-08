@@ -8,5 +8,4 @@ import com.hamsterfurtif.cop.display.menu.Menu;
 public abstract class GameStateMenu extends BasicGameState{
 	public 	Menu currentMenu;
 	public  StateBasedGame game;
-
 }

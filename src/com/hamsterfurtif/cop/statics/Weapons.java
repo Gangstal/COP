@@ -2,6 +2,7 @@ package com.hamsterfurtif.cop.statics;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.hamsterfurtif.cop.inventory.Weapon;
@@ -22,7 +23,7 @@ public class Weapons {
 	public static Weapon handgun	= new Weapon("handgun", "Handgun", 7, 3, 3, WeaponType.SECONDARY);
 	public static Weapon revolver	= new Weapon("revolver", "Revolver", 5, 4, 2, WeaponType.SECONDARY);
 
-	public static ArrayList<Weapon> getWeaponsByType(WeaponType type){
+	public static List<Weapon> getWeaponsByType(WeaponType type){
 		switch (type) {
 		case PRIMARY:
 		default:

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -14,6 +15,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.COP.Mode;
 import com.hamsterfurtif.cop.Player;
+import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.display.Engine;
 import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.display.menu.MainGame;
@@ -98,7 +100,7 @@ public class Game extends GameStateMenu {
 		g.drawRect(x, y, 419, 119);
 		g.drawRect(x+420, y, 419, 119);
 
-		drawPlayerInfoBox(x, y, currentCharacter, g);
+		drawCharacterInfoBox(x, y, currentCharacter, g);
 
 
 		if(MouseIsOverMap(mx, my)){
@@ -109,6 +111,7 @@ public class Game extends GameStateMenu {
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
+		COP.checkServerConn();
 		int x=168;
 		float c = TextureLoader.textureRes*scale;
 		while (true) {
@@ -143,7 +146,7 @@ public class Game extends GameStateMenu {
 					shootingMode = null;
 				}
 			} else {
-				System.out.println("WARNING: Ignoring unexpected packet \"" + packet.pt.name + "\"");
+				System.out.println("WARNING: Ignoring unexpected packet \"" + Utils.getPacketID(packet) + "\"");
 			}
 		}
 
@@ -272,14 +275,16 @@ public class Game extends GameStateMenu {
 		}
 	}
 
-	private void drawPlayerInfoBox(int x, int y, EntityCharacter player, Graphics g){
-		g.drawString(player.name, x+10, y+20);
-		g.drawImage(player.skin.getScaledCopy(2.5f), x+420-50, y+10);
+	private void drawCharacterInfoBox(int x, int y, EntityCharacter character, Graphics g){
+		g.drawString(character.name, x+10, y+20);
+		g.drawImage(character.skin.getScaledCopy(2.5f), x+420-50, y+10);
+		Font font = g.getFont();
+		g.drawString(character.player.name, x + 420 - 10 - font.getWidth(character.player.name), y + 125 - 10 - font.getLineHeight());
 		if(Game.maxHP>1){
 			g.setColor(Color.black);
 			g.drawImage(health_end_full, x+10, y+50);
 			for(int i=0; i<Game.maxHP-2;i++){
-				if(player.health>i+1)
+				if(character.health>i+1)
 					g.drawImage(health_middle_full, x+10+17*(i+1), y+50);
 				else
 					g.drawImage(health_middle_empty, x+10+17*(i+1), y+50);
@@ -288,7 +293,7 @@ public class Game extends GameStateMenu {
 			}
 			int i = Game.maxHP-2;
 			g.drawLine(x+9+17*(i+1), y+53, x+9+17*(i+1), y+61);
-			if(player.health==Game.maxHP)
+			if(character.health==Game.maxHP)
 				g.drawImage(health_end_full.getFlippedCopy(true, false),x+10+17*(i+1), y+50);
 			else
 				g.drawImage(health_end_empty.getFlippedCopy(true, false),x+10+17*(i+1), y+50);
@@ -296,7 +301,7 @@ public class Game extends GameStateMenu {
 
 		}
 
-		for(int i=0; i<player.repsawnsLeft;i++){
+		for(int i=0; i<character.repsawnsLeft;i++){
 			g.drawImage(heart, x+20+i*18, y+80);
 		}
 	}
@@ -315,7 +320,7 @@ public class Game extends GameStateMenu {
 			g.drawString("Is Destructible = "+tile.isDestructible, x+10, y+80);
 		}
 		else{
-			drawPlayerInfoBox(x, y, player, g);
+			drawCharacterInfoBox(x, y, player, g);
 		}
 
 	}

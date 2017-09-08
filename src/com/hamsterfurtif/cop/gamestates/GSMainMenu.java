@@ -8,9 +8,11 @@ import org.newdawn.slick.Sound;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.COP;
+import com.hamsterfurtif.cop.COP.ConnState;
 import com.hamsterfurtif.cop.display.Engine;
 import com.hamsterfurtif.cop.display.menu.Main;
 import com.hamsterfurtif.cop.display.menu.PickMap;
+import com.hamsterfurtif.cop.display.menu.WaitingForSettings;
 
 public class GSMainMenu extends GameStateMenu {
 
@@ -44,7 +46,27 @@ public class GSMainMenu extends GameStateMenu {
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		COP.updatePackets();
+		if (COP.serverSockShuttingDown) {
+			if (COP.connState != ConnState.CONNECTING) {
+				COP.connState = ConnState.NOT_CONNECTED;
+				COP.serverSockShuttingDown = false;
+				currentMenu = new Main(container, this);
+			}
+			return;
+		}
+		if (!COP.started && COP.connState == ConnState.CONNECTED) {
+			COP.started = true;
+			COP.playersReady = 0;
+			GSPlayerEquip state = (GSPlayerEquip) COP.instance.getState(1);
+			try {
+				state.mainMenu = new WaitingForSettings(container, state);
+			} catch (SlickException e) {
+				e.printStackTrace();
+			}
+			COP.instance.enterState(1);
+			return;
+		}
+		COP.updateRemote();
 		if(currentMenu instanceof PickMap){
 			PickMap menu = (PickMap)currentMenu;
 			if(!menu.choices.contains(menu.confirmer) && Game.map!=null)

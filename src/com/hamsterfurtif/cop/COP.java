@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.List;
 import java.util.Random;
 
@@ -19,7 +20,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.display.TextureLoader;
+import com.hamsterfurtif.cop.display.menu.ConnectionLost;
 import com.hamsterfurtif.cop.display.menu.PlayerEquip;
+import com.hamsterfurtif.cop.display.menu.ServerRefused;
 import com.hamsterfurtif.cop.entities.EntityCharacter;
 import com.hamsterfurtif.cop.gamestates.GSMainMenu;
 import com.hamsterfurtif.cop.gamestates.GSMapEditor;
@@ -31,8 +34,19 @@ import com.hamsterfurtif.cop.packets.Packet;
 import com.hamsterfurtif.cop.packets.PacketCharacterReady;
 import com.hamsterfurtif.cop.packets.PacketPlayerInfo;
 import com.hamsterfurtif.cop.packets.PacketSendSettings;
+import com.hamsterfurtif.cop.packets.PacketServerFull;
 
 public class COP extends StateBasedGame{
+	public static final String version = "Pre-Alpha -1.11.1";
+	public static final String[] developers = new String[] {
+		"Hamster_Furtif", "gaston147",
+	};
+	public static final String[] contributors = Utils.concat(developers, new String[] {
+		"CactusKipic",
+	});
+	public static final String[] testers = Utils.concat(contributors, new String[] {
+		"H3xiQ", "Haborym Lemegenton Æsahættr",
+	});
 
 	public enum Mode {
 		CLIENT,
@@ -40,9 +54,15 @@ public class COP extends StateBasedGame{
 		SINGLEPLAYER,
 	}
 
+	public enum ConnState {
+		NOT_CONNECTED,
+		CONNECTING,
+		CONNECTED,
+		FAILED,
+	}
+
 	public static int width = 1008, height = 600;
 	public static COP instance = new COP();
-	private final static String version = "Pre-Alpha -1.11.1";
 	public static Image background;
 	public static AppGameContainer app;
 	public static Game game;
@@ -54,17 +74,22 @@ public class COP extends StateBasedGame{
 	public static List<Packet> packets;
 	public static int selfID;
 	public static Player self;
-	public static Conn serverConn;
+	public static Socket sockToServ;
+	public static Conn connToServ;
+	public static boolean serverSockShuttingDown;
 
 	public static String savedip;
 	public static boolean music;
 	public static int playersConnected, playersReady;
 	public static boolean settingsDone;
 	public static boolean started;
+	public static ConnState connState;
 
 
 	public static void main(String[] args) throws SlickException, FontFormatException, IOException{
 		started = false;
+		connState = ConnState.NOT_CONNECTED;
+		serverSockShuttingDown = false;
 		readSavedIP();
         app = new AppGameContainer(instance, width, height, false);
         app.setShowFPS(false);
@@ -87,7 +112,6 @@ public class COP extends StateBasedGame{
 		addState(new GSPlayerEquip());
 		addState(COP.game = new Game());
 		addState(new GSMapEditor());
-
 	}
 
 	public static String serializeMapPos(MapPos mapPos) {
@@ -183,8 +207,9 @@ public class COP extends StateBasedGame{
 		}
 	}
 
-	public static void updatePackets() {
+	public static void updateRemote() {
 		if (started) {
+			COP.checkServerConn();
 			if (mode == Mode.SERVER) {
 				while (true) {
 					Conn conn;
@@ -192,6 +217,15 @@ public class COP extends StateBasedGame{
 						if (conns.size() == 0)
 							break;
 						conn = conns.remove(0);
+					}
+					if (playersConnected == Game.playersCount) {
+						try {
+							conn.send(new PacketServerFull());
+							conn.socket.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						continue;
 					}
 					for (Player player : Game.players) {
 						if (!player.used) {
@@ -217,6 +251,7 @@ public class COP extends StateBasedGame{
 							throw new RuntimeException(e);
 						}
 					}
+					playersConnected++;
 				}
 			}
 			while (true) {
@@ -226,12 +261,22 @@ public class COP extends StateBasedGame{
 						break;
 					packet = packets.remove(0);
 				}
-				if (packet instanceof PacketPlayerInfo) {
+
+				if (packet instanceof PacketServerFull) {
+					try {
+						started = false;
+						sockToServ.close();
+						connState = ConnState.NOT_CONNECTED;
+						((GSPlayerEquip) instance.getCurrentState()).mainMenu = new ServerRefused(instance.getContainer(), (GSPlayerEquip) instance.getCurrentState(), "Le serveur est plein");
+					} catch (SlickException | IOException e) {
+						e.printStackTrace();
+					}
+				} else if (packet instanceof PacketPlayerInfo) {
 					Game.playersCount = ((PacketPlayerInfo) packet).playersCount;
 					Game.charactersCount = ((PacketPlayerInfo) packet).charactersCount;
 					selfID = ((PacketPlayerInfo) packet).playerID;
 					setupPlayers();
-					Game.players[0].conn = serverConn;
+					Game.players[0].conn = connToServ;
 				} else if (packet instanceof PacketSendSettings) {
 					Game.map = ((PacketSendSettings) packet).map;
 					Game.maxHP = ((PacketSendSettings) packet).maxHP;
@@ -262,7 +307,7 @@ public class COP extends StateBasedGame{
 						}
 					}
 				} else {
-					System.out.println("WARNING: Ignoring unexpected packet \"" + packet.pt.name + "\"");
+					System.out.println("WARNING: Ignoring unexpected packet \"" + Utils.getPacketID(packet) + "\"");
 				}
 			}
 		}
@@ -273,7 +318,7 @@ public class COP extends StateBasedGame{
 		for (int i = 0; i < Game.playersCount; i++) {
 			Game.players[i] = new Player(i, "Joueur " + (i + 1), new EntityCharacter[Game.charactersCount]);
 			for (int j = 0; j < Game.charactersCount; j++)
-				Game.players[i].characters[j] = new EntityCharacter(Game.players[i], j, "Joueur " + (i + 1) + ", personnage " + (j + 1));
+				Game.players[i].characters[j] = new EntityCharacter(Game.players[i], j, "?");
 		}
 		COP.self = Game.players[COP.selfID];
 		COP.self.used = true;
@@ -289,5 +334,22 @@ public class COP extends StateBasedGame{
 
 	public static void sendCharacter(Conn conn, EntityCharacter character) throws IOException {
 		conn.send(new PacketCharacterReady(character.player.id, character.id, EntityCharacter.skins.indexOf(character.skin), character.getWeapon(WeaponType.PRIMARY), character.getWeapon(WeaponType.SECONDARY), character.name));
+	}
+
+	public static void checkServerConn() {
+		if (mode == Mode.CLIENT) {
+			if (connToServ.socket.isClosed()) {
+				started = false;
+				connState = ConnState.NOT_CONNECTED;
+				try {
+					GSPlayerEquip state = (GSPlayerEquip) instance.getState(1);
+					state.mainMenu = new ConnectionLost(instance.getContainer(), state);
+					if (state != instance.getCurrentState())
+						instance.enterState(1);
+				} catch (SlickException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }

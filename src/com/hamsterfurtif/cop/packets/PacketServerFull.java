@@ -5,25 +5,25 @@ import java.io.IOException;
 
 import com.hamsterfurtif.cop.Conn;
 
-public class PacketCancelMovement extends Packet {
-	public static final String PACKET_ID = "cancel_movement";
+public class PacketServerFull extends Packet {
+	public static final String PACKET_ID = "server_full";
 
 	public static Packet read(String args, Conn origin) {
 		if (args.length() != 0) {
 			System.out.println("WARNING: No arguments expected");
 			return null;
 		}
-		return new PacketCancelMovement(origin);
+		return new PacketServerFull(origin);
 	}
 
-	public static void write(PacketCancelMovement packet, BufferedWriter out) throws IOException {
+	public static void write(PacketServerFull packet, BufferedWriter out) throws IOException {
 	}
 
-	public PacketCancelMovement() {
+	public PacketServerFull() {
 		this(null);
 	}
 
-	public PacketCancelMovement(Conn origin) {
+	public PacketServerFull(Conn origin) {
 		super(origin);
 	}
 }

@@ -1,5 +1,7 @@
 package com.hamsterfurtif.cop;
 
+import java.io.IOException;
+
 import com.hamsterfurtif.cop.packets.Packet;
 import com.hamsterfurtif.cop.packets.types.PacketTypes;
 
@@ -20,8 +22,13 @@ public class ConnThread extends Thread {
 					}
 				}
 			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (IOException e) {
+			System.out.println("Connection reset (" + e.getLocalizedMessage() + ")");
+			try {
+				conn.socket.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 }

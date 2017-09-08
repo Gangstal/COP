@@ -9,24 +9,18 @@ import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.gamestates.GSMainMenu;
 import com.hamsterfurtif.cop.gamestates.GameStateMenu;
 
-public class ServerRefused extends BackMenu {
-	public final String reason;
+public class ConnectionLost extends BackMenu {
 
-	public ServerRefused(GameContainer container, GameStateMenu state, String reason) throws SlickException {
-		super(container, "Impossible de se connecter au serveur", state);
-		this.reason = reason;
+	public ConnectionLost(GameContainer container, GameStateMenu state) throws SlickException {
+		super(container, "Connexion perdu", state);
 	}
 
 
 	public void render(Graphics g) {
 		super.render(g);
-		String[] lines = new String[] { "Le serveur a refusé la connexion pour le motif suivant:", reason };
-		int linesY = (COP.height - lines.length * g.getFont().getLineHeight()) / 2;
-		for (int i = 0; i < lines.length; i++) {
-			String line = lines[i];
-			int w = g.getFont().getWidth(line);
-			g.drawString(line, (COP.width - w) / 2, linesY + i * g.getFont().getLineHeight());
-		}
+		String line = "Connexion au serveur perdu";
+		int w = g.getFont().getWidth(line), h = g.getFont().getLineHeight();
+		g.drawString(line, (COP.width - w) / 2, (COP.height - h) / 2);
 	}
 
 	public void componentActivated(AbstractComponent source) {

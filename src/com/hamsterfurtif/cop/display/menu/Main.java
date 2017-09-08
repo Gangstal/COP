@@ -1,6 +1,7 @@
 package com.hamsterfurtif.cop.display.menu;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,9 +14,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.AbstractComponent;
 
 import com.hamsterfurtif.cop.COP;
+import com.hamsterfurtif.cop.COP.ConnState;
 import com.hamsterfurtif.cop.Conn;
 import com.hamsterfurtif.cop.Utils;
-import com.hamsterfurtif.cop.gamestates.GSPlayerEquip;
 import com.hamsterfurtif.cop.gamestates.GameStateMenu;
 import com.hamsterfurtif.cop.packets.Packet;
 
@@ -62,16 +63,25 @@ public class Main extends Menu{
 			COP.packets = new ArrayList<Packet>();
 			try {
 				if (source == client) {
-					COP.serverConn = new Conn(new Socket(ip.getText(), 42069));
+					COP.connState = ConnState.CONNECTING;
+					new Thread() {
+						public void run() {
+							try {
+								COP.sockToServ = new Socket();
+								COP.sockToServ.connect(new InetSocketAddress(ip.getText(), 42069));
+								COP.connToServ = new Conn(COP.sockToServ);
+								COP.connState = ConnState.CONNECTED;
+							} catch (IOException e) {
+								COP.connState = ConnState.FAILED;
+							}
+						}
+					}.start();
 
-					COP.started = true;
-					GSPlayerEquip state = (GSPlayerEquip) COP.instance.getState(1);
 					try {
-						state.mainMenu = new WaitingForSettings(container, state);
+						state.currentMenu = new Connecting(container, state);
 					} catch (SlickException e) {
 						e.printStackTrace();
 					}
-					COP.instance.enterState(1);
 				} else if (source == server) {
 					try {
 						this.state.currentMenu = new PlayerAmount(container, state);
