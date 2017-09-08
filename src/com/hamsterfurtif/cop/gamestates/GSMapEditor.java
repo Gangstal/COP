@@ -1,5 +1,8 @@
 package com.hamsterfurtif.cop.gamestates;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -19,7 +22,7 @@ import com.hamsterfurtif.cop.map.tiles.Tile;
 import com.hamsterfurtif.cop.statics.Tiles;
 
 public class GSMapEditor extends GameStateMenu {
-	
+
 	public enum Edit{
 		freelook,
 		tile,
@@ -39,6 +42,7 @@ public class GSMapEditor extends GameStateMenu {
 	private int grabbedx, grabbedy;
 	public static Tile tile = Tiles.stone;
 	private MapPos start, finish;
+	private List<MapPos> sel;
 	private GameContainer container;
 
 	public static Map map;
@@ -48,6 +52,7 @@ public class GSMapEditor extends GameStateMenu {
 	public void init(GameContainer container, StateBasedGame state) throws SlickException {
 		this.currentMenu = new MapEditor(container, this);
 		this.container = container;
+		sel = new ArrayList<MapPos>();
 	}
 
 	@Override
@@ -62,8 +67,8 @@ public class GSMapEditor extends GameStateMenu {
 
 	@Override
 	public void update(GameContainer container, StateBasedGame state, int delta) throws SlickException {
-		
-		
+
+
 		Input input = container.getInput();
 		mx = input.getMouseX();
 		my = input.getMouseY();
@@ -73,10 +78,11 @@ public class GSMapEditor extends GameStateMenu {
 			MapPos clickMap = getMapPos(mx-x, my);
 			if(input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && !input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON)){
 				Engine.removePosEffect(MapEditorSelect.class);
+				sel.clear();
 				switch(mode){
 				default:
 					break;
-					
+
 				case freelook:
 					if(!leftClick){
 						grabbedx=mx-mapx;
@@ -91,59 +97,59 @@ public class GSMapEditor extends GameStateMenu {
 							mapy=(int)(480-c*map.dimY)/2;
 					}
 					break;
-					
+
 				case tile:
 					if(!map.getTile(clickMap).equals(tile))
 						map.setTile(clickMap, tile);
 					break;
-					
+
 				case line:
-					if(!leftClick){
-						Engine.addPosEffect(new MapEditorSelect(clickMap, Edit.line));
-						start = clickMap;
+					if (start == null)
+						start = new MapPos(clickMap.X, clickMap.Y, 0);
+					MapPos p1 = new MapPos(start.X, start.Y, 0), p2 = new MapPos(clickMap.X, clickMap.Y, 0);
+					if (p2.Y < p1.Y) {
+						MapPos temp = p2;
+						p2 = p1;
+						p1 = temp;
 					}
-					else if(start != null){
-						 if(finish == null && !clickMap.equals(start) && (clickMap.X == start.X || clickMap.Y == start.Y)){
-							Engine.addPosEffect(new MapEditorSelect(clickMap, Edit.line));
-							finish = clickMap;
-						}
-						else if(finish != null && finish.equals(start)){
-							finish = clickMap;
-						}
-						else if(finish != null){
-							if(finish.X==start.X){
-								finish = new MapPos(finish.X, clickMap.Y, 0);
-								for(int py = Utils.smaller(finish.Y, start.Y); py <= Utils.bigger(finish.Y, start.Y); py++)
-									Engine.addPosEffect(new MapEditorSelect(new MapPos(finish.X, py, 0), Edit.line));
+					int dirX = (p2.X < p1.X ? -1 : 1);
+					int dx = Math.abs(p2.X - p1.X), dy = p2.Y - p1.Y;
+					int linex, liney;
+					int n = 0;
+					if (dx >= dy) {
+						for (linex = 0, liney = 0; linex <= dx; linex++) {
+							sel.add(new MapPos(p1.X + dirX * linex, p1.Y + liney, 0));
+							n += dy;
+							if (n >= (dx + 1) / 2) {
+								n -= dx;
+								liney++;
 							}
-							else if(finish.Y==start.Y){
-								finish = new MapPos(clickMap.X, finish.Y, 0);
-								for(int px = Utils.smaller(finish.X, start.X); px <= Utils.bigger(finish.X, start.X); px++)
-									Engine.addPosEffect(new MapEditorSelect(new MapPos(px, finish.Y, 0), Edit.line));
+						}
+					} else {
+						for (linex = 0, liney = 0; liney <= dy; liney++) {
+							sel.add(new MapPos(p1.X + dirX * linex, p1.Y + liney, 0));
+							n += dx;
+							if (n >= (dy + 1) / 2) {
+								n -= dy;
+								linex++;
 							}
 						}
 					}
 					break;
 				case square:
 					if(!leftClick){
-						Engine.addPosEffect(new MapEditorSelect(clickMap, Edit.line));
 						start = clickMap;
 						finish = clickMap;
 					}
-					else if(start != null){
+					if(start != null){
 						finish = clickMap;
 						for(int px=Utils.smaller(start.X, finish.X); px<=Utils.bigger(start.X, finish.X); px++)
 							for(int py=Utils.smaller(start.Y, finish.Y); py<=Utils.bigger(start.Y, finish.Y); py++)
-								Engine.addPosEffect(new MapEditorSelect(new MapPos(px, py, 0), Edit.square));
-							
-
+								sel.add(new MapPos(px, py, 0));
 					}
-					
-						
-					
 				}
-				
-					
+				for (MapPos p : sel)
+					Engine.addPosEffect(new MapEditorSelect(p, mode));
 			}
 			else if(input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON) && !rightClick && !input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)){
 				if(mode.ordinal() == Edit.values().length-1)
@@ -151,47 +157,24 @@ public class GSMapEditor extends GameStateMenu {
 				else
 					mode = Edit.values()[mode.ordinal()+1];
 			}
-			
+
 			else if(input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON) && !rightClick && input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)){
-				switch(mode){
-					case square:
-						for(int px=Utils.smaller(start.X, finish.X); px<=Utils.bigger(start.X, finish.X); px++)
-								for(int py=Utils.smaller(start.Y, finish.Y); py<=Utils.bigger(start.Y, finish.Y); py++)
-									map.setTile(new MapPos(px, py, 0), tile);
-						start = null;
-						finish = null;
-						break;
-					case line:
-						if(finish.X==start.X){
-							finish = new MapPos(finish.X, clickMap.Y, 0);
-							for(int py = Utils.smaller(finish.Y, start.Y); py <= Utils.bigger(finish.Y, start.Y); py++)
-								map.setTile(new MapPos(finish.X, py, 0), tile);
-						}
-						else if(finish.Y==start.Y){
-							finish = new MapPos(clickMap.X, finish.Y, 0);
-							for(int px = Utils.smaller(finish.X, start.X); px <= Utils.bigger(finish.X, start.X); px++)
-								map.setTile(new MapPos(px, finish.Y, 0), tile);
-						}
-						start = null;
-						finish = null;
-						break;
-				default:
-					break;
-				}
+				for (MapPos p : sel)
+					map.setTile(p, tile);
 			}
 
 			else{
 				start = null;
 				finish = null;
 			}
-			
+
 			if(mode==Edit.tile){
 				Engine.removePosEffect(MapEditorSelect.class);
 				Engine.addPosEffect(new MapEditorSelect(clickMap, Edit.tile));
 			}
 		}
-		
-		
+
+
 		leftClick = input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
 		rightClick = input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON);
 	}
@@ -204,7 +187,7 @@ public class GSMapEditor extends GameStateMenu {
 	private static boolean MouseIsOverMap(int mx, int my){
 		int x=168, y=480;
 		float c = TextureLoader.textureRes*scale;
-		return (mx>x && my<y && mx<COP.width && my>0 && mx>=mapx && my>=mapy && mx<map.dimX*c+mapx && my<map.dimY*c+mapy);	
+		return (mx>x && my<y && mx<COP.width && my>0 && mx>=mapx && my>=mapy && mx<map.dimX*c+mapx && my<map.dimY*c+mapy);
 	}
 
 	private MapPos getMapPos(int xpos, int ypos){
@@ -214,38 +197,38 @@ public class GSMapEditor extends GameStateMenu {
 		int Y =(int)((ypos-ypos%(scale*16))/(scale*16));
 		return new MapPos(X, Y, 0);
 	}
-	
+
 	@Override
 	public void mouseWheelMoved(int offset) {
-		
+
 		int x=168;
 		float c = TextureLoader.textureRes*scale;
-		
+
 		float rx = (mx-mapx)/(c*map.dimX);
 		float ry = (my-mapy)/(c*map.dimY);
-		
+
 		if(offset>0 && scale < 2.5)
 			scale+=0.25;
 		else if(offset<0 && scale > optimalScale)
 			scale-=0.25;
-		
+
 		c = TextureLoader.textureRes*scale;
-		
+
 		int px = (int) (c*map.dimX*rx);
 		int py = (int) (c*map.dimY*ry);
-		
+
 		Input input = this.container.getInput();
 		mx = input.getMouseX();
 		my = input.getMouseY();
-		
+
 		mapx = mx-px;
 		mapy = my-py;
-		
+
 		if(c*map.dimX<=COP.width-x)
 			mapx=(int)(x+COP.width-c*map.dimX)/2;
 		if(c*map.dimY<=480)
 			mapy=(int)(480-c*map.dimY)/2;
 	}
-	
+
 }
 
