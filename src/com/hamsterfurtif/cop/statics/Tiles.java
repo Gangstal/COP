@@ -65,7 +65,6 @@ public class Tiles {
 				}
 			}
 		
-		
 		Tile tile = new CustomTile(name, image, destroy, shoot, walk, grd);
 		return tile;
 	}

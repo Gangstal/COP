@@ -405,13 +405,15 @@ public class Game extends GameStateMenu {
 					kill(target);
 					EntityCharacter.deathSounds.get(r.nextInt(1)).play();
 				}
+				else
+					EntityCharacter.hurtSounds.get(0).play();
 			}
 			else if(map.getTile(pos).isDestructible){
 				map.destroyTile(pos);
 				player.hasShot=true;
 				player.turnIsOver = true;
 				player.inventory.addAmmo(type, -1);
-				Tile.destroy.get(r.nextInt(1)).play(0, 0.5f);;
+				Tile.destroy.get(r.nextInt(1)).play(0.5f,0.5f);
 			}
 
 			return true;
@@ -443,7 +445,6 @@ public class Game extends GameStateMenu {
 
 		do{
 			 p.set(COP.rd.nextInt(map.dimX),COP.rd.nextInt(map.dimY),0);
-
 		}while(!map.getTile(p).canWalkThrough);
 
 		player.pos = p;

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Sound;
 
-import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.statics.Tiles;
 
 public abstract class Tile {

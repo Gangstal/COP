@@ -103,7 +103,6 @@ public class MapReader {
         			args = new String[tilesplit.length-1];
         			System.arraycopy(tilesplit, 1, args, 0, tilesplit.length-1);
         			tile = Tiles.getCustomTile(args);
-        			Utils.print("customtile");
         		}
         		else{
         			tile = Tiles.getTile(dic.get(tilesplit[0].charAt(0)));
@@ -142,7 +141,7 @@ public class MapReader {
         	for(int x=0; x<m.dimX;x++){
         		if(!dic.containsKey(map[y][x].name)){
         			dic.put(map[y][x].name, Utils.alphabet.charAt(dic.size()));
-        			lines.add(dic.size()+2, map[y][x].name+">"+ Utils.alphabet.charAt(dic.size()-1));
+        			lines.add(dic.size()+2, map[y][x].id+">"+ Utils.alphabet.charAt(dic.size()-1));
         		}
         		line += dic.get(map[y][x].name)+"|";
 

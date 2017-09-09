@@ -1,6 +1,7 @@
 package com.hamsterfurtif.cop.display.menu;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
@@ -16,6 +17,7 @@ import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.display.poseffects.MoveSelect;
 import com.hamsterfurtif.cop.entities.EntityCharacter;
 import com.hamsterfurtif.cop.gamestates.Game;
+import com.hamsterfurtif.cop.inventory.Inventory;
 import com.hamsterfurtif.cop.inventory.Weapon;
 import com.hamsterfurtif.cop.inventory.WeaponType;
 import com.hamsterfurtif.cop.packets.PacketChangeWeapon;
@@ -162,9 +164,8 @@ public class MainGame extends Menu {
 
 	@Override
 	public void componentActivated(AbstractComponent source) {
+		Random r = new Random(1);
 		if(choices.contains(source)){
-
-
 			if(source==showGrid)
 				state.showGrid = !state.showGrid;
 			else if(source==endTurn) {
@@ -208,6 +209,7 @@ public class MainGame extends Menu {
 					Game.reload(state.currentCharacter);
 					state.currentCharacter.turnIsOver=true;
 					COP.sendPacket(new PacketReload());
+					Inventory.reloadSounds.get(r.nextInt(1)).play();
 				}
 			}
 

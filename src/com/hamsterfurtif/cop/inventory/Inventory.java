@@ -1,11 +1,17 @@
 package com.hamsterfurtif.cop.inventory;
 
+import java.util.ArrayList;
+
+import org.newdawn.slick.Sound;
+
 public class Inventory {
 	
 	public Weapon primary;
 	public Weapon secondary;
 	
 	public int ammoP, ammoS;
+	
+	public static ArrayList<Sound> reloadSounds = new ArrayList<Sound>();
 	
 	public void setAmmo(WeaponType type, int qtt){
 		switch (type){
