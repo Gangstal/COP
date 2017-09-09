@@ -1,11 +1,11 @@
 unlocked
 21
 12
-Herbe>A
-Fenetre>B
-Mur de brique>C
-Porte en metal>D
-Dalles>E
+grass>A
+bricks_window>B
+brick_wall>C
+metal_door>D
+stone_slab>E
 A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|
 A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|
 A|A|A|A|A|B|A|A|A|C|C|B|B|C|C|D|C|C|A|A|A|
@@ -14,7 +14,7 @@ A|A|A|A|A|B|A|A|A|B|E|E|E|E|E|E|E|C|A|A|A|
 A|A|A|A|A|A|A|A|A|C|C|C|C|D|D|E|E|C|A|A|A|
 A|A|A|A|A|A|A|A|A|E|E|E|E|E|E|E|E|C|A|A|A|
 A|A|A|A|A|A|A|A|A|C|E|E|E|E|C|B|C|C|A|A|A|
-D|A|A|A|D|A|A|A|A|C|E|E|E|E|E|E|E|C|A|A|A|
+D|A|A|A|D|A|A|A|A|custom_tile:name=I dab on the haters:walk=false:shoot=false:destroy=false:texture=stone|E|E|E|E|E|E|E|C|A|A|A|
 A|A|A|D|D|A|A|A|A|C|C|C|C|C|C|C|C|C|A|A|A|
 A|D|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|
 A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|

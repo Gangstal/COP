@@ -97,7 +97,17 @@ public class MapReader {
         	String[] split = line.split("\\|");
         	for(int x=0;x<resX;x++){
         		String[] tilesplit = split[x].split(":");
-        		Tile tile = Tiles.getTile(dic.get(tilesplit[0].charAt(0)));
+        		String[] args ;
+        		Tile tile;
+        		if(tilesplit[0].equals("custom_tile")){
+        			args = new String[tilesplit.length-1];
+        			System.arraycopy(tilesplit, 1, args, 0, tilesplit.length-1);
+        			tile = Tiles.getCustomTile(args);
+        			Utils.print("customtile");
+        		}
+        		else{
+        			tile = Tiles.getTile(dic.get(tilesplit[0].charAt(0)));
+        		}
         		map[y][x]=tile;
         	}
         	y++;
