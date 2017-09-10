@@ -105,7 +105,7 @@ public class MapReader {
         			tile = Tiles.getCustomTile(args);
         		}
         		else{
-        			tile = Tiles.getTile(dic.get(tilesplit[0].charAt(0)));
+        			tile = Tiles.getTile(dic.get(tilesplit[0].charAt(0)), false);
         		}
         		map[y][x]=tile;
         	}

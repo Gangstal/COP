@@ -37,7 +37,7 @@ import com.hamsterfurtif.cop.packets.PacketSendSettings;
 import com.hamsterfurtif.cop.packets.PacketServerFull;
 
 public class COP extends StateBasedGame{
-	public static final String version = "Pre-Alpha -1.11.1";
+	public static final String version = "Pre-Alpha -1.13";
 	public static final String[] developers = new String[] {
 		"Hamster_Furtif", "gaston147",
 	};
@@ -107,7 +107,6 @@ public class COP extends StateBasedGame{
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		Game.init();
 		addState(new GSMainMenu());
 		addState(new GSPlayerEquip());
 		addState(COP.game = new Game());

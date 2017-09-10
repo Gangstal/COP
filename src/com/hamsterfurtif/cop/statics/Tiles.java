@@ -25,14 +25,18 @@ public class Tiles {
 	public static Tile door_stone = new TileDoor("metal_door", "Porte en metal", "metal_door", stone);
 	public static Tile water = new TileWindow("water", "Eau", "water");
 	public static Tile planks = new TileFloor("planks", "Planches", "planks");
-
+	public static Tile ceramic_tiles = new TileFloor("ceramic_tiles", "Carrelage", "tiles");
 	
 	
-	public static Tile getTile(String id){
+	
+	public static Tile getTile(String id, boolean allowNullResult){
 		for(Tile t : Tiles.tiles)
 			if(t.id.equals(id))
 				return t;
-		return Tiles.grass;
+		if(allowNullResult)
+			return Tiles.grass;
+		else
+			return null;
 	}
 	
 	public static Tile getCustomTile(String[] args){
@@ -45,7 +49,7 @@ public class Tiles {
 			String[] split = arg.split("=");
 			switch(split[0]){
 				case "ground":
-					grd = Tiles.getTile(split[1]);
+					grd = Tiles.getTile(split[1], false);
 					break;
 				case "texture":
 					Utils.print(split[1]);

@@ -12,6 +12,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.AbstractComponent;
 
 import com.hamsterfurtif.cop.COP;
+import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
 import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.gamestates.GSMainMenu;
@@ -23,8 +24,11 @@ import com.hamsterfurtif.cop.statics.Tiles;
 
 public class MapEditor extends Menu{
 
-	public GSMapEditor state;
+	private  ArrayList<InventoryButton> savedtiles = new ArrayList<InventoryButton>();
+	private ArrayList<TileButton> searchedTiles= new ArrayList<TileButton>();
 
+	private String searchedFieldOnPreviousTick = "";
+	
 	private class ModeButton extends Button{
 
 		public Edit mode;
@@ -47,17 +51,15 @@ public class MapEditor extends Menu{
 				g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 			}
 		}
-
 	}
 
-	private class BlockButton extends Button{
+	private class InventoryButton extends Button{
 		public Tile tile;
 		public Image skin;
 
-		public BlockButton(int y, MapEditor me, Tile tile) {
+		public InventoryButton(int y, MapEditor me, Tile tile) {
 			super(tile.name, me, 0, y, 168, 50);
 			this.textPlacement = TextPlacement.LEFT;
-			me.choices.add(this);
 			skin = tile.image;
 			this.tile = tile;
 		}
@@ -66,10 +68,24 @@ public class MapEditor extends Menu{
 			g.drawImage(skin.getScaledCopy(40, 40), this.getWidth()-45, this.getY()+5);
 			Color color = new Color(Color.green);
 			color.a = 0.25f;
-			if(GSMapEditor.tile == tile){
+			if(tile == GSMapEditor.tile){
 				g.setColor(color);
 				g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 			}
+		}
+	}
+	
+	private class TileButton extends Button{
+
+		public Tile tile;
+
+		public TileButton( Menu menu, Tile tile) {
+			super("", menu, 0, 0, 36, 36);
+			this.tile = tile;
+		}
+
+		public void additionalRender(Graphics g){
+			g.drawImage(tile.image.getScaledCopy(2), getX()+2, getY()+2);
 		}
 	}
 
@@ -79,19 +95,19 @@ public class MapEditor extends Menu{
 	public ModeButton square = new ModeButton("Surface", "GUI\\square.png", 150, this, Edit.square);
 
 	//J'aime hardcoder des trucs
-	public BlockButton brick;
-	public BlockButton glass;
-	public BlockButton door_grass;
-	public BlockButton door_stone;
-	public BlockButton grass;
-	public BlockButton stone;
-	public BlockButton planks;
-	public BlockButton water;
+	public InventoryButton brick = new InventoryButton(200, this, Tiles.wall);
+	public InventoryButton glass = new InventoryButton(250, this, Tiles.window);
+	public InventoryButton door_grass = new InventoryButton(300, this, Tiles.door_grass);
+	public InventoryButton ceramic= new InventoryButton(350, this, Tiles.ceramic_tiles);
+	public InventoryButton grass = new InventoryButton(400, this, Tiles.grass);
+	public InventoryButton stone = new InventoryButton(450, this, Tiles.stone);
+	public InventoryButton planks = new InventoryButton(500, this, Tiles.planks);
+	public InventoryButton water = new InventoryButton(550, this, Tiles.water);
 
+	public Button confirm = new Button("Confirmer", this, COP.width-168, 480, 168, 60);
+	public Button quit = new Button("Quitter", this, COP.width-168, 540, 168, 60);
 
-	public Button confirm = new Button("Confirmer", this, COP.width-2*168, 550, 168, 50);
-	public Button quit = new Button("Quitter", this, COP.width-168, 550, 168, 50);
-
+	public TextInput search = new TextInput(this, 170, 482, 168, 20);
 
 	public MapEditor(GameContainer container, GSMapEditor state) throws SlickException {
 		super(container, "", state);
@@ -101,16 +117,15 @@ public class MapEditor extends Menu{
 
 		choices = new ArrayList<Button>();
 
-		brick = new BlockButton(200, this, Tiles.wall);
-		glass = new BlockButton(250, this, Tiles.window);
-		door_grass = new BlockButton(300, this, Tiles.door_grass);
-		door_stone= new BlockButton(350, this, Tiles.door_stone);
-		grass = new BlockButton(400, this, Tiles.grass);
-	 	stone = new BlockButton(450, this, Tiles.stone);
-	 	planks = new BlockButton(500, this, Tiles.planks);
-	 	water = new BlockButton(550, this, Tiles.water);
+		
+	
+		
+	 	
+	 	
+	 	
 
 	 	choices.addAll(Arrays.asList(freelook, single, line, square, confirm, quit));
+	 	savedtiles = new ArrayList<InventoryButton>(Arrays.asList(brick, grass, water, planks, ceramic));
 	}
 
 	@Override
@@ -118,13 +133,24 @@ public class MapEditor extends Menu{
 
 		if(source instanceof ModeButton)
 			GSMapEditor.mode = ((ModeButton)source).mode;
-		else if(source instanceof BlockButton)
-			GSMapEditor.tile = ((BlockButton)source).tile;
+		else if(source instanceof InventoryButton)
+			GSMapEditor.tile = ((InventoryButton)source).tile;
+		else if(source instanceof TileButton){
+			for(InventoryButton button : savedtiles){
+				if(button.tile == GSMapEditor.tile){
+					Utils.print("ME ligne 43");
+					GSMapEditor.tile = ((TileButton) source).tile;
+					int k = savedtiles.indexOf(button);
+					savedtiles.remove(button);
+					savedtiles.add(k, new InventoryButton(button.getY(), this, GSMapEditor.tile));
+					break;
+				}
+			}
+		}		
 		else if(source==confirm)
 			try {
 				MapReader.writeMap(GSMapEditor.map, "assets\\maps\\"+GSMapEditor.mapname+".txt");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		else if(source==quit){
@@ -136,9 +162,34 @@ public class MapEditor extends Menu{
 	@Override
 	public void render(Graphics g) {
 		g.setColor(Color.black);
-		g.drawString(name, titleX+x, titleY+y);
+		g.drawRect(168, 480, 840-168, 120-1);
+		g.drawLine(168+172, 480, 168+172, 600);
+		
 		for(Button button : choices)
 			button.render(g);
+		for(int i=0; i<savedtiles.size();i++){
+			if(savedtiles.get(i)!=null){
+				InventoryButton button = savedtiles.get(i);
+				button.setLocation(0, COP.height-250+i*50);
+				button.render(g);
+			}
+		}
+		search.render(container, g);
+		for(int i=0; i<searchedTiles.size();i++){
+			searchedTiles.get(i).setLocation(360+40*i, 490);
+			searchedTiles.get(i).render(g);
+		}
+	}
+	
+	public void update(){
+		if(!search.getText().equals(searchedFieldOnPreviousTick)){
+			searchedFieldOnPreviousTick = search.getText();
+			searchedTiles.clear();
+			for(Tile tile : Tiles.tiles)
+				if(tile.id.contains(search.getText())){
+					searchedTiles.add(new TileButton(this, tile));
+				}
+		}
 
 	}
 

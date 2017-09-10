@@ -18,9 +18,9 @@ public class Weapons {
 
 	//				Weapon("name", range, damage, ammo)
 
-	public static Weapon shotgun	= new Weapon("shotgun", "Shotgun", 5, 10, 2, WeaponType.PRIMARY);
+	public static Weapon shotgun	= new Weapon("shotgun", "Shotgun", 5, 9, 2, WeaponType.PRIMARY);
 	public static Weapon AR			= new Weapon("ar", "AR", 10, 7, 4, WeaponType.PRIMARY);
-	public static Weapon sniper     = new WeaponSniper("sniper", "Sniper", 25, 10, 12, 2, WeaponType.PRIMARY);
+	public static Weapon sniper     = new WeaponSniper("sniper", "Sniper", 25, 8, 12, 2, WeaponType.PRIMARY);
 
 	public static Weapon handgun	= new Weapon("handgun", "Handgun", 7, 3, 3, WeaponType.SECONDARY);
 	public static Weapon revolver	= new Weapon("revolver", "Revolver", 5, 4, 2, WeaponType.SECONDARY);

@@ -67,7 +67,8 @@ public class GSMapEditor extends GameStateMenu {
 
 	@Override
 	public void update(GameContainer container, StateBasedGame state, int delta) throws SlickException {
-
+		
+		currentMenu.update();
 
 		Input input = container.getInput();
 		mx = input.getMouseX();

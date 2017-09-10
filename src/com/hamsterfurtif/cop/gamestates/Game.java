@@ -22,6 +22,7 @@ import com.hamsterfurtif.cop.display.menu.MainGame;
 import com.hamsterfurtif.cop.display.poseffects.MouseHover;
 import com.hamsterfurtif.cop.display.poseffects.MoveSelect;
 import com.hamsterfurtif.cop.entities.EntityCharacter;
+import com.hamsterfurtif.cop.inventory.Inventory;
 import com.hamsterfurtif.cop.inventory.WeaponType;
 import com.hamsterfurtif.cop.map.Map;
 import com.hamsterfurtif.cop.map.MapPos;
@@ -434,10 +435,8 @@ public class Game extends GameStateMenu {
 	public static void reload(EntityCharacter player){
 		player.inventory.ammoP = player.inventory.primary.ammo;
 		player.inventory.ammoS = player.inventory.secondary.ammo;
-	}
-
-	public static void init(){
-
+		Random r = new Random(1);
+		Inventory.reloadSounds.get(r.nextInt(1)).play();
 	}
 
 	private static void kill(EntityCharacter player){
