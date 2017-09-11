@@ -47,7 +47,7 @@ public class Game extends GameStateMenu {
 	public boolean showGrid = false;
 	public boolean movementSelection = false;
 	private int mx, my;
-	private boolean leftClick = false;
+	private boolean leftClick = false, rightClick = false;
 	public ArrayList<MapPos> path = new ArrayList<MapPos>();
 	public WeaponType shootingMode=null;
 	public boolean freelook = true;
@@ -207,7 +207,23 @@ public class Game extends GameStateMenu {
 						}
 					}
 				}
+			} else if(input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON) && !rightClick){
+				if(freelook){
+					freelook = false;
+				}
+				else if(shootingMode==null){
+					shootingMode=WeaponType.PRIMARY;
+				}
+				else if(shootingMode==WeaponType.PRIMARY){
+					shootingMode=WeaponType.SECONDARY;
+				}
+				else if(shootingMode==WeaponType.SECONDARY){
+					shootingMode = null;
+					freelook = true;
+				}
+				COP.sendPacket(new PacketChangeWeapon(shootingMode));
 			}
+
 
 			Engine.removePosEffect(MouseHover.class);
 			if(MouseIsOverMap(mx, my) && !showGrid){
@@ -223,6 +239,8 @@ public class Game extends GameStateMenu {
 			}
 
 			leftClick = input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
+			rightClick = input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON);	
+			
 		}
 		else{
 			if(Math.abs(currentCharacter.xgoffset)>=Math.abs(c) || Math.abs(currentCharacter.ygoffset)>=Math.abs(c) || pathpos==path.size()-1){

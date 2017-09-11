@@ -7,6 +7,7 @@ import org.newdawn.slick.Image;
 import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.map.tiles.Tile;
+import com.hamsterfurtif.cop.map.tiles.TileDestructibleFloor;
 import com.hamsterfurtif.cop.map.tiles.Tile.TileDoor;
 import com.hamsterfurtif.cop.map.tiles.Tile.TileFloor;
 import com.hamsterfurtif.cop.map.tiles.Tile.TileWall;
@@ -26,6 +27,8 @@ public class Tiles {
 	public static Tile water = new TileWindow("water", "Eau", "water");
 	public static Tile planks = new TileFloor("planks", "Planches", "planks");
 	public static Tile ceramic_tiles = new TileFloor("ceramic_tiles", "Carrelage", "tiles");
+	public static Tile destroyed_planks = new TileWindow("destroyed_planks", "Fosse", "destroyed_planks");
+	public static Tile destructible_planks = new TileDestructibleFloor("destructible_planks", "Plancher abimé", "destructible_planks", destroyed_planks);
 	
 	
 	
