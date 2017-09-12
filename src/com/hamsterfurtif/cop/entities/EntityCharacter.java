@@ -6,6 +6,8 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Sound;
 
 import com.hamsterfurtif.cop.Player;
+import com.hamsterfurtif.cop.Utils;
+import com.hamsterfurtif.cop.Utils.Facing;
 import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.inventory.Inventory;
 import com.hamsterfurtif.cop.inventory.Weapon;
@@ -29,6 +31,7 @@ public class EntityCharacter {
 	public int maxMoves = 5;
 	public int movesLeft = maxMoves;
 	public boolean configured;
+	public Facing orientation = Facing.NORTH;
 
 	//animation
 	public int xgoffset=0, ygoffset=0;
@@ -60,9 +63,9 @@ public class EntityCharacter {
 
 	public void resetTurnStats(){
 		this.movesLeft = maxMoves;
-		this.turnIsOver=false;
-		this.hasShot=false;
-		this.hasMoved=false;
+		this.turnIsOver = false;
+		this.hasShot = false;
+		this.hasMoved = false;
 	}
 
 	public void reset(){
@@ -70,5 +73,24 @@ public class EntityCharacter {
 		inventory.ammoP=inventory.primary.ammo;
 		inventory.ammoS=inventory.secondary.ammo;
 		health=Game.maxHP;
+	}
+	
+	public void setOrientation(Facing f){
+		
+		orientation = f;
+		Utils.print(f.toString());
+		switch (f) {
+		case NORTH:
+			skin.setRotation(0);
+			break;
+		case EAST:
+			skin.setRotation(90);
+		case SOUTH:
+			skin.setRotation(180);
+			break;
+		case WEST:
+			skin.setRotation(270);
+			break;
+		}
 	}
 }

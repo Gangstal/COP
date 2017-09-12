@@ -101,7 +101,11 @@ public class Engine {
 						if (character.pos != null) {
 							Image playerSkin = character.skin.getScaledCopy(scale);
 							playerSkin.setFilter(Image.FILTER_NEAREST);
-							g.drawImage(playerSkin, posX+character.pos.X*r*scale+character.xgoffset, posY+character.pos.Y*r*scale+character.ygoffset);
+							//Il serai peut être plus audacieux d'avoir une copie avec rotation de l'image enregistrée en permanence, et changée aux moments opportuns,
+							//plutôt que de la recalculer à chaque frame. Mais enfin, comme le disait le poète, "C'est Gaston147 qui s'occupe de l'optimisation donc c'
+							//est son problème lol"
+							Image i = TextureLoader.getRotatedCopy(playerSkin, Utils.getRotation(character.orientation));
+							g.drawImage(i, posX+character.pos.X*r*scale+character.xgoffset, posY+character.pos.Y*r*scale+character.ygoffset);
 						}
 					}
 				}

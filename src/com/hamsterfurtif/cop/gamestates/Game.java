@@ -253,8 +253,10 @@ public class Game extends GameStateMenu {
 					Engine.removePosEffect(MoveSelect.class);
 					path.clear();
 				}
-				else
+				else{
+					currentCharacter.setOrientation(Utils.getOrientationFromPos(currentCharacter.pos, path.get(pathpos)));
 					currentCharacter.pos = path.get(pathpos);
+				}
 
 				currentCharacter.xgoffset=0;
 				currentCharacter.ygoffset=0;

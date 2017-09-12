@@ -7,6 +7,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.IOException;
 
+import com.hamsterfurtif.cop.map.MapPos;
 import com.hamsterfurtif.cop.packets.Packet;
 
 public abstract class Utils {
@@ -21,6 +22,13 @@ public abstract class Utils {
 		CENTERED,
 		RIGHT,
 		LEFT;
+	}
+	
+	public static enum Facing{
+		NORTH,
+		SOUTH,
+		EAST,
+		WEST;
 	}
 
 	public static String getFileExtension(File file){
@@ -87,4 +95,30 @@ public abstract class Utils {
 		}
 	}
 
+	public static Facing getOrientationFromPos(MapPos central, MapPos relative){
+		//Si les cases sont plus décalées horizontalement que verticalement
+		if(Math.abs(central.X-relative.X)>Math.abs(central.Y-relative.Y))
+			return central.X > relative.X ? Facing.WEST : Facing.EAST;
+		//À l'inverse, si les cases sont plus décalées verticalement que horizontalement
+		else if(Math.abs(central.X-relative.X)<Math.abs(central.Y-relative.Y))
+			return central.Y > relative.Y ? Facing.NORTH : Facing.SOUTH;
+		//Enfin, si les cases sont en diagonale
+		else
+			return null;
+	}
+	
+	public static int getRotation(Facing f){
+		
+		switch (f) {
+		case NORTH:
+		default:
+			return 0;
+		case EAST:
+			return 90;
+		case SOUTH:
+			return 180;
+		case WEST:
+			return 270;
+		}
+	}
 }
