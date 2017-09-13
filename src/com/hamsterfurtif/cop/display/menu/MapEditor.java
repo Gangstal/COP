@@ -94,7 +94,7 @@ public class MapEditor extends Menu{
 	public ModeButton single = new ModeButton("Case", "GUI\\single.png", 50, this, Edit.tile);
 	public ModeButton line = new ModeButton("Ligne", "GUI\\line.png", 100, this, Edit.line);
 	public ModeButton square = new ModeButton("Surface", "GUI\\square.png", 150, this, Edit.square);
-	public ModeButton fill = new ModeButton("Remplir", "GUI\\square.png", 200, this, Edit.fill);
+	public ModeButton fill = new ModeButton("Remplir", "GUI\\fill.png", 200, this, Edit.fill);
 
 	//J'aime hardcoder des trucs
 	public InventoryButton brick = new InventoryButton(200, this, Tiles.wall);
