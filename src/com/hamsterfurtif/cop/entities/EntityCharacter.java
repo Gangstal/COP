@@ -6,7 +6,6 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Sound;
 
 import com.hamsterfurtif.cop.Player;
-import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.Utils.Facing;
 import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.inventory.Inventory;
@@ -34,7 +33,7 @@ public class EntityCharacter {
 	public Facing orientation = Facing.NORTH;
 
 	//animation
-	public int xgoffset=0, ygoffset=0;
+	public float xgoffset=0.0f, ygoffset=0.0f;
 
 	public static ArrayList<Sound> hurtSounds = new ArrayList<Sound>();
 	public static ArrayList<Sound> deathSounds = new ArrayList<Sound>();
@@ -74,11 +73,10 @@ public class EntityCharacter {
 		inventory.ammoS=inventory.secondary.ammo;
 		health=Game.maxHP;
 	}
-	
+
 	public void setOrientation(Facing f){
-		
+
 		orientation = f;
-		Utils.print(f.toString());
 		switch (f) {
 		case NORTH:
 			skin.setRotation(0);

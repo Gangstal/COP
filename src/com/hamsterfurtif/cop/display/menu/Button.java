@@ -14,7 +14,7 @@ import com.hamsterfurtif.cop.Utils.TextPlacement;
 import com.hamsterfurtif.cop.display.TextureLoader;
 
 public class Button extends MouseOverArea{
-	
+
 	public String name;
 	public GameContainer container;
 	public int textmargin = 5;
@@ -33,7 +33,7 @@ public class Button extends MouseOverArea{
 		this.setMouseDownSound(clicked);
 
 	}
-	
+
 	public Button(String name, Menu menu, String location, int x, int y, int width, int height) {
 		super(menu.container, TextureLoader.loadTexture("GUI\\"+location+".gif").getScaledCopy(width, height), x+menu.x, y+menu.y, width, height, menu);
 		this.setMouseDownColor(Color.darkGray);
@@ -43,7 +43,7 @@ public class Button extends MouseOverArea{
 		this.setMouseDownSound(clicked);
 
 	}
-	
+
 	public Button(String name, Menu menu, int x, int y, int width, int height) {
 		super(menu.container, default_image.getScaledCopy(width, height), x+menu.x, y+menu.y, width, height, menu);
 		this.setMouseDownColor(Color.darkGray);
@@ -54,12 +54,13 @@ public class Button extends MouseOverArea{
 
 
 	}
-	
+
 	public void render(Graphics g){
 		preRender(g);
-		
+
 		this.render(container, g);
 		g.setColor(Color.black);
+		g.setLineWidth(1.0f);
 		g.drawRect(this.getX(), this.getY(), this.getWidth()-1, this.getHeight()-1);
 		Font font = g.getFont();
 		int w = font.getWidth(name);
@@ -67,7 +68,7 @@ public class Button extends MouseOverArea{
 		int x=0;
 		int y = this.getY()-(h-this.getHeight())/2-elevation;
 
-		
+
 		switch (textPlacement) {
 		case LEFT:
 			x=this.getX()+textmargin;
@@ -76,22 +77,22 @@ public class Button extends MouseOverArea{
 		case RIGHT:
 			x=this.getX()+this.getWidth()-w-textmargin;
 			break;
-			
+
 		case CENTERED:
 		default:
 			x = this.getX()-(w-this.getWidth())/2;
 			break;
 		}
-		
+
 		font.drawString(x, y, name);
 
 		additionalRender(g);
 	}
-	
+
 	public Object trigger(Object args){
 		return null;
 	}
-	
+
 	public void center(){
 		int x=this.getX();
 		int y=this.getY();
@@ -100,28 +101,28 @@ public class Button extends MouseOverArea{
 		setX(x);
 		setY(y);
 	}
-	
+
 	public Button centered(){
 		this.center();
 		return this;
 	}
-	
+
 	public void textPlacement(TextPlacement placement){
 		textPlacement = placement;
 	}
-	
+
 	public Button setTextPlacement(TextPlacement placement){
 		textPlacement(placement);
 		return this;
 	}
-	
+
 	public Button setTextMargins(int horizontal, int vertical){
 		this.textmargin = horizontal;
 		this.elevation = vertical;
-		
+
 		return this;
 	}
-	
+
 	public void additionalRender(Graphics g){}
 	public void preRender(Graphics g){}
 }

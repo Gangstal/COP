@@ -25,6 +25,7 @@ import com.hamsterfurtif.cop.display.menu.PlayerEquip;
 import com.hamsterfurtif.cop.display.menu.ServerRefused;
 import com.hamsterfurtif.cop.entities.EntityCharacter;
 import com.hamsterfurtif.cop.gamestates.GSMainMenu;
+import com.hamsterfurtif.cop.gamestates.GSMap;
 import com.hamsterfurtif.cop.gamestates.GSMapEditor;
 import com.hamsterfurtif.cop.gamestates.GSPlayerEquip;
 import com.hamsterfurtif.cop.gamestates.Game;
@@ -185,13 +186,13 @@ public class COP extends StateBasedGame{
 					c.health = Game.maxHP;
 				}
 			}
-			float xscale = (float)840/(float)(Game.map.dimX*TextureLoader.textureRes);
-			float yscale = (float)480/(float)(Game.map.dimY*TextureLoader.textureRes);
+			float xscale = (float)840/(float)(Game.map.dimX*TextureLoader.size);
+			float yscale = (float)480/(float)(Game.map.dimY*TextureLoader.size);
 			float optimalScale = xscale > yscale ? yscale : xscale;
 			optimalScale -= optimalScale%0.25f;
-			Game.optimalScale=optimalScale;
-			Game.scale=optimalScale;
-			float c = TextureLoader.textureRes*optimalScale;
+			GSMap.optimalScale=optimalScale;
+			GSMap.scale=optimalScale;
+			float c = TextureLoader.size*optimalScale;
 			if(c*Game.map.dimX<=COP.width-168)
 				Game.mapx=(int)(168+COP.width-c*Game.map.dimX)/2;
 			if(c*Game.map.dimY<=480)

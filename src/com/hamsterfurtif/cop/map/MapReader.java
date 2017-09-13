@@ -82,9 +82,9 @@ public class MapReader {
 
 	public static Map readMap(BufferedReader bf) throws NumberFormatException, IOException {
 		boolean locked = bf.readLine() == "locked" ? true : false;
-        int resX = Integer.parseInt(bf.readLine());
-        int resY = Integer.parseInt(bf.readLine());
-        Tile[][] map = new Tile[resY][resX];
+        int dimX = Integer.parseInt(bf.readLine());
+        int dimY = Integer.parseInt(bf.readLine());
+        Tile[] map = new Tile[dimX * dimY];
         String line;
         HashMap<Character, String> dic = new HashMap<Character, String>();
         while((line = bf.readLine()) != null && line.contains(">")){
@@ -95,7 +95,7 @@ public class MapReader {
         int y=0;
         do{
         	String[] split = line.split("\\|");
-        	for(int x=0;x<resX;x++){
+        	for(int x=0;x<dimX;x++){
         		String[] tilesplit = split[x].split(":");
         		String[] args ;
         		Tile tile;
@@ -107,12 +107,12 @@ public class MapReader {
         		else{
         			tile = Tiles.getTile(dic.get(tilesplit[0].charAt(0)), false);
         		}
-        		map[y][x]=tile;
+        		map[y * dimX + x]=tile;
         	}
         	y++;
         }while((line = bf.readLine()) != null );
 
-        return new Map(map, locked);
+        return new Map(map, dimX, locked);
 
 	}
 
@@ -130,7 +130,8 @@ public class MapReader {
 	}
 
 	public static void writeMap(Map m, BufferedWriter bw) throws IOException {
-		Tile[][] map = m.map;
+		Tile[] map = m.map;
+		int dimX = m.dimX;
         HashMap<String, Character> dic = new HashMap<String, Character>();
         ArrayList<String> lines = new ArrayList<String>();
 		lines.add("unlocked");
@@ -139,11 +140,11 @@ public class MapReader {
         for(int y=0; y<m.dimY; y++){
         	String line = "";
         	for(int x=0; x<m.dimX;x++){
-        		if(!dic.containsKey(map[y][x].name)){
-        			dic.put(map[y][x].name, Utils.alphabet.charAt(dic.size()));
-        			lines.add(dic.size()+2, map[y][x].id+">"+ Utils.alphabet.charAt(dic.size()-1));
+        		if(!dic.containsKey(map[y * dimX + x].id)){
+        			dic.put(map[y * dimX + x].id, Utils.alphabet.charAt(dic.size()));
+        			lines.add(dic.size()+2, map[y * dimX + x].id+">"+ Utils.alphabet.charAt(dic.size()-1));
         		}
-        		line += dic.get(map[y][x].name)+"|";
+        		line += dic.get(map[y * dimX + x].id)+"|";
 
         	}
         	lines.add(line);

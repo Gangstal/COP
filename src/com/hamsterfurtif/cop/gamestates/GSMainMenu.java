@@ -31,17 +31,17 @@ public class GSMainMenu extends GameStateMenu {
 		}
 	}
 
-	@Override
-	public void render(GameContainer container, StateBasedGame arg1, Graphics g) throws SlickException {
+	public void render(GameContainer container, StateBasedGame state, Graphics g) throws SlickException {
 		g.drawImage(COP.background, 0, 0);
 		currentMenu.render(g);
 		if(currentMenu instanceof PickMap){
 			g.setColor(Color.orange);
 			g.fillRect(COP.width/2-5, COP.height/3-5, 21*16+10, 12*16+10);
 			if(Game.map != null)
-				Engine.drawMap(g, 1f, COP.width/2, COP.height/3, false, Game.map);
+				Engine.drawMap(g, 1f, COP.width/2, COP.height/3, false, Game.map, false);
 
 		}
+		countFps();
 	}
 
 	@Override

@@ -16,54 +16,43 @@ import com.hamsterfurtif.cop.map.tiles.Tile;
 import com.hamsterfurtif.cop.statics.Tiles;
 
 public abstract class TextureLoader {
-	
-	public static int textureRes = 16;
+
+	public static int size = 16;
 
 	public static void load() throws FileNotFoundException, SlickException{
 		loadTilesTextures();
 		loadMiscTextures();
 		loadPlayerSkins();
 	}
-	
+
 	public static void loadTilesTextures(){
-		for(Tile tile : Tiles.tiles){
-			try {
-				tile.image=new Image("assets\\textures\\tiles\\"+tile.imagename+".png");
-			} catch (SlickException e) {
-				e.printStackTrace();
-			}
-		}
+		for(Tile tile : Tiles.tiles)
+			tile.image=loadTexture("tiles\\"+tile.imagename+".png");
 	}
-	
+
 	private static void loadMiscTextures(){
-		try {
-			Button.default_image = new Image("assets\\textures\\GUI\\menu_square.png");
-			COP.background = TextureLoader.loadTexture("GUI\\main_wallpaper.png");
-			Game.health_end_empty = TextureLoader.loadTexture("GUI\\health_end_empty.png");
-			Game.health_end_full = TextureLoader.loadTexture("GUI\\health_end_full.png");
-			Game.health_middle_empty = TextureLoader.loadTexture("GUI\\health_middle_empty.png");
-			Game.health_middle_full = TextureLoader.loadTexture("GUI\\health_middle_full.png");
-			Game.heart= TextureLoader.loadTexture("GUI\\heart.png");
-
-
-			
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
+		Button.default_image = loadTexture("GUI\\menu_square.png", Image.FILTER_LINEAR);
+		COP.background = loadTexture("GUI\\main_wallpaper.png");
+		Game.health_end_empty = loadTexture("GUI\\health_end_empty.png");
+		Game.health_end_full = loadTexture("GUI\\health_end_full.png");
+		Game.health_middle_empty = loadTexture("GUI\\health_middle_empty.png");
+		Game.health_middle_full = loadTexture("GUI\\health_middle_full.png");
+		Game.heart= loadTexture("GUI\\heart.png");
 	}
-	
+
 	public static void loadPlayerSkins() throws FileNotFoundException, SlickException{
 		File folder = new File("assets\\textures\\sprites\\players\\");
 		EntityCharacter.skins = new ArrayList<Image>();
-		
-		for (File fileEntry : folder.listFiles()) 
-		      if (!fileEntry.isDirectory() && Utils.getFileExtension(fileEntry).equals("png")){
-		    	  Image skin = new Image("assets\\textures\\sprites\\players\\"+fileEntry.getName());
+
+		for (File fileEntry : folder.listFiles()) {
+		      if (!fileEntry.isDirectory() && Utils.getFileExtension(fileEntry).equals("png")) {
+		    	  Image skin = loadTexture("sprites\\players\\"+fileEntry.getName());
 		    	  skin.setCenterOfRotation(skin.getWidth()/2, skin.getHeight()/2);
 		    	  EntityCharacter.skins.add(skin);
 		      }
+		}
 	}
-	
+
 	public static Image loadTexture(String location, int filter){
 		try {
 			Image i = new Image("assets\\textures\\"+location);
@@ -75,16 +64,15 @@ public abstract class TextureLoader {
 			return Button.default_image;
 		}
 	}
-	
+
 	public static Image loadTexture(String location){
 		return loadTexture(location, Image.FILTER_NEAREST);
 	}
-	
+
 	public static Image getRotatedCopy(Image i, float angleDeg) {
 	    Image rotated = i.copy();
 	    rotated.setRotation(angleDeg);
 
 	    return rotated;
 	}
-	
 }

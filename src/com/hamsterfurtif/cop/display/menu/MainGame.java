@@ -47,6 +47,7 @@ public class MainGame extends Menu {
 				g.setColor(Color.gray);
 				g.fillRect(0, this.getY()+this.getHeight(), this.getWidth(), 50);
 				g.setColor(Color.darkGray);
+				g.setLineWidth(1.0f);
 				g.drawRect(0, this.getY()+this.getHeight(), this.getWidth()-1, 49);
 
 				String stats = game.currentCharacter.movesLeft+"/"+game.currentCharacter.maxMoves;
@@ -108,6 +109,7 @@ public class MainGame extends Menu {
 				g.setColor(Color.lightGray);
 				g.fillRect(0, this.getY()+49, this.getWidth(), 91);
 				g.setColor(Color.black);
+				g.setLineWidth(1.0f);
 				g.drawRect(0, this.getY()-1, this.getWidth()-1, 140);
 				EntityCharacter player = game.currentCharacter;
 				Weapon w = player.inventory.primary;
@@ -135,6 +137,7 @@ public class MainGame extends Menu {
 				g.setColor(Color.lightGray);
 				g.fillRect(0, this.getY()+49, this.getWidth(), 91);
 				g.setColor(Color.black);
+				g.setLineWidth(1.0f);
 				g.drawRect(0, this.getY()-1, this.getWidth()-1, 140);
 				EntityCharacter player = game.currentCharacter;
 				Weapon w = player.inventory.secondary;

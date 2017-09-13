@@ -28,12 +28,13 @@ public class GSPlayerEquip extends GameStateMenu{
 	}
 
 	@Override
-	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
+	public void render(GameContainer container, StateBasedGame state, Graphics g) throws SlickException {
 		g.drawImage(COP.background, 0, 0);
 		if(mainMenu != null)
 			mainMenu.render(g);
 		if(currentMenu != null)
 			currentMenu.render(g);
+		countFps();
 	}
 
 	@Override

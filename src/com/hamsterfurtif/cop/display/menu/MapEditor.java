@@ -16,6 +16,7 @@ import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
 import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.gamestates.GSMainMenu;
+import com.hamsterfurtif.cop.gamestates.GSMap;
 import com.hamsterfurtif.cop.gamestates.GSMapEditor;
 import com.hamsterfurtif.cop.gamestates.GSMapEditor.Edit;
 import com.hamsterfurtif.cop.map.MapReader;
@@ -28,7 +29,7 @@ public class MapEditor extends Menu{
 	private ArrayList<TileButton> searchedTiles= new ArrayList<TileButton>();
 
 	private String searchedFieldOnPreviousTick = "";
-	
+
 	private class ModeButton extends Button{
 
 		public Edit mode;
@@ -74,7 +75,7 @@ public class MapEditor extends Menu{
 			}
 		}
 	}
-	
+
 	private class TileButton extends Button{
 
 		public Tile tile;
@@ -93,6 +94,7 @@ public class MapEditor extends Menu{
 	public ModeButton single = new ModeButton("Case", "GUI\\single.png", 50, this, Edit.tile);
 	public ModeButton line = new ModeButton("Ligne", "GUI\\line.png", 100, this, Edit.line);
 	public ModeButton square = new ModeButton("Surface", "GUI\\square.png", 150, this, Edit.square);
+	public ModeButton fill = new ModeButton("Remplir", "GUI\\square.png", 200, this, Edit.fill);
 
 	//J'aime hardcoder des trucs
 	public InventoryButton brick = new InventoryButton(200, this, Tiles.wall);
@@ -117,14 +119,14 @@ public class MapEditor extends Menu{
 
 		choices = new ArrayList<Button>();
 
-		
-	
-		
-	 	
-	 	
-	 	
 
-	 	choices.addAll(Arrays.asList(freelook, single, line, square, confirm, quit));
+
+
+
+
+
+
+	 	choices.addAll(Arrays.asList(freelook, single, line, square, fill, confirm, quit));
 	 	savedtiles = new ArrayList<InventoryButton>(Arrays.asList(brick, grass, water, planks, ceramic));
 	}
 
@@ -140,16 +142,14 @@ public class MapEditor extends Menu{
 				if(button.tile == GSMapEditor.tile){
 					Utils.print("ME ligne 43");
 					GSMapEditor.tile = ((TileButton) source).tile;
-					int k = savedtiles.indexOf(button);
-					savedtiles.remove(button);
-					savedtiles.add(k, new InventoryButton(button.getY(), this, GSMapEditor.tile));
+					savedtiles.set(savedtiles.indexOf(button), new InventoryButton(button.getY(), this, GSMapEditor.tile));
 					break;
 				}
 			}
-		}		
+		}
 		else if(source==confirm)
 			try {
-				MapReader.writeMap(GSMapEditor.map, "assets\\maps\\"+GSMapEditor.mapname+".txt");
+				MapReader.writeMap(GSMapEditor.map, "assets\\maps\\"+GSMap.mapname+".txt");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -164,7 +164,7 @@ public class MapEditor extends Menu{
 		g.setColor(Color.black);
 		g.drawRect(168, 480, 840-168, 120-1);
 		g.drawLine(168+172, 480, 168+172, 600);
-		
+
 		for(Button button : choices)
 			button.render(g);
 		for(int i=0; i<savedtiles.size();i++){
@@ -180,7 +180,7 @@ public class MapEditor extends Menu{
 			searchedTiles.get(i).render(g);
 		}
 	}
-	
+
 	public void update(){
 		if(!search.getText().equals(searchedFieldOnPreviousTick)){
 			searchedFieldOnPreviousTick = search.getText();

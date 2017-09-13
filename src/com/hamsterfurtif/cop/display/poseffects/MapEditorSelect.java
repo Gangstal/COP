@@ -1,37 +1,28 @@
 package com.hamsterfurtif.cop.display.poseffects;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Graphics;
 
-import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.gamestates.GSMapEditor.Edit;
 import com.hamsterfurtif.cop.map.MapPos;
 
-public class MapEditorSelect extends PosEffect{
+public class MapEditorSelect extends PosEffectImpl{
+	public static final Color green = new Color(Color.green.r, Color.green.g, Color.green.b, 0.125f);
+	public static final Color red   = new Color(Color.red.r,   Color.red.g,   Color.red.b,   0.125f);
+	public static final Color blue  = new Color(Color.blue.r,  Color.blue.g,  Color.blue.b,  0.125f);
 
-	private Color color;
-
-	public MapEditorSelect(MapPos pos, Edit mode) {
-		super(pos);
+	public static Color colorFromMode(Edit mode) {
 		switch (mode){
 		case tile:
 		default:
-			color = new Color(Color.green);
-			break;
+			return green;
 		case line:
-			color = new Color(Color.blue);
-			break;
+			return blue;
 		case square:
-			color = new Color(Color.red);
-			break;
+			return red;
 		}
-		color.a = 0.125f;
-	}
-	
-	@Override
-	public void render(Graphics g, int x, int y){
-		g.setColor(color);
-		g.fillRect(x, y, 16*Game.scale, 16*Game.scale);
 	}
 
+	public MapEditorSelect(MapPos pos, Edit mode) {
+		super(pos, colorFromMode(mode));
+	}
 }

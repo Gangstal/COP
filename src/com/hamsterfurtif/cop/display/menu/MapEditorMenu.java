@@ -14,6 +14,7 @@ import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
 import com.hamsterfurtif.cop.display.Engine;
 import com.hamsterfurtif.cop.display.TextureLoader;
+import com.hamsterfurtif.cop.gamestates.GSMap;
 import com.hamsterfurtif.cop.gamestates.GSMapEditor;
 import com.hamsterfurtif.cop.gamestates.GameStateMenu;
 import com.hamsterfurtif.cop.map.Map;
@@ -22,11 +23,11 @@ import com.hamsterfurtif.cop.map.tiles.Tile;
 import com.hamsterfurtif.cop.statics.Tiles;
 
 public class MapEditorMenu extends Menu{
-	
+
 	public static boolean mapAdded = false;
 
 	private boolean newMapSelected = true;
-	
+
 	private Button newMap = new Button("Nouveau", this, 50, 100, 250, 50);
 	private TextInput dimensionX = new TextInput(this, 550, 100, 100, 20);
 	private TextInput dimensionY = new TextInput(this, 550, 130, 100, 20);
@@ -44,7 +45,7 @@ public class MapEditorMenu extends Menu{
 		for(String map : mapList){
 			choices.add(new Button(map.substring(0, map.length()-4), this, 50, offset+height/6, 250, 50).setTextPlacement(TextPlacement.LEFT));
 			offset+=60;
-			}	
+			}
 		}
 
 	@Override
@@ -65,28 +66,26 @@ public class MapEditorMenu extends Menu{
 			dimensionY.setLocation(420*69, 69*420);
 			mapName.setLocation(420*69, 69*420);
 			if(newMapSelected){
-				Tile[][] m = new Tile[Integer.parseInt(dimensionY.getText())][Integer.parseInt(dimensionX.getText())];
-				Tile[] fuckyougaston = new Tile[Integer.parseInt(dimensionX.getText())];
-				Arrays.fill(fuckyougaston, Tiles.grass);
-				for (int i = 0; i<Integer.parseInt(dimensionY.getText()); i++)
-					m[i] = fuckyougaston.clone();
-				GSMapEditor.map = new Map(m);
+				int dimX = Integer.parseInt(dimensionX.getText()), dimY = Integer.parseInt(dimensionY.getText());
+				Tile[] m = new Tile[dimX * dimY];
+				Arrays.fill(m, Tiles.grass);
+				GSMapEditor.map = new Map(m, dimX);
 				GSMapEditor.mapname = mapName.getText();
 			}
-			float xscale = (float)840/(float)(GSMapEditor.map.dimX*TextureLoader.textureRes);
-			float yscale = (float)480/(float)(GSMapEditor.map.dimY*TextureLoader.textureRes);
+			float xscale = (float)840/(float)(GSMapEditor.map.dimX*TextureLoader.size);
+			float yscale = (float)480/(float)(GSMapEditor.map.dimY*TextureLoader.size);
 			float optimalScale = xscale > yscale ? yscale : xscale;
 			optimalScale -= optimalScale%0.25f;
-			GSMapEditor.optimalScale=optimalScale;
-			GSMapEditor.scale=optimalScale;
-			float c = TextureLoader.textureRes*optimalScale;
+			GSMap.optimalScale=optimalScale;
+			GSMap.scale=optimalScale;
+			float c = TextureLoader.size*optimalScale;
 			if(c*GSMapEditor.map.dimX<=COP.width-168)
-				GSMapEditor.mapx=(int)(168+COP.width-c*GSMapEditor.map.dimX)/2;
+				GSMapEditor.mapx=168+(int)(COP.width-168-c*GSMapEditor.map.dimX)/2;
 			if(c*GSMapEditor.map.dimY<=480)
 				GSMapEditor.mapy=(int)(480-c*GSMapEditor.map.dimY)/2;
 			COP.instance.enterState(GSMapEditor.ID);
 
-				
+
 		}
 		else if(choices.contains(source)){
 			newMapSelected=false;
@@ -100,13 +99,13 @@ public class MapEditorMenu extends Menu{
 			}
 		}
 	}
-	
+
 	public void render(Graphics g) {
 		g.setColor(Color.black);
 		g.drawString(name, titleX+x, titleY+y);
 		for(Button button : choices)
 				button.render(g);
-		
+
 		if(newMapSelected){
 			dimensionX.render(container, g);
 			dimensionY.render(container, g);
@@ -117,10 +116,10 @@ public class MapEditorMenu extends Menu{
 
 		}
 		else if(GSMapEditor.map != null){
-			Engine.drawMap(g, 0.5f, 400, 150, false, GSMapEditor.map);
+			Engine.drawMap(g, 0.5f, 400, 150, false, GSMapEditor.map, false);
 		}
 	}
-	
+
 	public void update(){
 		if(mapAdded){
 			choices = new ArrayList<Button>(Arrays.asList(newMap, confirm, quit));
