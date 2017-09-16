@@ -32,7 +32,7 @@ import com.hamsterfurtif.cop.packets.Packet;
 import com.hamsterfurtif.cop.packets.PacketAddPos;
 import com.hamsterfurtif.cop.packets.PacketCancelMovement;
 import com.hamsterfurtif.cop.packets.PacketChangeWeapon;
-import com.hamsterfurtif.cop.packets.PacketNextPlayer;
+import com.hamsterfurtif.cop.packets.PacketNextCharacter;
 import com.hamsterfurtif.cop.packets.PacketReload;
 import com.hamsterfurtif.cop.packets.PacketRemoveLastPos;
 import com.hamsterfurtif.cop.packets.PacketShoot;
@@ -107,41 +107,43 @@ public class Game extends GSMap {
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
 		updateScale();
-		COP.checkServerConn();
 		int x=168;
-		while (true) {
-			Packet packet;
-			synchronized (COP.packets) {
-				if (COP.packets.size() == 0)
-					break;
-				packet = COP.packets.remove(0);
-			}
-
-			if (COP.mode == Mode.SERVER)
-				COP.sendPacket(packet, packet.origin);
-
-			if (packet instanceof PacketNextPlayer) {
-				COP.game.nextPlayer();
-			} else if (packet instanceof PacketChangeWeapon) {
-				Engine.removePosEffect(MoveSelect.class);
-				COP.game.shootingMode = ((PacketChangeWeapon) packet).wt;
-			} else if (packet instanceof PacketReload) {
-				Game.reload(currentCharacter);
-				currentCharacter.turnIsOver = true;
-			} else if (packet instanceof PacketStartMovement) {
-				startMovement();
-			} else if (packet instanceof PacketCancelMovement) {
-				cancelMovement();
-			} else if (packet instanceof PacketRemoveLastPos) {
-				removeLastPos();
-			} else if (packet instanceof PacketAddPos) {
-				clickOnMap(((PacketAddPos) packet).mp);
-			} else if (packet instanceof PacketShoot) {
-				if (Game.shoot(currentCharacter, ((PacketShoot) packet).mp, shootingMode)) {
-					shootingMode = null;
+		if (COP.mode == Mode.CLIENT)
+			COP.checkServerConn();
+		if (COP.mode != Mode.SINGLEPLAYER) {
+			while (true) {
+				Packet packet;
+				synchronized (COP.packets) {
+					if ((packet = COP.packets.poll()) == null)
+						break;
 				}
-			} else {
-				System.out.println("WARNING: Ignoring unexpected packet \"" + Utils.getPacketID(packet) + "\"");
+
+				if (COP.mode == Mode.SERVER)
+					COP.sendPacket(packet, packet.origin);
+
+				if (packet instanceof PacketNextCharacter) {
+					COP.game.nextCharacter();
+				} else if (packet instanceof PacketChangeWeapon) {
+					Engine.removePosEffect(MoveSelect.class);
+					COP.game.shootingMode = ((PacketChangeWeapon) packet).wt;
+				} else if (packet instanceof PacketReload) {
+					Game.reload(currentCharacter);
+					currentCharacter.turnIsOver = true;
+				} else if (packet instanceof PacketStartMovement) {
+					startMovement();
+				} else if (packet instanceof PacketCancelMovement) {
+					cancelMovement();
+				} else if (packet instanceof PacketRemoveLastPos) {
+					removeLastPos();
+				} else if (packet instanceof PacketAddPos) {
+					clickOnMap(((PacketAddPos) packet).mp);
+				} else if (packet instanceof PacketShoot) {
+					if (Game.shoot(currentCharacter, ((PacketShoot) packet).mp, shootingMode)) {
+						shootingMode = null;
+					}
+				} else {
+					System.out.println("WARNING: Ignoring unexpected packet \"" + Utils.getPacketID(packet) + "\"");
+				}
 			}
 		}
 
@@ -153,36 +155,41 @@ public class Game extends GSMap {
 				if(isMouseOverMap(mx, my)){
 					MapPos clickPos = getMapPos(mx-x, my);
 
-					if(currentCharacter.player == COP.self && shootingMode==null && !currentCharacter.turnIsOver && !freelook){
+					if(canPlay() && shootingMode==null && !currentCharacter.turnIsOver && !freelook){
 						if(!leftClick){
 							if(!path.isEmpty())
 								if(clickPos.equals(path.get(path.size()-1))){
-									if(path.size()>1 && path.size()-1 <= currentCharacter.movesLeft && Game.movePlayer(currentCharacter, path)){
+									if(path.size()>1 && path.size()-1 <= currentCharacter.movesLeft && Game.moveCharacter(currentCharacter, path)){
 										startMovement();
-										COP.sendPacket(new PacketStartMovement());
+										if (COP.mode != Mode.SINGLEPLAYER)
+											COP.sendPacket(new PacketStartMovement());
 									}
 									else{
 										cancelMovement();
-										COP.sendPacket(new PacketCancelMovement());
+										if (COP.mode != Mode.SINGLEPLAYER)
+											COP.sendPacket(new PacketCancelMovement());
 									}
 								}
 						}
 						else if(path.size()>2 && clickPos.equals(path.get(path.size()-2))){
 							removeLastPos();
-							COP.sendPacket(new PacketRemoveLastPos());
+							if (COP.mode != Mode.SINGLEPLAYER)
+								COP.sendPacket(new PacketRemoveLastPos());
 						}
 						else if(clickPos.equals(currentCharacter.pos) || !path.isEmpty()) {
 							if(path.size()==0 || (!clickPos.equals(path.get(path.size()-1)) && clickPos.isAdjacent(path.get(path.size()-1)) && path.size()<=currentCharacter.movesLeft)){
 								clickOnMap(clickPos);
-								COP.sendPacket(new PacketAddPos(clickPos));
+								if (COP.mode != Mode.SINGLEPLAYER)
+									COP.sendPacket(new PacketAddPos(clickPos));
 							}
 						}
 					}
 
-					else if(currentCharacter.player == COP.self && !currentCharacter.hasShot && shootingMode!=null && !freelook){
+					else if(canPlay() && !currentCharacter.hasShot && shootingMode!=null && !freelook){
 						if(Game.shoot(currentCharacter, clickPos, shootingMode)) {
-							COP.sendPacket(new PacketShoot(clickPos));
 							shootingMode=null;
+							if (COP.mode != Mode.SINGLEPLAYER)
+								COP.sendPacket(new PacketShoot(clickPos));
 						}
 					}
 
@@ -201,20 +208,22 @@ public class Game extends GSMap {
 					}
 				}
 			} else if(input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON) && !rightClick){
-				if(freelook){
+				if (freelook) {
 					freelook = false;
+				} else if (canPlay()) {
+					if(shootingMode==null){
+						shootingMode=WeaponType.PRIMARY;
+					}
+					else if(shootingMode==WeaponType.PRIMARY){
+						shootingMode=WeaponType.SECONDARY;
+					}
+					else if(shootingMode==WeaponType.SECONDARY){
+						shootingMode = null;
+						freelook = true;
+					}
+					if (COP.mode != Mode.SINGLEPLAYER)
+						COP.sendPacket(new PacketChangeWeapon(shootingMode));
 				}
-				else if(shootingMode==null){
-					shootingMode=WeaponType.PRIMARY;
-				}
-				else if(shootingMode==WeaponType.PRIMARY){
-					shootingMode=WeaponType.SECONDARY;
-				}
-				else if(shootingMode==WeaponType.SECONDARY){
-					shootingMode = null;
-					freelook = true;
-				}
-				COP.sendPacket(new PacketChangeWeapon(shootingMode));
 			}
 
 
@@ -259,6 +268,10 @@ public class Game extends GSMap {
 				currentCharacter.ygoffset+=speed*(path.get(pathpos+1).Y - path.get(pathpos).Y);
 			}
 		}
+	}
+
+	public boolean canPlay() {
+		return COP.mode == Mode.SINGLEPLAYER || currentCharacter.player == COP.self;
 	}
 
 	public void startMovement() {
@@ -325,8 +338,8 @@ public class Game extends GSMap {
 		MapPos pos = getMapPos(xpos, ypos);
 		int x = 168+420;
 		int y = 480;
-		EntityCharacter player = Game.checkForCharacter(pos);
-		if(player==null){
+		EntityCharacter character = Game.checkForCharacter(pos);
+		if(character==null){
 			Tile tile = Game.map.getTile(pos);
 			g.drawImage(tile.image.getScaledCopy(4), x+320, y+60-2*16);
 			g.drawString(tile.name, x+10, y+5);
@@ -335,25 +348,29 @@ public class Game extends GSMap {
 			g.drawString("Is Destructible = "+tile.isDestructible, x+10, y+80);
 		}
 		else{
-			drawCharacterInfoBox(x, y, player, g);
+			drawCharacterInfoBox(x, y, character, g);
 		}
 
 	}
 
-	public void nextPlayer() {
+	public void nextCharacter() {
 
 		Engine.removePosEffect(MoveSelect.class);
 		path.clear();
 
-		if (currentCharacter.player.id + 1 == playersCount) {
-			if (currentCharacter.id + 1 == charactersCount) {
-				currentCharacter = players[0].characters[0];
-			} else {
-				currentCharacter = players[0].characters[currentCharacter.id + 1];
+		int nextPlayerId = currentCharacter.player.id;
+		int nextCharacterId = currentCharacter.id;
+
+		nextPlayerId++;
+		if (nextPlayerId >= playersCount) {
+			nextPlayerId = 0;
+			nextCharacterId++;
+			if (nextCharacterId >= charactersCount) {
+				nextCharacterId = 0;
 			}
-		} else {
-			currentCharacter = players[currentCharacter.player.id + 1].characters[currentCharacter.id];
 		}
+
+		currentCharacter = players[nextPlayerId].characters[nextCharacterId];
 
 		currentCharacter.resetTurnStats();
 		freelook = true;
@@ -377,8 +394,8 @@ public class Game extends GSMap {
 
 	}
 
-	public static boolean movePlayer(EntityCharacter player, ArrayList<MapPos> path){
-		if(path.get(0).equals(player.pos)){
+	public static boolean moveCharacter(EntityCharacter character, ArrayList<MapPos> path){
+		if(path.get(0).equals(character.pos)){
 			for(int i=1;i<path.size();i++){
 				if(!map.getTile(path.get(i)).canWalkThrough || !path.get(i).isAdjacent(path.get(i-1)))
 					return false;
@@ -389,27 +406,26 @@ public class Game extends GSMap {
 			return false;
 	}
 
-	public static boolean shoot(EntityCharacter player, MapPos pos, WeaponType type){
+	public static boolean shoot(EntityCharacter character, MapPos pos, WeaponType type){
 
-		if(player.inventory.getWeapon(type) instanceof WeaponShield){
-			 Facing face = Utils.getOrientationFromPos(player.pos, pos);
+		if(character.inventory.getWeapon(type) instanceof WeaponShield){
+			 Facing face = Utils.getOrientationFromPos(character.pos, pos);
 			 if(face != null)
-				 player.orientation = face;
-			 player.isShieled = true;
+				 character.orientation = face;
+			 character.isShieled = true;
 		}
-		
-		else if(Path.directLOS(player.pos, pos) && player.inventory.getWeapon(type).inRange(player.pos,  pos) && player.inventory.getAmmo(type)>0){
+		else if(Path.directLOS(character.pos, pos) && character.inventory.getWeapon(type).inRange(character.pos,  pos) && character.inventory.getAmmo(type)>0){
 
-			player.inventory.getWeapon(type).playSound();
+			character.inventory.getWeapon(type).playSound();
 			Random r = new Random(1);
 
 			if(checkForCharacter(pos) != null){
 				EntityCharacter target = checkForCharacter(pos);
-				if(!target.isShieled || target.orientation == Utils.getOrientationFromPos(player.pos, target.pos)){
-					target.health -= player.getWeapon(type).damage;
-					player.inventory.addAmmo(type, -1);
-					player.turnIsOver = true;
-					player.hasShot=true;
+				if(!target.isShieled || target.orientation == Utils.getOrientationFromPos(character.pos, target.pos)){
+					target.health -= character.getWeapon(type).damage;
+					character.inventory.addAmmo(type, -1);
+					character.turnIsOver = true;
+					character.hasShot=true;
 					if(target.health<=0){
 						kill(target);
 						EntityCharacter.deathSounds.get(r.nextInt(1)).play();
@@ -420,9 +436,9 @@ public class Game extends GSMap {
 			}
 			else if(map.getTile(pos).isDestructible){
 				map.destroyTile(pos);
-				player.hasShot=true;
-				player.turnIsOver = true;
-				player.inventory.addAmmo(type, -1);
+				character.hasShot=true;
+				character.turnIsOver = true;
+				character.inventory.addAmmo(type, -1);
 				Tile.destroy.get(r.nextInt(1)).play(0.5f,0.5f);
 			}
 
@@ -441,22 +457,22 @@ public class Game extends GSMap {
 		return null;
 	}
 
-	public static void reload(EntityCharacter player){
-		player.inventory.ammoP = player.inventory.primary.ammo;
-		player.inventory.ammoS = player.inventory.secondary.ammo;
+	public static void reload(EntityCharacter character){
+		character.inventory.ammoP = character.inventory.primary.ammo;
+		character.inventory.ammoS = character.inventory.secondary.ammo;
 		Random r = new Random(1);
 		Inventory.reloadSounds.get(r.nextInt(1)).play();
 	}
 
-	private static void kill(EntityCharacter player){
+	private static void kill(EntityCharacter character){
 		MapPos p = new MapPos();
 
 		do{
 			 p.set(COP.rd.nextInt(map.dimX),COP.rd.nextInt(map.dimY),0);
 		}while(!map.getTile(p).canWalkThrough);
 
-		player.pos = p;
-		player.reset();
-		player.repsawnsLeft--;
+		character.pos = p;
+		character.reset();
+		character.repsawnsLeft--;
 	}
 }

@@ -11,6 +11,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.AbstractComponent;
 
 import com.hamsterfurtif.cop.COP;
+import com.hamsterfurtif.cop.COP.Mode;
 import com.hamsterfurtif.cop.ServerThread;
 import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
@@ -41,25 +42,31 @@ public class PlayerAmount extends Menu{
 	@Override
 	public void componentActivated(AbstractComponent source) {
 		if(source==confirmer){
-			try {
-				COP.playersConnected = 1;
-				COP.playersReady = 0;
-				COP.settingsDone = false;
-				Game.playersCount = playersCount;
-				Game.charactersCount = charactersCount;
-				COP.serverSocket = new ServerSocket(42069);
-				COP.selfID = 0;
-				COP.started = true;
+			Game.playersCount = playersCount;
+			Game.charactersCount = charactersCount;
+			if (COP.mode == Mode.SINGLEPLAYER) {
 				COP.setupPlayers();
-				new ServerThread().start();
+			} else if (COP.mode == Mode.SERVER) {
 				try {
-					this.state.currentMenu = new PickMap(container, state);
-				} catch (SlickException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					COP.playersConnected = 1;
+					COP.playersReady = 0;
+					COP.settingsDone = false;
+					COP.serverSocket = new ServerSocket(42069);
+					COP.selfId = 0;
+					COP.started = true;
+					COP.setupPlayers();
+					new ServerThread().start();
+				} catch (IOException e1) {
+					e1.printStackTrace();
 				}
-			} catch (IOException e1) {
-				e1.printStackTrace();
+			} else {
+				throw new RuntimeException("Unknown mode \"" + COP.mode + "\"");
+			}
+			try {
+				this.state.currentMenu = new PickMap(container, state);
+			} catch (SlickException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		else if(source==plus)

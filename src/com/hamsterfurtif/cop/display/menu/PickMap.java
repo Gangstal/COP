@@ -9,7 +9,7 @@ import org.newdawn.slick.gui.AbstractComponent;
 
 import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
-import com.hamsterfurtif.cop.gamestates.GSPlayerEquip;
+import com.hamsterfurtif.cop.gamestates.GSCharacterEquip;
 import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.gamestates.GameStateMenu;
 import com.hamsterfurtif.cop.map.MapReader;
@@ -40,7 +40,7 @@ public class PickMap extends Menu{
 	@Override
 	public void componentActivated(AbstractComponent source) {
 		if(source==confirmer){
-			GSPlayerEquip g = (GSPlayerEquip)COP.instance.getState(1);
+			GSCharacterEquip g = (GSCharacterEquip)COP.instance.getState(1);
 			try {
 				g.mainMenu = new ConfirmGameSettings(g.container, g);
 			} catch (SlickException e) {

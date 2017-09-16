@@ -8,11 +8,11 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.COP.Mode;
 import com.hamsterfurtif.cop.display.menu.Menu;
-import com.hamsterfurtif.cop.display.menu.PlayerEquip;
+import com.hamsterfurtif.cop.display.menu.CharacterEquip;
 import com.hamsterfurtif.cop.display.menu.WaitingForPlayers;
 import com.hamsterfurtif.cop.entities.EntityCharacter;
 
-public class GSPlayerEquip extends GameStateMenu{
+public class GSCharacterEquip extends GameStateMenu{
 
 	public static final int ID = 1;
 
@@ -39,7 +39,8 @@ public class GSPlayerEquip extends GameStateMenu{
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
-		COP.updateRemote();
+		if (COP.mode != Mode.SINGLEPLAYER)
+			COP.updateRemote();
 		if(mainMenu != null)
 			mainMenu.update();
 	}
@@ -50,23 +51,43 @@ public class GSPlayerEquip extends GameStateMenu{
 	}
 
 	public void nextCharacter() throws SlickException {
-		COP.sendCharacterToAll(currentCharacter);
-		if (COP.mode == Mode.SERVER) {
+		if (COP.mode == Mode.SINGLEPLAYER) {
 			currentCharacter.reset();
-			currentCharacter.configured = true;
-		}
-		if (currentCharacter.id + 1 < Game.charactersCount) {
-			currentCharacter = COP.self.characters[currentCharacter.id + 1];
-			mainMenu = new PlayerEquip(container, this, currentCharacter);
-		} else {
-			if (COP.mode == Mode.SERVER) {
-				COP.playersReady++;
-				if (COP.playersReady == Game.playersCount) {
+
+			int nextPlayerId = currentCharacter.player.id;
+			int nextCharacterId = currentCharacter.id;
+
+			nextCharacterId++;
+			if (nextCharacterId == Game.charactersCount) {
+				nextCharacterId = 0;
+				nextPlayerId++;
+				if (nextPlayerId == Game.playersCount) {
 					COP.instance.enterState(2);
 					return;
 				}
 			}
-			mainMenu = new WaitingForPlayers(container, this);
+
+			currentCharacter = Game.players[nextPlayerId].characters[nextCharacterId];
+			mainMenu = new CharacterEquip(container, this, currentCharacter);
+		} else {
+			COP.sendCharacterToAll(currentCharacter);
+			if (COP.mode == Mode.SERVER) {
+				currentCharacter.reset();
+				currentCharacter.configured = true;
+			}
+			if (currentCharacter.id + 1 < Game.charactersCount) {
+				currentCharacter = COP.self.characters[currentCharacter.id + 1];
+				mainMenu = new CharacterEquip(container, this, currentCharacter);
+			} else {
+				if (COP.mode == Mode.SERVER) {
+					COP.playersReady++;
+					if (COP.playersReady == Game.playersCount) {
+						COP.instance.enterState(2);
+						return;
+					}
+				}
+				mainMenu = new WaitingForPlayers(container, this);
+			}
 		}
 		currentMenu = null;
 	}

@@ -18,7 +18,7 @@ import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.inventory.Weapon;
 import com.hamsterfurtif.cop.inventory.WeaponType;
 import com.hamsterfurtif.cop.packets.PacketChangeWeapon;
-import com.hamsterfurtif.cop.packets.PacketNextPlayer;
+import com.hamsterfurtif.cop.packets.PacketNextCharacter;
 import com.hamsterfurtif.cop.packets.PacketReload;
 
 public class MainGame extends Menu {
@@ -56,13 +56,13 @@ public class MainGame extends Menu {
 				int h = font.getLineHeight();
 				int xpos = this.getX()-(w-this.getWidth())/2;
 				int ypos = this.getY()-(h-this.getHeight())/2+50;
-				if(game.currentCharacter.player == COP.self && game.currentCharacter.movesLeft>0)
+				if(COP.game.canPlay() && game.currentCharacter.movesLeft>0)
 					g.setColor(Color.black);
 				else
 					g.setColor(Color.red);
 				g.drawString(stats, xpos, ypos);
 
-				if(game.currentCharacter.player != COP.self || state.currentCharacter.turnIsOver || state.currentCharacter.movesLeft==0){
+				if(!COP.game.canPlay() || state.currentCharacter.turnIsOver || state.currentCharacter.movesLeft==0){
 					g.setColor(color_red);
 					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 				}
@@ -77,7 +77,7 @@ public class MainGame extends Menu {
 		endTurn = new Button("Fin du tour", this, 0, 480, this.width, 120){
 			@Override
 			public void additionalRender(Graphics g){
-				if (game.currentCharacter.player != COP.self) {
+				if (!COP.game.canPlay()) {
 					g.setColor(color_red);
 					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 				}
@@ -96,7 +96,7 @@ public class MainGame extends Menu {
 			@Override
 			public void additionalRender(Graphics g){
 				g.drawImage(TextureLoader.loadTexture("GUI\\reload.png").getScaledCopy(50, 50), this.getWidth()-50,this.getY());
-				if (game.currentCharacter.player != COP.self || state.currentCharacter.turnIsOver) {
+				if (!COP.game.canPlay() || state.currentCharacter.turnIsOver) {
 					g.setColor(color_red);
 					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 				}
@@ -111,15 +111,15 @@ public class MainGame extends Menu {
 				g.setColor(Color.black);
 				g.setLineWidth(1.0f);
 				g.drawRect(0, this.getY()-1, this.getWidth()-1, 140);
-				EntityCharacter player = game.currentCharacter;
-				Weapon w = player.inventory.primary;
+				EntityCharacter character = game.currentCharacter;
+				Weapon w = character.inventory.primary;
 				int ypos =  this.getY()+this.getHeight()+5;
 				g.drawImage(w.skin.getScaledCopy(64, 32),this.getWidth()-66, ypos);
 				g.drawString(w.name, 5, ypos+5);
-				g.drawString("A: "+player.inventory.ammoP+"/"+w.ammo, 5, ypos+30);
+				g.drawString("A: "+character.inventory.ammoP+"/"+w.ammo, 5, ypos+30);
 				g.drawString("D: "+w.damage, 5, ypos+45);
 				g.drawString("R: "+w.range, 5, ypos+60);
-				if(game.currentCharacter.player != COP.self || state.currentCharacter.turnIsOver){
+				if(!COP.game.canPlay() || state.currentCharacter.turnIsOver){
 					g.setColor(color_red);
 					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 				}
@@ -139,15 +139,15 @@ public class MainGame extends Menu {
 				g.setColor(Color.black);
 				g.setLineWidth(1.0f);
 				g.drawRect(0, this.getY()-1, this.getWidth()-1, 140);
-				EntityCharacter player = game.currentCharacter;
-				Weapon w = player.inventory.secondary;
+				EntityCharacter character = game.currentCharacter;
+				Weapon w = character.inventory.secondary;
 				int ypos =  this.getY()+this.getHeight()+5;
 				g.drawImage(w.skin.getScaledCopy(64, 32),this.getWidth()-66, ypos);
 				g.drawString(w.name, 5, ypos+5);
-				g.drawString("A: "+player.inventory.ammoS+"/"+w.ammo, 5, ypos+30);
+				g.drawString("A: "+character.inventory.ammoS+"/"+w.ammo, 5, ypos+30);
 				g.drawString("D: "+w.damage, 5, ypos+45);
 				g.drawString("R: "+w.range, 5, ypos+60);
-				if(game.currentCharacter.player != COP.self || state.currentCharacter.turnIsOver){
+				if(!COP.game.canPlay() || state.currentCharacter.turnIsOver){
 					g.setColor(color_red);
 					g.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 				}
@@ -168,14 +168,14 @@ public class MainGame extends Menu {
 			if(source==showGrid)
 				state.showGrid = !state.showGrid;
 			else if(source==endTurn) {
-				if (COP.game.currentCharacter.player == COP.self) {
-					state.nextPlayer();
+				if (COP.game.canPlay()) {
+					state.nextCharacter();
 					state.freelook=false;
-					COP.sendPacket(new PacketNextPlayer());
+					COP.sendPacket(new PacketNextCharacter());
 				}
 			}
 			else if(source==primary){
-				if (COP.game.currentCharacter.player == COP.self) {
+				if (COP.game.canPlay()) {
 					Engine.removePosEffect(MoveSelect.class);
 					if(state.shootingMode == WeaponType.PRIMARY) {
 						state.shootingMode=null;
@@ -189,7 +189,7 @@ public class MainGame extends Menu {
 				}
 			}
 			else if(source==secondary){
-				if (COP.game.currentCharacter.player == COP.self) {
+				if (COP.game.canPlay()) {
 					Engine.removePosEffect(MoveSelect.class);
 					if(state.shootingMode == WeaponType.SECONDARY) {
 						state.shootingMode=null;
@@ -204,7 +204,7 @@ public class MainGame extends Menu {
 			}
 
 			else if(source==reload){
-				if (COP.game.currentCharacter.player == COP.self && !state.currentCharacter.turnIsOver) {
+				if (COP.game.canPlay() && !state.currentCharacter.turnIsOver) {
 					Game.reload(state.currentCharacter);
 					state.currentCharacter.turnIsOver=true;
 					COP.sendPacket(new PacketReload());
@@ -212,7 +212,7 @@ public class MainGame extends Menu {
 			}
 
 			else if(source==move){
-				if (COP.game.currentCharacter.player == COP.self) {
+				if (COP.game.canPlay()) {
 					state.freelook = !state.freelook;
 					state.shootingMode=null;
 				}

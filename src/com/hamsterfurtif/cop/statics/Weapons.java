@@ -25,7 +25,7 @@ public class Weapons {
 
 	public static Weapon handgun	= new Weapon("handgun", "Handgun", 7, 3, 3, WeaponType.SECONDARY);
 	public static Weapon revolver	= new Weapon("revolver", "Revolver", 5, 4, 2, WeaponType.SECONDARY);
-	public static Weapon shield     = new WeaponShield("Bouclier", "shield");
+	public static Weapon shield     = new WeaponShield("shield", "Bouclier");
 
 	public static List<Weapon> getWeaponsByType(WeaponType type){
 		switch (type) {

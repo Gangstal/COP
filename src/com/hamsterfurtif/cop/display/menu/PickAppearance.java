@@ -13,7 +13,7 @@ import com.hamsterfurtif.cop.gamestates.GameStateMenu;
 
 public class PickAppearance extends Menu{
 
-	public PickAppearance(GameContainer container, GameStateMenu state, EntityCharacter player) throws SlickException {
+	public PickAppearance(GameContainer container, GameStateMenu state, EntityCharacter character) throws SlickException {
 		super(container, "Choisir son apparence", state);
 		width= COP.width/2;
 		height=COP.height;
@@ -30,7 +30,7 @@ public class PickAppearance extends Menu{
 			Button choice = new Button("", this, s, 50+xoffset, 100+yoffset, 16*3, 16*3){
 				@Override
 				public Object trigger(Object arg){
-					player.skin = s;
+					character.skin = s;
 					return null;
 				}
 				@Override

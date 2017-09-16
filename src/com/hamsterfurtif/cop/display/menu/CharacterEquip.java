@@ -15,14 +15,14 @@ import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
 import com.hamsterfurtif.cop.entities.EntityCharacter;
-import com.hamsterfurtif.cop.gamestates.GSPlayerEquip;
+import com.hamsterfurtif.cop.gamestates.GSCharacterEquip;
 import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.gamestates.GameStateMenu;
 import com.hamsterfurtif.cop.inventory.Weapon;
 import com.hamsterfurtif.cop.inventory.WeaponType;
 import com.hamsterfurtif.cop.statics.Weapons;
 
-public class PlayerEquip extends Menu{
+public class CharacterEquip extends Menu{
 
 	private String princName = "Aléatoire";
 	private String secName   = "Aléatoire";
@@ -67,7 +67,7 @@ public class PlayerEquip extends Menu{
 
 	public Button confirmer = new Button("Confirmer", this, width/4, height-60, 140, 40).centered();
 
-	public PlayerEquip(GameContainer container, GameStateMenu state, EntityCharacter character) throws SlickException {
+	public CharacterEquip(GameContainer container, GameStateMenu state, EntityCharacter character) throws SlickException {
 		super(container, "Équipement des joueurs", state);
 		playername = new TextInput(this, 50, 360, 160, 25, "");
 		this.choices = new ArrayList<Button>(Arrays.asList(appearance, princ,sec, confirmer));
@@ -125,7 +125,7 @@ public class PlayerEquip extends Menu{
 				}
 			}
 			else if(source==confirmer){
-				if(state instanceof GSPlayerEquip){
+				if(state instanceof GSCharacterEquip){
 					if (character.skin == null)
 						character.skin = EntityCharacter.skins.get((int) (Math.random() * EntityCharacter.skins.size()));
 					if (character.inventory.primary == null) {
@@ -139,7 +139,7 @@ public class PlayerEquip extends Menu{
 					playername.setLocation(playername.getX(), playername.getY() + 20);
 					character.name=playername.getText();
 					playername.deactivate();
-					GSPlayerEquip s = (GSPlayerEquip)state;
+					GSCharacterEquip s = (GSCharacterEquip)state;
 					try {
 						s.nextCharacter();
 					} catch (SlickException e) {

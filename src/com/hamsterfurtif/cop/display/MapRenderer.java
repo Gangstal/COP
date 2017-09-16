@@ -1,5 +1,6 @@
 package com.hamsterfurtif.cop.display;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -8,6 +9,7 @@ import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.display.poseffects.PosEffect;
 import com.hamsterfurtif.cop.entities.EntityCharacter;
+import com.hamsterfurtif.cop.gamestates.GSMap;
 import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.inventory.WeaponShield;
 import com.hamsterfurtif.cop.map.Map;
@@ -18,7 +20,7 @@ public class MapRenderer implements Renderable {
 	private final Map map;
 	private final Image image;
 	private final MapEventListenerQueued melq;
-	private boolean squares, withPlayer;
+	private boolean showGrid, withPlayer;
 
 	public MapRenderer(Map map) {
 		this.map = map;
@@ -28,7 +30,7 @@ public class MapRenderer implements Renderable {
 			throw new RuntimeException(e);
 		}
 		map.listener = melq = new MapEventListenerQueued();
-		squares = false;
+		showGrid = false;
 		withPlayer = false;
 		try {
 			Graphics g = image.getGraphics();
@@ -60,14 +62,13 @@ public class MapRenderer implements Renderable {
 				for (Player player : Game.players) {
 					for (EntityCharacter character : player.characters) {
 						if (character.pos != null) {
-							//Il serai peut être plus audacieux d'avoir une copie avec rotation de l'image enregistrée en permanence, et changée aux moments opportuns,
-							//plutôt que de la recalculer à chaque frame. Mais enfin, comme le disait le poète, "C'est Gaston147 qui s'occupe de l'optimisation donc c'
-							//est son problème lol"
-							Image i = TextureLoader.getRotatedCopy(character.skin, Utils.getRotation(character.orientation));
-							g.drawImage(i, (character.pos.X + character.xgoffset) * TextureLoader.size, (character.pos.Y + character.ygoffset) * TextureLoader.size);
-							if(character.isShieled){
-								g.drawImage(TextureLoader.getRotatedCopy(WeaponShield.map_overlay, Utils.getRotation(character.orientation)), (character.pos.X + character.xgoffset) * TextureLoader.size, (character.pos.Y + character.ygoffset) * TextureLoader.size);
-							}
+							g.pushTransform();
+							g.translate((character.pos.X + character.xgoffset) * TextureLoader.size, (character.pos.Y + character.ygoffset) * TextureLoader.size);
+							g.rotate((float) TextureLoader.size / 2.0f, (float) TextureLoader.size / 2.0f, Utils.getRotation(character.orientation));
+							g.drawImage(character.skin, 0, 0);
+							if (character.isShieled)
+								g.drawImage(WeaponShield.map_overlay, 0, 0);
+							g.popTransform();
 						}
 					}
 				}
@@ -75,12 +76,23 @@ public class MapRenderer implements Renderable {
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
-		if (squares) {
+		float dashLen = 6f, dashSpace = 8f;
+		float dashSize = dashLen + dashSpace;
+		if (showGrid) {
+			g.setColor(new Color(0.2f, 0.2f, 0.2f, 0.7f));
 			g.setLineWidth(1.0f);
-			for (int x = 0; x < map.dimX; x++)
-				g.drawLine(x * TextureLoader.size, 0, x * TextureLoader.size, map.dimY * TextureLoader.size);
-			for (int y = 0; y < map.dimY; y++)
-				g.drawLine(0, y * TextureLoader.size, map.dimX * TextureLoader.size, y * TextureLoader.size);
+			for (int x = 0; x < map.dimX; x++) {
+				float y;
+				for (y = 0; y + dashSize <= map.dimY * (float) TextureLoader.size * GSMap.scale; y += dashSize)
+					g.drawLine(x * TextureLoader.size, (y) / GSMap.scale, x * TextureLoader.size, (y + dashLen) / GSMap.scale);
+				g.drawLine(x * TextureLoader.size, (y) / GSMap.scale, x * TextureLoader.size, Math.min((y + dashLen) / GSMap.scale, map.dimY * (float) TextureLoader.size));
+			}
+			for (int y = 0; y < map.dimY; y++) {
+				float x;
+				for (x = 0; x + dashSize <= map.dimX * (float) TextureLoader.size * GSMap.scale; x += dashSize)
+					g.drawLine((x) / GSMap.scale, y * TextureLoader.size, (x + dashLen) / GSMap.scale, y * TextureLoader.size);
+				g.drawLine((x) / GSMap.scale, y * TextureLoader.size, Math.min((x + dashLen) / GSMap.scale, map.dimX * (float) TextureLoader.size), y * TextureLoader.size);
+			}
 		}
 		g.popTransform();
 	}
@@ -104,7 +116,7 @@ public class MapRenderer implements Renderable {
 	}
 
 	public void setSquares(boolean squares) {
-		this.squares = squares;
+		this.showGrid = squares;
 	}
 
 	public void setWithPlayer(boolean withPlayer) {

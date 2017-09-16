@@ -77,20 +77,6 @@ public class EntityCharacter {
 	}
 
 	public void setOrientation(Facing f){
-
 		orientation = f;
-		switch (f) {
-		case NORTH:
-			skin.setRotation(0);
-			break;
-		case EAST:
-			skin.setRotation(90);
-		case SOUTH:
-			skin.setRotation(180);
-			break;
-		case WEST:
-			skin.setRotation(270);
-			break;
-		}
 	}
 }

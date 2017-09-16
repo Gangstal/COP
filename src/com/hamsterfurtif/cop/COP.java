@@ -10,7 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 
 import org.newdawn.slick.AppGameContainer;
@@ -21,13 +21,13 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.display.menu.ConnectionLost;
-import com.hamsterfurtif.cop.display.menu.PlayerEquip;
+import com.hamsterfurtif.cop.display.menu.CharacterEquip;
 import com.hamsterfurtif.cop.display.menu.ServerRefused;
 import com.hamsterfurtif.cop.entities.EntityCharacter;
 import com.hamsterfurtif.cop.gamestates.GSMainMenu;
 import com.hamsterfurtif.cop.gamestates.GSMap;
 import com.hamsterfurtif.cop.gamestates.GSMapEditor;
-import com.hamsterfurtif.cop.gamestates.GSPlayerEquip;
+import com.hamsterfurtif.cop.gamestates.GSCharacterEquip;
 import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.inventory.WeaponType;
 import com.hamsterfurtif.cop.map.MapPos;
@@ -39,9 +39,12 @@ import com.hamsterfurtif.cop.packets.PacketServerFull;
 
 public class COP extends StateBasedGame{
 	public static final String version = "Pre-Alpha -1.13";
-	public static final String[] developers = new String[] {
-		"Hamster_Furtif", "gaston147",
+	public static final String[] leadDevelopers = new String[] {
+		"Hamster_Furtif",
 	};
+	public static final String[] developers = Utils.concat(leadDevelopers, new String[] {
+		"gaston147",
+	});
 	public static final String[] contributors = Utils.concat(developers, new String[] {
 		"CactusKipic",
 	});
@@ -71,9 +74,9 @@ public class COP extends StateBasedGame{
 
 	public static Mode mode;
 	public static ServerSocket serverSocket;
-	public static List<Conn> conns;
-	public static List<Packet> packets;
-	public static int selfID;
+	public static Queue<Conn> conns;
+	public static Queue<Packet> packets;
+	public static int selfId;
 	public static Player self;
 	public static Socket sockToServ;
 	public static Conn connToServ;
@@ -109,7 +112,7 @@ public class COP extends StateBasedGame{
 			e.printStackTrace();
 		}
 		addState(new GSMainMenu());
-		addState(new GSPlayerEquip());
+		addState(new GSCharacterEquip());
 		addState(COP.game = new Game());
 		addState(new GSMapEditor());
 	}
@@ -198,9 +201,9 @@ public class COP extends StateBasedGame{
 			if(c*Game.map.dimY<=480)
 				Game.mapy=(int)(480-c*Game.map.dimY)/2;
 			Game.setCharactersInitialSpawn();
-			GSPlayerEquip state = (GSPlayerEquip) COP.instance.getCurrentState();
-			state.currentCharacter = COP.self.characters[0];
-			state.mainMenu = new PlayerEquip(state.container, state, state.currentCharacter);
+			GSCharacterEquip state = (GSCharacterEquip) COP.instance.getCurrentState();
+			state.currentCharacter = (COP.mode == Mode.SINGLEPLAYER ? Game.players[0] : COP.self).characters[0];
+			state.mainMenu = new CharacterEquip(state.container, state, state.currentCharacter);
 		} catch (SlickException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -214,9 +217,8 @@ public class COP extends StateBasedGame{
 				while (true) {
 					Conn conn;
 					synchronized (conns) {
-						if (conns.size() == 0)
+						if ((conn = conns.poll()) == null)
 							break;
-						conn = conns.remove(0);
 					}
 					if (playersConnected == Game.playersCount) {
 						try {
@@ -257,9 +259,8 @@ public class COP extends StateBasedGame{
 			while (true) {
 				Packet packet;
 				synchronized (packets) {
-					if (packets.size() == 0)
+					if ((packet = packets.poll()) == null)
 						break;
-					packet = packets.remove(0);
 				}
 
 				if (packet instanceof PacketServerFull) {
@@ -267,14 +268,14 @@ public class COP extends StateBasedGame{
 						started = false;
 						sockToServ.close();
 						connState = ConnState.NOT_CONNECTED;
-						((GSPlayerEquip) instance.getCurrentState()).mainMenu = new ServerRefused(instance.getContainer(), (GSPlayerEquip) instance.getCurrentState(), "Le serveur est plein");
+						((GSCharacterEquip) instance.getCurrentState()).mainMenu = new ServerRefused(instance.getContainer(), (GSCharacterEquip) instance.getCurrentState(), "Le serveur est plein");
 					} catch (SlickException | IOException e) {
 						e.printStackTrace();
 					}
 				} else if (packet instanceof PacketPlayerInfo) {
 					Game.playersCount = ((PacketPlayerInfo) packet).playersCount;
 					Game.charactersCount = ((PacketPlayerInfo) packet).charactersCount;
-					selfID = ((PacketPlayerInfo) packet).playerID;
+					selfId = ((PacketPlayerInfo) packet).playerID;
 					setupPlayers();
 					Game.players[0].conn = connToServ;
 				} else if (packet instanceof PacketSendSettings) {
@@ -320,8 +321,10 @@ public class COP extends StateBasedGame{
 			for (int j = 0; j < Game.charactersCount; j++)
 				Game.players[i].characters[j] = new EntityCharacter(Game.players[i], j, "?");
 		}
-		COP.self = Game.players[COP.selfID];
-		COP.self.used = true;
+		if (mode != Mode.SINGLEPLAYER) {
+			COP.self = Game.players[COP.selfId];
+			COP.self.used = true;
+		}
 	}
 
 	public static void sendCharacterToAll(EntityCharacter character) {
@@ -342,7 +345,7 @@ public class COP extends StateBasedGame{
 				started = false;
 				connState = ConnState.NOT_CONNECTED;
 				try {
-					GSPlayerEquip state = (GSPlayerEquip) instance.getState(1);
+					GSCharacterEquip state = (GSCharacterEquip) instance.getState(1);
 					state.mainMenu = new ConnectionLost(instance.getContainer(), state);
 					if (state != instance.getCurrentState())
 						instance.enterState(1);

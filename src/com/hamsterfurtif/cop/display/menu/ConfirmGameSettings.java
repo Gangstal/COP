@@ -10,6 +10,7 @@ import org.newdawn.slick.gui.AbstractComponent;
 
 import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.Utils;
+import com.hamsterfurtif.cop.COP.Mode;
 import com.hamsterfurtif.cop.Utils.TextPlacement;
 import com.hamsterfurtif.cop.gamestates.Game;
 import com.hamsterfurtif.cop.gamestates.GameStateMenu;
@@ -37,12 +38,14 @@ public class ConfirmGameSettings extends Menu {
 
 		if(choices.contains(source)){
 			if(source==confirmer){
-				COP.settingsDone = true;
-				try {
-					COP.sendSettings();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if (COP.mode == Mode.SERVER) {
+					COP.settingsDone = true;
+					try {
+						COP.sendSettings();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				COP.setupFromSettings();
 			}

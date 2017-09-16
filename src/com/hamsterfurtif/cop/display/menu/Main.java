@@ -3,8 +3,8 @@ package com.hamsterfurtif.cop.display.menu;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Random;
 
 import org.newdawn.slick.Color;
@@ -59,8 +59,8 @@ public class Main extends Menu{
 				e1.printStackTrace();
 			}
 			COP.rd = new Random(1);
-			COP.conns = new ArrayList<Conn>();
-			COP.packets = new ArrayList<Packet>();
+			COP.conns = new LinkedList<Conn>();
+			COP.packets = new LinkedList<Packet>();
 			try {
 				if (source == client) {
 					COP.connState = ConnState.CONNECTING;

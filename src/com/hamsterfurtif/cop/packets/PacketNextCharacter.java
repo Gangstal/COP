@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import com.hamsterfurtif.cop.Conn;
 
-public class PacketNextPlayer extends Packet {
+public class PacketNextCharacter extends Packet {
 	public static final String PACKET_ID = "next_player";
 
 	public static Packet read(String args, Conn origin) {
@@ -13,17 +13,17 @@ public class PacketNextPlayer extends Packet {
 			System.out.println("WARNING: No arguments expected");
 			return null;
 		}
-		return new PacketNextPlayer(origin);
+		return new PacketNextCharacter(origin);
 	}
 
-	public static void write(PacketNextPlayer packet, BufferedWriter out) throws IOException {
+	public static void write(PacketNextCharacter packet, BufferedWriter out) throws IOException {
 	}
 
-	public PacketNextPlayer() {
+	public PacketNextCharacter() {
 		this(null);
 	}
 
-	public PacketNextPlayer(Conn origin) {
+	public PacketNextCharacter(Conn origin) {
 		super(origin);
 	}
 }

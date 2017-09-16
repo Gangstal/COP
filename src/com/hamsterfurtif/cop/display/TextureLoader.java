@@ -44,13 +44,9 @@ public abstract class TextureLoader {
 		File folder = new File("assets\\textures\\sprites\\players\\");
 		EntityCharacter.skins = new ArrayList<Image>();
 
-		for (File fileEntry : folder.listFiles()) {
-		      if (!fileEntry.isDirectory() && Utils.getFileExtension(fileEntry).equals("png")) {
-		    	  Image skin = loadTexture("sprites\\players\\"+fileEntry.getName());
-		    	  skin.setCenterOfRotation(skin.getWidth()/2, skin.getHeight()/2);
-		    	  EntityCharacter.skins.add(skin);
-		      }
-		}
+		for (File fileEntry : folder.listFiles())
+			if (!fileEntry.isDirectory() && Utils.getFileExtension(fileEntry).equals("png"))
+				EntityCharacter.skins.add(loadTexture("sprites\\players\\"+fileEntry.getName()));
 	}
 
 	public static Image loadTexture(String location, int filter){
@@ -67,12 +63,5 @@ public abstract class TextureLoader {
 
 	public static Image loadTexture(String location){
 		return loadTexture(location, Image.FILTER_NEAREST);
-	}
-
-	public static Image getRotatedCopy(Image i, float angleDeg) {
-	    Image rotated = i.copy();
-	    rotated.setRotation(angleDeg);
-
-	    return rotated;
 	}
 }

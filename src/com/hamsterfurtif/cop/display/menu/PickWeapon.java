@@ -18,7 +18,7 @@ public class PickWeapon extends Menu{
 	WeaponType type;
 
 
-	public PickWeapon(GameContainer container, GameStateMenu state, WeaponType type, EntityCharacter player) throws SlickException {
+	public PickWeapon(GameContainer container, GameStateMenu state, WeaponType type, EntityCharacter character) throws SlickException {
 		super(container, "Choisir une arme", state);
 		this.type=type;
 		width= COP.width/2;
@@ -33,7 +33,7 @@ public class PickWeapon extends Menu{
 			choices.add(new Button(w.name+"(D:"+w.damage+"/R:"+w.range+"/A:"+w.ammo+")", this, 50, 90+offset, 200, 64){
 				@Override
 				public Object trigger(Object arg){
-					player.inventory.setWeapon(type, w);
+					character.inventory.setWeapon(type, w);
 					return null;
 				}
 

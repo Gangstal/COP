@@ -23,7 +23,7 @@ public abstract class Utils {
 		RIGHT,
 		LEFT;
 	}
-	
+
 	public static enum Facing{
 		NORTH,
 		SOUTH,
@@ -106,12 +106,10 @@ public abstract class Utils {
 		else
 			return null;
 	}
-	
+
 	public static int getRotation(Facing f){
-		
 		switch (f) {
 		case NORTH:
-		default:
 			return 0;
 		case EAST:
 			return 90;
@@ -120,5 +118,6 @@ public abstract class Utils {
 		case WEST:
 			return 270;
 		}
+		return 0;
 	}
 }

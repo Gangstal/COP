@@ -12,7 +12,7 @@ import com.hamsterfurtif.cop.packets.PacketAddPos;
 import com.hamsterfurtif.cop.packets.PacketCancelMovement;
 import com.hamsterfurtif.cop.packets.PacketChangeWeapon;
 import com.hamsterfurtif.cop.packets.PacketCharacterReady;
-import com.hamsterfurtif.cop.packets.PacketNextPlayer;
+import com.hamsterfurtif.cop.packets.PacketNextCharacter;
 import com.hamsterfurtif.cop.packets.PacketPlayerInfo;
 import com.hamsterfurtif.cop.packets.PacketReload;
 import com.hamsterfurtif.cop.packets.PacketRemoveLastPos;
@@ -24,7 +24,7 @@ import com.hamsterfurtif.cop.packets.PacketStartMovement;
 public class PacketTypes {
 	private static Map<String, Class<? extends Packet>> packetTypes = new HashMap<String, Class<? extends Packet>>();
 
-	public static final Class<? extends Packet> nextPlayer		= putPacket(PacketNextPlayer.class);
+	public static final Class<? extends Packet> nextCharacter	= putPacket(PacketNextCharacter.class);
 	public static final Class<? extends Packet> changeWeapon	= putPacket(PacketChangeWeapon.class);
 	public static final Class<? extends Packet> reload			= putPacket(PacketReload.class);
 	public static final Class<? extends Packet> startMovement	= putPacket(PacketStartMovement.class);
