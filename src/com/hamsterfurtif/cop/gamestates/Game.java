@@ -14,6 +14,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.COP.Mode;
+import com.hamsterfurtif.cop.Utils.Facing;
 import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.display.Engine;
@@ -22,6 +23,7 @@ import com.hamsterfurtif.cop.display.poseffects.MouseHover;
 import com.hamsterfurtif.cop.display.poseffects.MoveSelect;
 import com.hamsterfurtif.cop.entities.EntityCharacter;
 import com.hamsterfurtif.cop.inventory.Inventory;
+import com.hamsterfurtif.cop.inventory.WeaponShield;
 import com.hamsterfurtif.cop.inventory.WeaponType;
 import com.hamsterfurtif.cop.map.MapPos;
 import com.hamsterfurtif.cop.map.Path;
@@ -389,23 +391,32 @@ public class Game extends GSMap {
 
 	public static boolean shoot(EntityCharacter player, MapPos pos, WeaponType type){
 
-		if(Path.directLOS(player.pos, pos) && player.inventory.getWeapon(type).inRange(player.pos,  pos) && player.inventory.getAmmo(type)>0){
+		if(player.inventory.getWeapon(type) instanceof WeaponShield){
+			 Facing face = Utils.getOrientationFromPos(player.pos, pos);
+			 if(face != null)
+				 player.orientation = face;
+			 player.isShieled = true;
+		}
+		
+		else if(Path.directLOS(player.pos, pos) && player.inventory.getWeapon(type).inRange(player.pos,  pos) && player.inventory.getAmmo(type)>0){
 
 			player.inventory.getWeapon(type).playSound();
 			Random r = new Random(1);
 
 			if(checkForCharacter(pos) != null){
 				EntityCharacter target = checkForCharacter(pos);
-				target.health -= player.getWeapon(type).damage;
-				player.inventory.addAmmo(type, -1);
-				player.turnIsOver = true;
-				player.hasShot=true;
-				if(target.health<=0){
-					kill(target);
-					EntityCharacter.deathSounds.get(r.nextInt(1)).play();
+				if(!target.isShieled || target.orientation == Utils.getOrientationFromPos(player.pos, target.pos)){
+					target.health -= player.getWeapon(type).damage;
+					player.inventory.addAmmo(type, -1);
+					player.turnIsOver = true;
+					player.hasShot=true;
+					if(target.health<=0){
+						kill(target);
+						EntityCharacter.deathSounds.get(r.nextInt(1)).play();
+					}
+					else
+						EntityCharacter.hurtSounds.get(0).play();
 				}
-				else
-					EntityCharacter.hurtSounds.get(0).play();
 			}
 			else if(map.getTile(pos).isDestructible){
 				map.destroyTile(pos);

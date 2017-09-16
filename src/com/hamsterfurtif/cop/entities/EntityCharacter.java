@@ -31,7 +31,8 @@ public class EntityCharacter {
 	public int movesLeft = maxMoves;
 	public boolean configured;
 	public Facing orientation = Facing.NORTH;
-
+	public boolean isShieled;
+	
 	//animation
 	public float xgoffset=0.0f, ygoffset=0.0f;
 
@@ -61,10 +62,11 @@ public class EntityCharacter {
 	}
 
 	public void resetTurnStats(){
-		this.movesLeft = maxMoves;
-		this.turnIsOver = false;
-		this.hasShot = false;
-		this.hasMoved = false;
+		movesLeft = maxMoves;
+		turnIsOver = false;
+		hasShot = false;
+		hasMoved = false;
+		isShieled = false;
 	}
 
 	public void reset(){

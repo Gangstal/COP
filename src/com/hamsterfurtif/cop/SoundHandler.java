@@ -22,12 +22,16 @@ public class SoundHandler {
 	
 	private static void loadWeaponSounds() throws SlickException{
 		for(Weapon w : Weapons.primary){
-			w.sounds.add(new Sound("\\assets\\sounds\\weapons\\"+w.name+"1.wav"));
-			w.sounds.add(new Sound("\\assets\\sounds\\weapons\\"+w.name+"2.wav"));
+			if(w.hasSound){
+				w.sounds.add(new Sound("\\assets\\sounds\\weapons\\"+w.name+"1.wav"));
+				w.sounds.add(new Sound("\\assets\\sounds\\weapons\\"+w.name+"2.wav"));
+			}
 		}
 		for(Weapon w : Weapons.secondary){
-			w.sounds.add(new Sound("\\assets\\sounds\\weapons\\"+w.name+"1.wav"));
-			w.sounds.add(new Sound("\\assets\\sounds\\weapons\\"+w.name+"2.wav"));
+			if(w.hasSound){
+				w.sounds.add(new Sound("\\assets\\sounds\\weapons\\"+w.name+"1.wav"));
+				w.sounds.add(new Sound("\\assets\\sounds\\weapons\\"+w.name+"2.wav"));
+			}
 		}
 		Inventory.reloadSounds.add(new Sound("\\assets\\sounds\\weapons\\reload1.wav"));
 		Inventory.reloadSounds.add(new Sound("\\assets\\sounds\\weapons\\reload2.wav"));

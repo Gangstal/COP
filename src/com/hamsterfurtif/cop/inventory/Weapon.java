@@ -17,6 +17,7 @@ public class Weapon {
 	public int range, damage, ammo;
 	public Image skin;
 	public ArrayList<Sound> sounds = new ArrayList<Sound>();
+	public boolean hasSound = true;
 
 	public Weapon(String id, String name, int range, int damage, int maxAmmo, WeaponType type){
 		this.id = id;
@@ -44,8 +45,12 @@ public class Weapon {
 	}
 
 	public void playSound() {
-		Random r = new Random(1);
-		sounds.get(r.nextInt(1)).play();
+		if(!sounds.isEmpty()){
+			Random r = new Random(1);
+			sounds.get(r.nextInt(1)).play();
+		}
 	}
+	
+	
 
 }

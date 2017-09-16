@@ -190,7 +190,5 @@ public class MapEditor extends Menu{
 					searchedTiles.add(new TileButton(this, tile));
 				}
 		}
-
 	}
-
 }

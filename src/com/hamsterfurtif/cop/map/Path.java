@@ -24,7 +24,7 @@ public class Path {
 		    	MapPos pos = new MapPos(x, y, pos1.Z);
 		    	if(!Game.map.getTile(pos).canShootTrough && !pos.equals(pos1) && !pos.equals(pos2))
 		    		return false;
-		    	
+
 		        if (error > 0)
 		        {
 		            x += x_inc;

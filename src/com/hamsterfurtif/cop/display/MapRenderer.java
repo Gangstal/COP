@@ -9,6 +9,7 @@ import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.display.poseffects.PosEffect;
 import com.hamsterfurtif.cop.entities.EntityCharacter;
 import com.hamsterfurtif.cop.gamestates.Game;
+import com.hamsterfurtif.cop.inventory.WeaponShield;
 import com.hamsterfurtif.cop.map.Map;
 import com.hamsterfurtif.cop.map.MapPos;
 import com.hamsterfurtif.cop.map.tiles.Tile;
@@ -64,6 +65,9 @@ public class MapRenderer implements Renderable {
 							//est son problème lol"
 							Image i = TextureLoader.getRotatedCopy(character.skin, Utils.getRotation(character.orientation));
 							g.drawImage(i, (character.pos.X + character.xgoffset) * TextureLoader.size, (character.pos.Y + character.ygoffset) * TextureLoader.size);
+							if(character.isShieled){
+								g.drawImage(TextureLoader.getRotatedCopy(WeaponShield.map_overlay, Utils.getRotation(character.orientation)), (character.pos.X + character.xgoffset) * TextureLoader.size, (character.pos.Y + character.ygoffset) * TextureLoader.size);
+							}
 						}
 					}
 				}
