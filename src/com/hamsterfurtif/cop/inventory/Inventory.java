@@ -6,20 +6,20 @@ import org.newdawn.slick.Sound;
 
 public class Inventory {
 	
-	public Weapon primary;
-	public Weapon secondary;
 	
-	public int ammoP, ammoS;
 	
+	public Slot primary;
+	public Slot secondary;
+		
 	public static ArrayList<Sound> reloadSounds = new ArrayList<Sound>();
 	
 	public void setAmmo(WeaponType type, int qtt){
 		switch (type){
 		case PRIMARY:
-			this.ammoP=qtt;
+			primary.ammo=qtt;
 			break;
 		case SECONDARY:
-			this.ammoS=qtt;
+			secondary.ammo=qtt;
 			break;
 		}
 			 
@@ -29,9 +29,9 @@ public class Inventory {
 		switch (type){
 		case PRIMARY:
 		default:
-			return ammoP;
+			return primary.ammo;
 		case SECONDARY:
-			return ammoS;
+			return secondary.ammo;
 		}
 			 
 	}
@@ -39,10 +39,10 @@ public class Inventory {
 	public void addAmmo(WeaponType type, int offset){
 		switch (type){
 		case PRIMARY:
-			this.setAmmo(type, ammoP+offset);
+			this.setAmmo(type, primary.ammo+offset);
 			break;
 		case SECONDARY:
-			this.setAmmo(type, ammoS+offset);
+			this.setAmmo(type, primary.ammo+offset);
 			break;
 		}
 	}
@@ -50,11 +50,11 @@ public class Inventory {
 	public Weapon getWeapon(WeaponType type){
 		switch(type){
 		case PRIMARY:
-			return primary;
-		case SECONDARY:
-			return secondary;
 		default:
-			return primary;
+			return primary.weapon;
+		case SECONDARY:
+			return secondary.weapon;
+
 		}
 	}
 	
@@ -62,10 +62,10 @@ public class Inventory {
 		switch(type){
 		case PRIMARY:
 		default:
-			primary=weapon;
+			primary.weapon = weapon;
 			break;
 		case SECONDARY:
-			secondary = weapon;
+			secondary.weapon = weapon;
 		}
 	}
 }

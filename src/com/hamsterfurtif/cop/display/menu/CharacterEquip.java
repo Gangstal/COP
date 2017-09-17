@@ -97,9 +97,9 @@ public class CharacterEquip extends Menu{
 		playername.setText(character.name);
 
 		if(character.inventory.primary != null)
-			princName = character.inventory.primary.name;
+			princName = character.inventory.primary.weapon.name;
 		if(character.inventory.secondary != null)
-			secName = character.inventory.secondary.name;
+			secName = character.inventory.secondary.weapon.name;
 	}
 
 	@Override
@@ -130,11 +130,11 @@ public class CharacterEquip extends Menu{
 						character.skin = EntityCharacter.skins.get((int) (Math.random() * EntityCharacter.skins.size()));
 					if (character.inventory.primary == null) {
 						List<Weapon> weapons = Weapons.getWeaponsByType(WeaponType.PRIMARY);
-						character.inventory.primary = weapons.get((int) (Math.random() * weapons.size()));
+						character.inventory.primary.weapon = weapons.get((int) (Math.random() * weapons.size()));
 					}
 					if (character.inventory.secondary == null) {
 						List<Weapon> weapons = Weapons.getWeaponsByType(WeaponType.SECONDARY);
-						character.inventory.secondary = weapons.get((int) (Math.random() * weapons.size()));
+						character.inventory.secondary.weapon = weapons.get((int) (Math.random() * weapons.size()));
 					}
 					playername.setLocation(playername.getX(), playername.getY() + 20);
 					character.name=playername.getText();
@@ -162,10 +162,10 @@ public class CharacterEquip extends Menu{
 	}
 
 	public void update(){
-		if(character.inventory.primary != null && !princName.equals(character.inventory.primary.name))
-			princName = character.inventory.primary.name;
-		if(character.inventory.secondary != null && !secName.equals(character.inventory.secondary.name))
-			secName = character.inventory.secondary.name;
+		if(character.inventory.primary != null && !princName.equals(character.inventory.primary.weapon.name))
+			princName = character.inventory.primary.weapon.name;
+		if(character.inventory.secondary != null && !secName.equals(character.inventory.secondary.weapon.name))
+			secName = character.inventory.secondary.weapon.name;
 		if(character.skin != null && (picture == null || !picture.equals(character.skin.getScaledCopy(2))))
 			picture = character.skin.getScaledCopy(2);
 	}

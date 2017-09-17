@@ -53,11 +53,11 @@ public class EntityCharacter {
 	public Weapon getWeapon(WeaponType type){
 		switch(type){
 		case PRIMARY:
-			return inventory.primary;
+			return inventory.primary.weapon;
 		case SECONDARY:
-			return inventory.secondary;
+			return inventory.secondary.weapon;
 		default:
-			return inventory.primary;
+			return inventory.primary.weapon;
 		}
 	}
 
@@ -71,8 +71,8 @@ public class EntityCharacter {
 
 	public void reset(){
 		resetTurnStats();
-		inventory.ammoP=inventory.primary.ammo;
-		inventory.ammoS=inventory.secondary.ammo;
+		inventory.primary.ammo=inventory.primary.ammo;
+		inventory.secondary.ammo=inventory.secondary.ammo;
 		health=Game.maxHP;
 	}
 

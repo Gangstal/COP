@@ -458,8 +458,8 @@ public class Game extends GSMap {
 	}
 
 	public static void reload(EntityCharacter character){
-		character.inventory.ammoP = character.inventory.primary.ammo;
-		character.inventory.ammoS = character.inventory.secondary.ammo;
+		character.inventory.primary.reload();
+		character.inventory.secondary.reload();
 		Random r = new Random(1);
 		Inventory.reloadSounds.get(r.nextInt(1)).play();
 	}

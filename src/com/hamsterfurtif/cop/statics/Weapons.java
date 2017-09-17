@@ -17,7 +17,7 @@ public class Weapons {
 
 	public static final Map<String, Weapon> weaponsByID = new HashMap<String, Weapon>();
 
-	//				Weapon("name", range, damage, ammo)
+	//Weapon("name", range, damage, ammo)
 
 	public static Weapon shotgun	= new Weapon("shotgun", "Shotgun", 5, 9, 2, WeaponType.PRIMARY);
 	public static Weapon AR			= new Weapon("ar", "AR", 10, 7, 4, WeaponType.PRIMARY);

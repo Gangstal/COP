@@ -18,11 +18,12 @@ public class WeaponShield extends Weapon{
 		map_overlay = TextureLoader.loadTexture("\\sprites\\weapons\\shield_overlay.png");
 	}
 	
-	public void Shoot(EntityCharacter shooter, MapPos target){
-		 Facing face = Utils.getOrientationFromPos(shooter.pos, target);
+	public void shoot(EntityCharacter shooter, MapPos pos, WeaponType type){
+		 Facing face = Utils.getOrientationFromPos(shooter.pos, pos);
 		 if(face == null)
 			 face=shooter.orientation;
 		 shooter.orientation = face;
+		 shooter.isShieled = true;
 	}
 
 }

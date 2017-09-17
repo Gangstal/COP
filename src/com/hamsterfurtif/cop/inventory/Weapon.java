@@ -7,6 +7,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.Sound;
 
 import com.hamsterfurtif.cop.display.TextureLoader;
+import com.hamsterfurtif.cop.entities.EntityCharacter;
 import com.hamsterfurtif.cop.map.MapPos;
 import com.hamsterfurtif.cop.statics.Weapons;
 
@@ -18,6 +19,8 @@ public class Weapon {
 	public Image skin;
 	public ArrayList<Sound> sounds = new ArrayList<Sound>();
 	public boolean hasSound = true;
+	
+	public boolean hasSpecialShoot = false;
 
 	public Weapon(String id, String name, int range, int damage, int maxAmmo, WeaponType type){
 		this.id = id;
@@ -50,6 +53,8 @@ public class Weapon {
 			sounds.get(r.nextInt(1)).play();
 		}
 	}
+	
+	public void shoot(EntityCharacter character, MapPos pos, WeaponType type){}
 	
 	
 

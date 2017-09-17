@@ -112,11 +112,11 @@ public class MainGame extends Menu {
 				g.setLineWidth(1.0f);
 				g.drawRect(0, this.getY()-1, this.getWidth()-1, 140);
 				EntityCharacter character = game.currentCharacter;
-				Weapon w = character.inventory.primary;
+				Weapon w = character.inventory.primary.weapon;
 				int ypos =  this.getY()+this.getHeight()+5;
 				g.drawImage(w.skin.getScaledCopy(64, 32),this.getWidth()-66, ypos);
 				g.drawString(w.name, 5, ypos+5);
-				g.drawString("A: "+character.inventory.ammoP+"/"+w.ammo, 5, ypos+30);
+				g.drawString("A: "+character.inventory.primary.ammo+"/"+w.ammo, 5, ypos+30);
 				g.drawString("D: "+w.damage, 5, ypos+45);
 				g.drawString("R: "+w.range, 5, ypos+60);
 				if(!COP.game.canPlay() || state.currentCharacter.turnIsOver){
@@ -140,11 +140,11 @@ public class MainGame extends Menu {
 				g.setLineWidth(1.0f);
 				g.drawRect(0, this.getY()-1, this.getWidth()-1, 140);
 				EntityCharacter character = game.currentCharacter;
-				Weapon w = character.inventory.secondary;
+				Weapon w = character.inventory.secondary.weapon;
 				int ypos =  this.getY()+this.getHeight()+5;
 				g.drawImage(w.skin.getScaledCopy(64, 32),this.getWidth()-66, ypos);
 				g.drawString(w.name, 5, ypos+5);
-				g.drawString("A: "+character.inventory.ammoS+"/"+w.ammo, 5, ypos+30);
+				g.drawString("A: "+character.inventory.secondary.ammo+"/"+w.ammo, 5, ypos+30);
 				g.drawString("D: "+w.damage, 5, ypos+45);
 				g.drawString("R: "+w.range, 5, ypos+60);
 				if(!COP.game.canPlay() || state.currentCharacter.turnIsOver){

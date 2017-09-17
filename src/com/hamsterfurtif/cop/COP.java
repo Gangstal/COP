@@ -288,8 +288,8 @@ public class COP extends StateBasedGame{
 						sendPacket(packet);
 					EntityCharacter c = Game.players[((PacketCharacterReady) packet).playerID].characters[((PacketCharacterReady) packet).characterID];
 					c.skin = EntityCharacter.skins.get(((PacketCharacterReady) packet).skinID);
-					c.inventory.primary = ((PacketCharacterReady) packet).primary;
-					c.inventory.secondary = ((PacketCharacterReady) packet).secondary;
+					c.inventory.primary.weapon = ((PacketCharacterReady) packet).primary;
+					c.inventory.secondary.weapon = ((PacketCharacterReady) packet).secondary;
 					c.name = ((PacketCharacterReady) packet).name;
 					c.reset();
 					c.configured = true;
