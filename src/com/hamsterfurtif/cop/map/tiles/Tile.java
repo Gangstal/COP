@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Sound;
 
+import com.hamsterfurtif.cop.ITrigger.TriggerType;
 import com.hamsterfurtif.cop.statics.Tiles;
 
 public abstract class Tile {
@@ -46,6 +47,8 @@ public abstract class Tile {
 		else
 			return this;
 	}
+	
+	public void trigger(TriggerType source){}
 
 	public static class TileWindow extends Tile {
 		public TileWindow(String id, String name, String imagename){
@@ -79,6 +82,13 @@ public abstract class Tile {
 			this.symbol = 'D';
 			this.ground = tile;
 		}
+		
+		public void trigger(TriggerType source){
+			switch (source){
+			case EXPLOSION:
+			}
+		}
+
 	}
 
 	public static class CustomTile extends Tile {

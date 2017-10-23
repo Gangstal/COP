@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.hamsterfurtif.cop.inventory.Weapon;
+import com.hamsterfurtif.cop.inventory.WeaponRPG;
 import com.hamsterfurtif.cop.inventory.WeaponShield;
 import com.hamsterfurtif.cop.inventory.WeaponSniper;
 import com.hamsterfurtif.cop.inventory.WeaponType;
@@ -26,6 +27,7 @@ public class Weapons {
 	public static Weapon handgun	= new Weapon("handgun", "Handgun", 7, 3, 3, WeaponType.SECONDARY);
 	public static Weapon revolver	= new Weapon("revolver", "Revolver", 5, 4, 2, WeaponType.SECONDARY);
 	public static Weapon shield     = new WeaponShield("shield", "Bouclier");
+	public static Weapon rpg7       = new WeaponRPG();
 
 	public static List<Weapon> getWeaponsByType(WeaponType type){
 		switch (type) {

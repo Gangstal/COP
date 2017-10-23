@@ -9,5 +9,6 @@ public class TileDestructibleFloor extends TileFloor{
 		isDestructible = true;
 		this.ground = ground;
 	}
+	
 
 }

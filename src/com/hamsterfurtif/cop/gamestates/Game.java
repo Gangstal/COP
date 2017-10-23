@@ -14,7 +14,6 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.hamsterfurtif.cop.COP;
 import com.hamsterfurtif.cop.COP.Mode;
-import com.hamsterfurtif.cop.Utils.Facing;
 import com.hamsterfurtif.cop.Player;
 import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.display.Engine;
@@ -23,10 +22,8 @@ import com.hamsterfurtif.cop.display.poseffects.MouseHover;
 import com.hamsterfurtif.cop.display.poseffects.MoveSelect;
 import com.hamsterfurtif.cop.entities.EntityCharacter;
 import com.hamsterfurtif.cop.inventory.Inventory;
-import com.hamsterfurtif.cop.inventory.WeaponShield;
 import com.hamsterfurtif.cop.inventory.WeaponType;
 import com.hamsterfurtif.cop.map.MapPos;
-import com.hamsterfurtif.cop.map.Path;
 import com.hamsterfurtif.cop.map.tiles.Tile;
 import com.hamsterfurtif.cop.packets.Packet;
 import com.hamsterfurtif.cop.packets.PacketAddPos;
@@ -407,46 +404,7 @@ public class Game extends GSMap {
 	}
 
 	public static boolean shoot(EntityCharacter character, MapPos pos, WeaponType type){
-
-		if(character.inventory.getWeapon(type) instanceof WeaponShield){
-			 Facing face = Utils.getOrientationFromPos(character.pos, pos);
-			 if(face != null)
-				 character.orientation = face;
-			 character.isShieled = true;
-		}
-		else if(Path.directLOS(character.pos, pos) && character.inventory.getWeapon(type).inRange(character.pos,  pos) && character.inventory.getAmmo(type)>0){
-
-			character.inventory.getWeapon(type).playSound();
-			Random r = new Random(1);
-
-			if(checkForCharacter(pos) != null){
-				EntityCharacter target = checkForCharacter(pos);
-				if(!target.isShieled || target.orientation == Utils.getOrientationFromPos(character.pos, target.pos)){
-					target.health -= character.getWeapon(type).damage;
-					character.inventory.addAmmo(type, -1);
-					character.turnIsOver = true;
-					character.hasShot=true;
-					if(target.health<=0){
-						kill(target);
-						EntityCharacter.deathSounds.get(r.nextInt(1)).play();
-					}
-					else
-						EntityCharacter.hurtSounds.get(0).play();
-				}
-			}
-			else if(map.getTile(pos).isDestructible){
-				map.destroyTile(pos);
-				character.hasShot=true;
-				character.turnIsOver = true;
-				character.inventory.addAmmo(type, -1);
-				Tile.destroy.get(r.nextInt(1)).play(0.5f,0.5f);
-			}
-
-			return true;
-		}
-
-		return false;
-
+		return character.inventory.getSlot(type).shoot(character, pos);
 	}
 
 	public static EntityCharacter checkForCharacter(MapPos pos){
@@ -464,7 +422,7 @@ public class Game extends GSMap {
 		Inventory.reloadSounds.get(r.nextInt(1)).play();
 	}
 
-	private static void kill(EntityCharacter character){
+	public static void kill(EntityCharacter character){
 		MapPos p = new MapPos();
 
 		do{

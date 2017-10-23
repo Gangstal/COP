@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.newdawn.slick.Sound;
 
+import com.hamsterfurtif.cop.inventory.slot.Slot;
+
 public class Inventory {
 	
 	
@@ -62,10 +64,24 @@ public class Inventory {
 		switch(type){
 		case PRIMARY:
 		default:
+			primary = weapon.getWeaponSlot();
 			primary.weapon = weapon;
 			break;
 		case SECONDARY:
+			secondary = weapon.getWeaponSlot();
 			secondary.weapon = weapon;
 		}
 	}
+	
+	public Slot getSlot(WeaponType type){
+		switch(type){
+		case PRIMARY:
+		default:
+			return primary;
+		case SECONDARY:
+			return secondary;
+
+		}
+	}
+	
 }

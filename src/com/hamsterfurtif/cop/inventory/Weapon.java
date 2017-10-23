@@ -6,13 +6,19 @@ import java.util.Random;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Sound;
 
+import com.hamsterfurtif.cop.ITrigger;
+import com.hamsterfurtif.cop.Utils;
 import com.hamsterfurtif.cop.display.TextureLoader;
 import com.hamsterfurtif.cop.entities.EntityCharacter;
+import com.hamsterfurtif.cop.gamestates.Game;
+import com.hamsterfurtif.cop.inventory.slot.Slot;
 import com.hamsterfurtif.cop.map.MapPos;
+import com.hamsterfurtif.cop.map.Path;
+import com.hamsterfurtif.cop.map.tiles.Tile;
 import com.hamsterfurtif.cop.statics.Weapons;
 
 
-public class Weapon {
+public class Weapon implements ITrigger{
 	public final String id;
 	public String name;
 	public int range, damage, ammo;
@@ -42,8 +48,7 @@ public class Weapon {
 	}
 
 	public boolean inRange(MapPos pos1, MapPos pos2){
-		//Good ol' Pythagore
-		double d = Math.sqrt(Math.pow(Math.abs(pos1.X-pos2.X),2) + Math.pow(Math.abs(pos1.Y-pos2.Y),2));
+		double d = pos1.distance(pos2);
 		return d<=range;
 	}
 
@@ -54,7 +59,46 @@ public class Weapon {
 		}
 	}
 	
-	public void shoot(EntityCharacter character, MapPos pos, WeaponType type){}
+	public Slot getWeaponSlot(){
+		return new Slot(this);
+	}
+	
+	public boolean shoot(EntityCharacter character, MapPos pos){
+		if(Path.directLOS(character.pos, pos) && this.inRange(character.pos,  pos)){
+
+			this.playSound();
+			Random r = new Random(1);
+
+			if(Game.checkForCharacter(pos) != null){
+				EntityCharacter target = Game.checkForCharacter(pos);
+				if(!target.isShieled || target.orientation == Utils.getOrientationFromPos(character.pos, target.pos)){
+					target.health -= this.damage;
+					character.turnIsOver = true;
+					character.hasShot=true;
+					if(target.health<=0){
+						Game.kill(target);
+						EntityCharacter.deathSounds.get(r.nextInt(1)).play();
+					}
+					else
+						EntityCharacter.hurtSounds.get(0).play();
+				}
+				return true;
+			}
+			else if(Game.map.getTile(pos).isDestructible){
+				Game.map.destroyTile(pos);
+				character.hasShot=true;
+				character.turnIsOver = true;
+				Tile.destroy.get(r.nextInt(1)).play(0.5f,0.5f);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public TriggerType getSource() {
+		return TriggerType.AIRBORNE;
+	}
 	
 	
 
